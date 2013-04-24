@@ -1,0 +1,45 @@
+## Common generated files
+bin/*
+etc/*
+doc/*/*
+export/*
+debug/*
+
+## OS-specific
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+
+## Visual-studio specific
+support/vs2002/*/*
+support/vs2003/*/*
+support/vs2005/*/*
+support/vs2008/*/*
+support/vs2010/*/*
+*.suo
+*.user
+*.sln.docstates
+*_i.c
+*_p.c
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.vspscc
+*.dotCover
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.psess
+*.vsp

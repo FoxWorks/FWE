@@ -1,0 +1,6 @@
+*[outputValueBox="true"] {
+	background-color: beige;
+	border-style: dotted;
+	border-width: 1px;
+	border-color: black;
+}
