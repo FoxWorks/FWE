@@ -1984,6 +1984,63 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="qtmoc"
+			Filter=""
+			>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_glwidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_object.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_object_csection.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_object_model.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_object_renderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_main.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_prop_sheet.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_prop_stringenum.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_prop_thumbwheel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_qtpropertybrowserutils_p.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_qtthumbwheel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\rcc_resources.cpp"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

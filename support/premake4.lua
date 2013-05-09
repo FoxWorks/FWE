@@ -184,6 +184,10 @@ if _ACTION == "moc" then return end
                     QtPath.."/include/QtOpenGL",
                     QtGenPath }
       libdirs { QtPath.."/lib" }
+      files { QtGenPath.."/rcc_*.cpp",
+              QtGenPath.."/moc_fw*.cpp",
+              QtGenPath.."/moc_qtthumbwheel.cpp",
+              QtGenPath.."/moc_qtpropertybrowserutils_p.cpp" }
       configuration { "windows" }
          links { "QtCore4", "QtGui4", "QtUiTools", "QtOpenGL4", "opengl32" }
       configuration { "not windows" }
