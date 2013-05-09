@@ -4,6 +4,7 @@ etc/*
 doc/*/*
 export/*
 debug/*
+qtmoc/*
 
 ## OS-specific
 Thumbs.db

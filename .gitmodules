@@ -13,3 +13,6 @@
 [submodule "external/simc"]
 	path = external/simc
 	url = https://github.com/FoxWorks/SIMC
+[submodule "external/qt-solutions"]
+	path = external/qt-solutions
+	url = git://gitorious.org/qt-solutions/qt-solutions.git
