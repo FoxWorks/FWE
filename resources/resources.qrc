@@ -2,37 +2,37 @@
 <qresource>
     <file>stylesheet.qss</file>
     
-    <file>mdi.png</file>
-    <file>copy.png</file>
-    <file>cut.png</file>
-    <file>new.png</file>
-    <file>open.png</file>
-    <file>paste.png</file>
-    <file>save.png</file>
-    <file>exit.png</file>
-    <file>close.png</file>
-    <file>next.png</file>
-    <file>previous.png</file>
-    <file>about.png</file>
+    <file>icon/mdi.png</file>
+    <file>icon/copy.png</file>
+    <file>icon/cut.png</file>
+    <file>icon/new.png</file>
+    <file>icon/open.png</file>
+    <file>icon/paste.png</file>
+    <file>icon/save.png</file>
+    <file>icon/exit.png</file>
+    <file>icon/close.png</file>
+    <file>icon/next.png</file>
+    <file>icon/previous.png</file>
+    <file>icon/about.png</file>
     
-    <file>none.png</file>
-    <file>add.png</file>
-    <file>remove.png</file>
+    <file>icon/none.png</file>
+    <file>icon/add.png</file>
+    <file>icon/remove.png</file>
     
     <file>evds/csections.png</file>
     <file>evds/hierarchy.png</file>
     <file>evds/properties.png</file>
     <file>evds/materials.png</file>
 
-    <file>shader_background.frag</file>
-    <file>shader_background.vert</file>
-    <file>shader_fxaa.frag</file>
-    <file>shader_fxaa.vert</file>
-    <file>shader_object.frag</file>
-    <file>shader_object.vert</file>
-    <file>shader_outline_fbo.frag</file>
-    <file>shader_outline_fbo.vert</file>
-    <file>shader_outline_object.frag</file>
-    <file>shader_outline_object.vert</file>
+    <file>shader/shader_background.frag</file>
+    <file>shader/shader_background.vert</file>
+    <file>shader/shader_fxaa.frag</file>
+    <file>shader/shader_fxaa.vert</file>
+    <file>shader/shader_object.frag</file>
+    <file>shader/shader_object.vert</file>
+    <file>shader/shader_outline_fbo.frag</file>
+    <file>shader/shader_outline_fbo.vert</file>
+    <file>shader/shader_outline_object.frag</file>
+    <file>shader/shader_outline_object.vert</file>
 </qresource>
 </RCC>

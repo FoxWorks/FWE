@@ -54,13 +54,13 @@ end
 
 -- Generate MOC files
 GENERATED_MOCs = false
-function generate_moc(files,do_warn)
+function generate_moc(files,do_warn,extrapath)
   local moc_files = os.matchfiles(files)
   for _,file in pairs(moc_files) do
     local file_ext = path.getextension(file)
-    local out_file = QtGenPath.."/moc_"..path.getbasename(file)..".cpp"
+    local out_file = QtGenPath..(extrapath or "").."/moc_"..path.getbasename(file)..".cpp"
     if file_ext == ".cpp" then
-      out_file = QtGenPath.."/"..path.getbasename(file)..".moc"
+      out_file = QtGenPath..(extrapath or "").."/"..path.getbasename(file)..".moc"
     end
 
     local warnings = " -nw "
@@ -71,7 +71,7 @@ function generate_moc(files,do_warn)
     local mtime = 0
     local mtest = io.open(mname,"r")
     if mtest then
-      mtime = mtest:read("*n")
+      mtime = tonumber(mtest:read("*a"))
     end
 
     -- If applies, generate new file
@@ -94,14 +94,14 @@ end
 
 -- Generate RCC files
 GENERATED_RCCs = false
-function generate_rcc(files)
+function generate_rcc(files,extrapath)
   local rcc_files = os.matchfiles(files)
   for _,file in pairs(rcc_files) do
     local file_ext = path.getextension(file)
-    local out_file = QtGenPath.."/rcc_"..path.getbasename(file)..".cpp"
+    local out_file = QtGenPath..(extrapath or "").."/rcc_"..path.getbasename(file)..".cpp"
 
     -- Get last modify date
-    local mname = path.getdirectory(out_file).."/"..path.getbasename(out_file)..".tmp"
+    local mname = path.getdirectory(out_file)..(extrapath or "").."/"..path.getbasename(out_file)..".tmp"
     local mtime = 0
     local mtest = io.open(mname,"r")
     if mtest then
@@ -128,16 +128,20 @@ end
 
 -- Generate MOC's for Qt
 if QtPath and (_ACTION ~= "clean") then
-  -- Default libraries
   if not os.isdir(QtGenPath) then
     os.mkdir(QtGenPath)
-    generate_moc("../external/qt-solutions/qtpropertybrowser/src/**.h")
-    generate_moc("../external/qt-solutions/qtpropertybrowser/src/**.cpp")
+    os.mkdir(QtGenPath.."/glc")
   end
+
+  -- Default libraries
+  generate_moc("../external/qt-thumbwheel/**.h")
+  generate_moc("../external/qt-solutions/qtpropertybrowser/src/**.h")
+  generate_moc("../external/qt-solutions/qtpropertybrowser/src/**.cpp")
+  generate_moc("../external/GLC_lib/src/**.h",false,"/glc")
+  generate_rcc("../external/GLC_lib/src/*.qrc","/glc")
 
   -- Foxworks editor
   generate_moc("../source/fwe_**.h",true)
-  generate_moc("../external/qt-thumbwheel/**.h")
   generate_rcc("../resources/**.qrc")
 end
 
@@ -147,48 +151,114 @@ if _ACTION == "moc" then return end
 --------------------------------------------------------------------------------
 -- FoxWorks Model Editor
 --------------------------------------------------------------------------------
-   project "foxworks_editor"
-      uuid "C84AD4D2-2D63-1842-871E-30B7C71BEA58"
-      kind "WindowedApp"
-      language "C++"
-      uses { "QtXml", "QtUiTools", "QtOpenGL" }
+project "GLC_lib"
+   kind "StaticLib"
+   language "C++"
+   
+   includedirs {
+     "../external/GLC_lib/src",
+     "../external/GLC_lib/src/3rdparty/zlib",
+     "../external/GLC_lib/src/3rdparty/glext",
+     "../external/GLC_lib/src/3rdparty/quazip",
+     "../external/GLC_lib/src/3rdparty/lib3ds",
+     "../external/GLC_lib/src/3DWidget",
+     "../external/GLC_lib/src/geometry",
+     "../external/GLC_lib/src/glu",
+     "../external/GLC_lib/src/io",
+     "../external/GLC_lib/src/maths",
+     "../external/GLC_lib/src/sceneGraph",
+     "../external/GLC_lib/src/shading",
+     "../external/GLC_lib/src/viewport",
+   }
+   files {
+     "../external/GLC_lib/src/3rdparty/zlib/*.c",
+     "../external/GLC_lib/src/3rdparty/zlib/*.h",
+     "../external/GLC_lib/src/3rdparty/quazip/*.c",
+     "../external/GLC_lib/src/3rdparty/quazip/*.cpp",
+     "../external/GLC_lib/src/3rdparty/quazip/*.h",
+     "../external/GLC_lib/src/3rdparty/lib3ds/*.c",
+     "../external/GLC_lib/src/3rdparty/lib3ds/*.h",
+     "../external/GLC_lib/src/*.cpp",
+     "../external/GLC_lib/src/*.h",
+     "../external/GLC_lib/src/3DWidget/*",
+     "../external/GLC_lib/src/geometry/*",
+     "../external/GLC_lib/src/glu/*",
+     "../external/GLC_lib/src/io/*",
+     "../external/GLC_lib/src/maths/*",
+     "../external/GLC_lib/src/sceneGraph/*",
+     "../external/GLC_lib/src/shading/*",
+     "../external/GLC_lib/src/viewport/*",
+   }
+   excludes {
+     "../external/GLC_lib/src/3rdparty/zlib/example.c"
+   }
+   defines { "GLC_LIB_STATIC", "LIB3DS_EXPORTS", "NO_vsnprintf" } --"CREATE_GLC_LIB_DLL",
 
-      includedirs {
-        "../external/simc/include",
-        "../external/evds/include",
-        "../external/rdrs/include",
-        "../external/evds/addons",
---        "../external/nrlmsise-00",
-        "../external/qt-solutions/qtpropertybrowser/src",
-        "../external/qt-thumbwheel",
-      }
-      files { "../source/**.cpp",
-              "../source/**.h",
-              "../source/**.qrc",
-              "../external/qt-solutions/qtpropertybrowser/src/**",
-              "../external/qt-thumbwheel/**",
-              "../external/evds/addons/evds_antenna.c",
-              "../external/evds/addons/evds_antenna.h",
---              "../external/evds/addons/evds_nrlmsise-00.c",
---              "../external/evds/addons/evds_nrlmsise-00.h",
---              "../external/nrlmsise-00/nrlmsise-00.c",
---              "../external/nrlmsise-00/nrlmsise-00_data.c" }
-            }
-      links { "rdrs","evds","simc" }
-      
-      -- Additional Qt stuff
-      includedirs { QtPath.."/include",
-                    QtPath.."/include/QtCore",
-                    QtPath.."/include/QtGui",
-                    QtPath.."/include/QtUiTools",
-                    QtPath.."/include/QtOpenGL",
-                    QtGenPath }
-      libdirs { QtPath.."/lib" }
-      files { QtGenPath.."/rcc_*.cpp",
-              QtGenPath.."/moc_fw*.cpp",
-              QtGenPath.."/moc_qtthumbwheel.cpp",
-              QtGenPath.."/moc_qtpropertybrowserutils_p.cpp" }
-      configuration { "windows" }
-         links { "QtCore4", "QtGui4", "QtUiTools", "QtOpenGL4", "opengl32" }
-      configuration { "not windows" }
-         links { "QtCore", "QtGui", "QtUiTools", "QtOpenGL" }
+
+   -- Additional Qt stuff
+   includedirs {
+     QtPath.."/include",
+     QtPath.."/include/QtCore",
+     QtPath.."/include/QtGui",
+     QtPath.."/include/QtUiTools",
+     QtPath.."/include/QtOpenGL",
+     QtGenPath.."/glc"
+   }
+   files {
+     QtGenPath.."/glc/**.cpp",
+     QtGenPath.."/glc/**.moc",
+   }
+   
+
+project "foxworks_editor"
+   uuid "C84AD4D2-2D63-1842-871E-30B7C71BEA58"
+   kind "ConsoleApp"
+   language "C++"
+
+   includedirs {
+     "../external/simc/include",
+     "../external/evds/include",
+     "../external/rdrs/include",
+     "../external/evds/addons",
+--     "../external/nrlmsise-00",
+     "../external/qt-solutions/qtpropertybrowser/src",
+     "../external/qt-thumbwheel",
+     "../external/GLC_lib/src"
+   }
+   files {
+     "../source/**.cpp",
+     "../source/**.h",
+     "../source/**.qrc",
+     "../external/qt-solutions/qtpropertybrowser/src/**",
+     "../external/qt-thumbwheel/**",
+     "../external/evds/addons/evds_antenna.c",
+     "../external/evds/addons/evds_antenna.h",
+--     "../external/evds/addons/evds_nrlmsise-00.c",
+--     "../external/evds/addons/evds_nrlmsise-00.h",
+--     "../external/nrlmsise-00/nrlmsise-00.c",
+--     "../external/nrlmsise-00/nrlmsise-00_data.c" }
+   }
+   links { "rdrs","evds","simc","GLC_lib" }
+   defines { "GLC_LIB_STATIC" }
+   
+   
+   -- Additional Qt stuff
+   includedirs {
+     QtPath.."/include",
+     QtPath.."/include/QtCore",
+     QtPath.."/include/QtGui",
+     QtPath.."/include/QtUiTools",
+     QtPath.."/include/QtOpenGL",
+     QtGenPath
+   }
+   libdirs { QtPath.."/lib" }
+   files {
+     QtGenPath.."/rcc_resources.cpp",
+     QtGenPath.."/moc_fw*.cpp",
+     QtGenPath.."/moc_qtthumbwheel.cpp",
+     QtGenPath.."/moc_qtpropertybrowserutils_p.cpp"
+   }
+   configuration { "windows" }
+      links { "QtCore4", "QtGui4", "QtUiTools", "QtOpenGL4", "opengl32" }
+   configuration { "not windows" }
+      links { "QtCore", "QtGui", "QtUiTools", "QtOpenGL" }

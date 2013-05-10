@@ -30,7 +30,7 @@
 #include <QFile>
 //#include <QCleanlooksStyle>
 
-#include "fw_editor.h"
+#include "fwe.h"
 #include "fwe_main.h"
 
 /// Stores current FWE flags

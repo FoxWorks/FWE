@@ -26,81 +26,25 @@
 /// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef FWE_EVDS_OBJECT_RENDERER_H
-#define FWE_EVDS_OBJECT_RENDERER_H
+#ifndef FWE_H
+#define FWE_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include <QtOpenGL/QGLFunctions>
-#include <QThread>
-#include <QMutex>
-#include "evds.h"
-//FIXME: remove evds from includes here
+/// Run editor as a standalone application
+#define FOXWORKS_EDITOR_STANDALONE		1
+/// Execute editor in a different thread
+#define FOXWORKS_EDITOR_BLOCKING		2
 
-namespace EVDS {
-	class Object;
-	class HQRendererThread;
-	class ObjectRenderer : public QObject, protected QGLFunctions
-	{
-		Q_OBJECT
+void fw_editor_initialize(int flags, int argc, char *argv[]);
+void fw_editor_deinitialize();
+void fw_editor_frame();
+//void fw_editor_render();
 
-	public:
-		ObjectRenderer(Object* in_object);
-		~ObjectRenderer();
+extern int fw_editor_flags;
 
-		//Draws mesh using OpenGL functions
-		void drawMesh(bool objectSelected);
-
-	public slots:
-		//Notifies that mesh has changed
-		void meshChanged();
-		//Notifies that HQ mesh is ready
-		void slotHQMeshReady();
-	signals:
-		void signalHQMeshReady();
-
-	private:
-		//Returns EVDS_MESH for the object
-		EVDS_MESH* getMesh();
-		//Call this until it returns true to build a HQ mesh
-		bool isHQMeshReady();
-
-		//HQ rendering thread
-		HQRendererThread* thread;
-		//Was object modified?
-		bool objectModified;
-		//Last stored low quality mesh
-		EVDS_MESH* mesh;
-
-		//Object to render
-		Object* object;
-	};
-
-	class HQRendererThread : public QThread {
-		Q_OBJECT
-
-	public:
-		HQRendererThread(Object* in_object, float in_resolution);
-
-		EVDS_MESH* getMesh();
-		void updateMesh();
-		void stopWork() { doStopWork = true; }
-		QMutex readingLock;
-
-	signals:
-		void signalHQMeshReady();
-
-	protected:
-		void run();
-	
-	private:
-		bool doStopWork;
-		float resolution;
-		bool needMesh;
-		bool meshCompleted;
-
-		EVDS_MESH* mesh;
-		Object* object;
-		EVDS_OBJECT* temp_object;
-	};
+#ifdef __cplusplus
 }
-
+#endif
 #endif

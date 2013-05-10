@@ -43,8 +43,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -59,21 +59,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrsd32.lib ..\..\bin\evdsd32.lib ..\..\bin\simcd32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrsd32.lib ..\..\bin\evdsd32.lib ..\..\bin\simcd32.lib ..\..\bin\GLC_libd32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editord32.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
 			/>
@@ -128,8 +128,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -144,21 +144,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrsd.lib ..\..\bin\evdsd.lib ..\..\bin\simcd.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrsd.lib ..\..\bin\evdsd.lib ..\..\bin\simcd.lib ..\..\bin\GLC_libd.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editord.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="17"
 			/>
@@ -212,8 +212,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -227,21 +227,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrs32.lib ..\..\bin\evds32.lib ..\..\bin\simc32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrs32.lib ..\..\bin\evds32.lib ..\..\bin\simc32.lib ..\..\bin\GLC_lib32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editor32.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol="mainCRTStartup"
@@ -298,8 +298,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -313,21 +313,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrs.lib ..\..\bin\evds.lib ..\..\bin\simc.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrs.lib ..\..\bin\evds.lib ..\..\bin\simc.lib ..\..\bin\GLC_lib.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editor.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol="mainCRTStartup"
@@ -383,8 +383,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -399,21 +399,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrsd32.lib ..\..\bin\evdsd32.lib ..\..\bin\simcd32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrsd32.lib ..\..\bin\evdsd32.lib ..\..\bin\simcd32.lib ..\..\bin\GLC_libd32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editord32.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
 			/>
@@ -468,8 +468,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -484,21 +484,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrsd.lib ..\..\bin\evdsd.lib ..\..\bin\simcd.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrsd.lib ..\..\bin\evdsd.lib ..\..\bin\simcd.lib ..\..\bin\GLC_libd.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editord.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="17"
 			/>
@@ -552,8 +552,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -567,21 +567,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrs32.lib ..\..\bin\evds32.lib ..\..\bin\simc32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrs32.lib ..\..\bin\evds32.lib ..\..\bin\simc32.lib ..\..\bin\GLC_lib32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editor32.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol="mainCRTStartup"
@@ -638,8 +638,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -653,21 +653,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrs.lib ..\..\bin\evds.lib ..\..\bin\simc.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrs.lib ..\..\bin\evds.lib ..\..\bin\simc.lib ..\..\bin\GLC_lib.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editor.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol="mainCRTStartup"
@@ -723,8 +723,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="DEBUG;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -739,21 +739,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="DEBUG;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrs_std32.lib ..\..\bin\evds_std32.lib ..\..\bin\simc_std32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrs_std32.lib ..\..\bin\evds_std32.lib ..\..\bin\simc_std32.lib ..\..\bin\GLC_lib_std32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editor_std32.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
 			/>
@@ -808,8 +808,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="DEBUG;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -824,21 +824,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="DEBUG;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrs_std.lib ..\..\bin\evds_std.lib ..\..\bin\simc_std.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrs_std.lib ..\..\bin\evds_std.lib ..\..\bin\simc_std.lib ..\..\bin\GLC_lib_std.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editor_std.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="17"
 			/>
@@ -892,8 +892,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -907,21 +907,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrs_st32.lib ..\..\bin\evds_st32.lib ..\..\bin\simc_st32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrs_st32.lib ..\..\bin\evds_st32.lib ..\..\bin\simc_st32.lib ..\..\bin\GLC_lib_st32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editor_st32.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol="mainCRTStartup"
@@ -978,8 +978,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -993,21 +993,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrs_st.lib ..\..\bin\evds_st.lib ..\..\bin\simc_st.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrs_st.lib ..\..\bin\evds_st.lib ..\..\bin\simc_st.lib ..\..\bin\GLC_lib_st.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editor_st.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol="mainCRTStartup"
@@ -1063,8 +1063,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -1079,21 +1079,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrs_std32.lib ..\..\bin\evds_std32.lib ..\..\bin\simc_std32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrs_std32.lib ..\..\bin\evds_std32.lib ..\..\bin\simc_std32.lib ..\..\bin\GLC_lib_std32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editor_std32.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
 			/>
@@ -1148,8 +1148,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -1164,21 +1164,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrs_std.lib ..\..\bin\evds_std.lib ..\..\bin\simc_std.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrs_std.lib ..\..\bin\evds_std.lib ..\..\bin\simc_std.lib ..\..\bin\GLC_lib_std.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editor_std.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="17"
 			/>
@@ -1232,8 +1232,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -1247,21 +1247,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrs_st32.lib ..\..\bin\evds_st32.lib ..\..\bin\simc_st32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrs_st32.lib ..\..\bin\evds_st32.lib ..\..\bin\simc_st32.lib ..\..\bin\GLC_lib_st32.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editor_st32.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol="mainCRTStartup"
@@ -1318,8 +1318,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
-				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -1333,21 +1333,21 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
+				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;C:\Qt\4.8.4\include;C:\Qt\4.8.4\include\QtCore;C:\Qt\4.8.4\include\QtGui;C:\Qt\4.8.4\include\QtUiTools;C:\Qt\4.8.4\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin\rdrs_st.lib ..\..\bin\evds_st.lib ..\..\bin\simc_st.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
+				AdditionalDependencies="..\..\bin\rdrs_st.lib ..\..\bin\evds_st.lib ..\..\bin\simc_st.lib ..\..\bin\GLC_lib_st.lib QtCore4.lib QtGui4.lib QtUiTools.lib QtOpenGL4.lib opengl32.lib"
 				OutputFile="$(OutDir)\foxworks_editor_st.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol="mainCRTStartup"
@@ -1524,59 +1524,11 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath="..\..\source\fw_editor.cpp"
+			RelativePath="..\..\source\fwe.cpp"
 			>
 		</File>
 		<File
-			RelativePath="..\..\source\fw_editor.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_evds.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_evds.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_evds_glwidget.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_evds_glwidget.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_evds_object.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_evds_object.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_evds_object_csection.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_evds_object_csection.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_evds_object_model.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_evds_object_model.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_evds_object_renderer.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_evds_object_renderer.h"
+			RelativePath="..\..\source\fwe.h"
 			>
 		</File>
 		<File
@@ -1609,6 +1561,14 @@
 		</File>
 		<File
 			RelativePath="..\..\source\fwe_prop_thumbwheel.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\glwidget.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\glwidget.h"
 			>
 		</File>
 		<Filter
@@ -1988,30 +1948,6 @@
 			Name="qtmoc"
 			Filter=""
 			>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds_glwidget.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds_object.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds_object_csection.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds_object_model.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds_object_renderer.cpp"
-				>
-			</File>
 			<File
 				RelativePath="..\..\qtmoc\moc_fwe_main.cpp"
 				>

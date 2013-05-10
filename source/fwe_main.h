@@ -41,7 +41,7 @@ QT_END_NAMESPACE
 
 
 ////////////////////////////////////////////////////////////////////////////////
-class MdiChild;
+class ChildWindow;
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -63,7 +63,7 @@ private slots:
     void about();
     void updateMenus();
     void updateWindowMenu();
-    MdiChild *createMdiChild();
+    ChildWindow *createMdiChild();
     void setActiveSubWindow(QWidget *window);
 
 public:
@@ -79,7 +79,7 @@ private:
     void createStatusBar();
     void readSettings();
     void writeSettings();
-    MdiChild *activeMdiChild();
+    ChildWindow *activeMdiChild();
     QMdiSubWindow *findMdiChild(const QString &fileName);
 
     QMdiArea *mdiArea;
@@ -111,31 +111,41 @@ private:
     QAction *aboutAct;
 };
 
-class MdiChild : public QMainWindow
+class ChildWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-	MdiChild(MainWindow* window) { main_window = window; }
+	ChildWindow(MainWindow* window);
 
-	virtual void newFile() { }
-	virtual bool loadFile(const QString &fileName) { return true; }
-	virtual bool save() { return true; }
-	virtual bool saveAs() { return true; }
-	virtual bool saveFile(const QString &fileName) { return true; }
+	void newFile();
+	bool loadFile(const QString &fileName);
+	bool save();
+	bool saveAs();
+	bool saveFile(const QString &fileName);
 
-	virtual void updateMenus(bool isInFront) { }
+	void updateMenus(bool isInFront);
 
-	virtual void cut() { }
-	virtual void copy() { }
-	virtual void paste() { }
+	void cut();
+	void copy();
+	void paste();
 
-	virtual QString getCurrentFile() { return QString(""); }
-
-	MainWindow* getMainWindow() { return main_window; }
+	void setModified() { isModified = true; updateTitle(); }
 
 protected:
-	MainWindow* main_window;
+	void closeEvent(QCloseEvent *event);
+
+private:
+	bool trySave();
+	void updateTitle();
+	QString currentFile;
+	bool isModified;
+
+public:
+	QString getCurrentFile() { return currentFile; }
+	MainWindow* getMainWindow() { return mainWindow; }
+protected:
+	MainWindow* mainWindow;
 };
 
 #endif

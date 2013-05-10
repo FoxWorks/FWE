@@ -16,3 +16,7 @@
 [submodule "external/qt-solutions"]
 	path = external/qt-solutions
 	url = git://gitorious.org/qt-solutions/qt-solutions.git
+	
+[submodule "external/GLC_lib"]
+	path = external/GLC_lib
+	url = https://github.com/PhoenixBlack/GLC_lib.git

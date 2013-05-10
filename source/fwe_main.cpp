@@ -29,14 +29,13 @@
 #include <QtGui>
 
 #include "fwe_main.h"
-#include "fwe_evds.h"
+//#include "fwe_evds.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-MainWindow::MainWindow()
-{
+MainWindow::MainWindow() {
 	//Create MDI area
 	mdiArea = new QMdiArea;
 	mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -46,18 +45,22 @@ MainWindow::MainWindow()
 	windowMapper = new QSignalMapper(this);
 	connect(windowMapper, SIGNAL(mapped(QWidget*)), this, SLOT(setActiveSubWindow(QWidget*)));
 
+	//Create everything
 	createActions();
 	createMenus();
 	//createToolBars();
 	createStatusBar();
 	updateMenus();
 
-	readSettings();
-
-	setWindowTitle(tr("FoxWorks Editor (Test Release)"));
+	//Set default title and size
+	setWindowTitle(tr("FoxWorks Editor"));
 	setUnifiedTitleAndToolBarOnMac(true);
 	resize(1024,640);
 
+	//Load settings
+	readSettings();
+
+	//Create new empty file
 	newFile();
 }
 
@@ -65,8 +68,7 @@ MainWindow::MainWindow()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::closeEvent(QCloseEvent *event)
-{
+void MainWindow::closeEvent(QCloseEvent *event) {
 	mdiArea->closeAllSubWindows();
 	if (mdiArea->currentSubWindow()) {
 		event->ignore();
@@ -80,9 +82,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::newFile()
-{
-	MdiChild *child = createMdiChild();
+void MainWindow::newFile() {
+	ChildWindow *child = createMdiChild();
 	child->newFile();
 	child->showMaximized();
 }
@@ -91,12 +92,12 @@ void MainWindow::newFile()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::open()
-{
+void MainWindow::open() {
 	QString fileName = QFileDialog::getOpenFileName(this,"","",
-		"FoxWorks Data Files (*.evds *.ivss);;"
-		"External Vessel Dynamics Simulator (*.evds);;"
-		"Internal Vessel Systems Simulator (*.ivss);;"
+		//"FoxWorks Data Files (*.evds *.ivss);;"
+		//"External Vessel Dynamics Simulator (*.evds);;"
+		//"Internal Vessel Systems Simulator (*.ivss);;"
+		"External Vessel Dynamics Simulator Model (*.evds);;"
 		"All files (*.*)");
 
 	if (!fileName.isEmpty()) {
@@ -106,7 +107,7 @@ void MainWindow::open()
 			return;
 		}
 
-		MdiChild *child = createMdiChild();
+		ChildWindow *child = createMdiChild();
 		if (child->loadFile(fileName)) {
 			statusBar()->showMessage(tr("File loaded"), 2000);
 			child->show();
@@ -120,8 +121,7 @@ void MainWindow::open()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::save()
-{
+void MainWindow::save() {
 	if (activeMdiChild() && activeMdiChild()->save())
 		statusBar()->showMessage(tr("File saved"), 2000);
 }
@@ -130,8 +130,7 @@ void MainWindow::save()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::saveAs()
-{
+void MainWindow::saveAs() {
 	if (activeMdiChild() && activeMdiChild()->saveAs())
 		statusBar()->showMessage(tr("File saved"), 2000);
 }
@@ -140,8 +139,7 @@ void MainWindow::saveAs()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::cut()
-{
+void MainWindow::cut() {
 	if (activeMdiChild())
 		activeMdiChild()->cut();
 }
@@ -150,8 +148,7 @@ void MainWindow::cut()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::copy()
-{
+void MainWindow::copy() {
 	if (activeMdiChild())
 		activeMdiChild()->copy();
 }
@@ -160,8 +157,7 @@ void MainWindow::copy()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::paste()
-{
+void MainWindow::paste() {
 	if (activeMdiChild())
 		activeMdiChild()->paste();
 }
@@ -170,26 +166,29 @@ void MainWindow::paste()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::about()
-{
-	char evds_version_str[64];
-	EVDS_Version(0,evds_version_str);
-	QString evds_version(evds_version_str);
+void MainWindow::about() {
+	//char evds_version_str[64];
+	//EVDS_Version(0,evds_version_str);
+	//QString evds_version(evds_version_str);
+	QString evds_version = "r1a";
+	QString ivss_version = "r1a";
+	QString rdrs_version = "r1a";
 
 	QMessageBox::about(this, tr("About FoxWorks Editor"),
 			tr("<b>FoxWorks Editor</b> (C) 2012-2013 by Black Phoenix<br>"
-			"<b>External Vessel Dynamics Simulator (EVDS r%1)</b> (C) 2012-2013 by Black Phoenix<br>"
-			"<b>Internal Vessel Systems Simulator (IVSS r0)</b> (C) 2011-2013 by Black Phoenix<br>"
-			"<b>Realtime Digital Radio Simulator (RDRS r0)</b> (C) 2013 by Black Phoenix")
-			.arg(evds_version));
+			"<b>External Vessel Dynamics Simulator (EVDS %1)</b> (C) 2012-2013 by Black Phoenix<br>"
+			"<b>Internal Vessel Systems Simulator (IVSS %2)</b> (C) 2011-2013 by Black Phoenix<br>"
+			"<b>Realtime Digital Radio Simulator (RDRS %3)</b> (C) 2013 by Black Phoenix")
+			.arg(evds_version)
+			.arg(ivss_version)
+			.arg(rdrs_version));
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::updateMenus()
-{
+void MainWindow::updateMenus() {
 	bool hasMdiChild = (activeMdiChild() != 0);
 	saveAct->setEnabled(hasMdiChild);
 	saveAsAct->setEnabled(hasMdiChild);
@@ -207,7 +206,7 @@ void MainWindow::updateMenus()
 	//Update menu items for all windows
 	QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
 	for (int i = 0; i < windows.size(); ++i) {
-		MdiChild *child = qobject_cast<MdiChild *>(windows.at(i)->widget());
+		ChildWindow *child = qobject_cast<ChildWindow *>(windows.at(i)->widget());
 		if (!child) continue;
 
 		child->updateMenus(child == activeMdiChild());
@@ -218,8 +217,7 @@ void MainWindow::updateMenus()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::updateWindowMenu()
-{
+void MainWindow::updateWindowMenu() {
 	windowMenu->clear();
 	windowMenu->addAction(closeAct);
 	windowMenu->addAction(closeAllAct);
@@ -235,7 +233,7 @@ void MainWindow::updateWindowMenu()
 	separatorAct->setVisible(!windows.isEmpty());
 
 	for (int i = 0; i < windows.size(); ++i) {
-		MdiChild *child = qobject_cast<MdiChild *>(windows.at(i)->widget());
+		ChildWindow *child = qobject_cast<ChildWindow *>(windows.at(i)->widget());
 		if (!child) continue; //FIXME: what is this
 
 		QString text;
@@ -258,9 +256,8 @@ void MainWindow::updateWindowMenu()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-MdiChild *MainWindow::createMdiChild()
-{
-	MdiChild *child = new EVDS::Editor(this);//MdiChild();
+ChildWindow *MainWindow::createMdiChild() {
+	ChildWindow *child = new ChildWindow(this);
 	mdiArea->addSubWindow(child);
 	mdiArea->setWindowIcon(QIcon(":/mdi.png"));
 
@@ -272,8 +269,7 @@ MdiChild *MainWindow::createMdiChild()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::createActions()
-{
+void MainWindow::createActions() {
 	newAct = new QAction(QIcon(":/new.png"), tr("&New"), this);
 	newAct->setShortcuts(QKeySequence::New);
 	newAct->setStatusTip(tr("Create a new file"));
@@ -359,8 +355,7 @@ void MainWindow::createActions()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::createMenus()
-{
+void MainWindow::createMenus() {
 	fileMenu = menuBar()->addMenu(tr("&File"));
 	fileMenu->addAction(newAct);
 	fileMenu->addAction(openAct);
@@ -390,8 +385,7 @@ void MainWindow::createMenus()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::createToolBars()
-{
+void MainWindow::createToolBars() {
 	fileToolBar = addToolBar(tr("File"));
 	fileToolBar->addAction(newAct);
 	fileToolBar->addAction(openAct);
@@ -407,8 +401,7 @@ void MainWindow::createToolBars()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::createStatusBar()
-{
+void MainWindow::createStatusBar() {
 	statusBar()->showMessage(tr("Ready"));
 }
 
@@ -416,34 +409,31 @@ void MainWindow::createStatusBar()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::readSettings()
-{
-	QSettings settings("FoxWorks", "Editor");
-	QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-	QSize size = settings.value("size", QSize(400, 400)).toSize();
-	move(pos);
-	resize(size);
+void MainWindow::readSettings() {
+	//QSettings settings("FoxWorks", "Editor");
+	//QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
+	//QSize size = settings.value("size", QSize(400, 400)).toSize();
+	//move(pos);
+	//resize(size);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::writeSettings()
-{
-	QSettings settings("FoxWorks", "Editor");
-	settings.setValue("pos", pos());
-	settings.setValue("size", size());
+void MainWindow::writeSettings() {
+	//QSettings settings("FoxWorks", "Editor");
+	//settings.setValue("pos", pos());
+	//settings.setValue("size", size());
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-MdiChild *MainWindow::activeMdiChild()
-{
+ChildWindow *MainWindow::activeMdiChild() {
 	if (QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow())
-		return qobject_cast<MdiChild *>(activeSubWindow->widget());
+		return qobject_cast<ChildWindow *>(activeSubWindow->widget());
 	return 0;
 }
 
@@ -451,12 +441,11 @@ MdiChild *MainWindow::activeMdiChild()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName)
-{
+QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName) {
 	QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
 
 	foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
-		MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
+		ChildWindow *mdiChild = qobject_cast<ChildWindow *>(window->widget());
 		if (!mdiChild) continue; //FIXME: what is this
 		if (mdiChild->getCurrentFile() == canonicalFilePath)
 			return window;
@@ -468,9 +457,115 @@ QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName)
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::setActiveSubWindow(QWidget *window)
-{
+void MainWindow::setActiveSubWindow(QWidget *window) {
 	if (!window)
 		return;
 	mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
+}
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+#include "glwidget.h"
+ChildWindow::ChildWindow(MainWindow* window) { 
+	mainWindow = window;
+	GLWidget* p_GLWidget= new GLWidget(this);
+	setCentralWidget(p_GLWidget);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ChildWindow::newFile() {
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+bool ChildWindow::loadFile(const QString &fileName) {
+	return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+bool ChildWindow::save() {
+	return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+bool ChildWindow::saveAs() {
+	return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+bool ChildWindow::saveFile(const QString &fileName) {
+	return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+bool ChildWindow::trySave() {
+	return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ChildWindow::updateTitle() {
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ChildWindow::closeEvent(QCloseEvent *event) {
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ChildWindow::updateMenus(bool isInFront) {
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ChildWindow::cut() {
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ChildWindow::copy() {
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ChildWindow::paste() {
 }
