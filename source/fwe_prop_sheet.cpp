@@ -33,13 +33,11 @@
 #include "fwe_prop_stringenum.h"
 #include "fwe_prop_thumbwheel.h"
 
-using namespace EVDS;
-
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-FWPropertySheet::FWPropertySheet(QWidget* parent) : QtTreePropertyBrowser(parent) {
+FWEPropertySheet::FWEPropertySheet(QWidget* parent) : QtTreePropertyBrowser(parent) {
 	initialValueHack = 0;
 
 	//Create managers and factories
@@ -68,7 +66,7 @@ FWPropertySheet::FWPropertySheet(QWidget* parent) : QtTreePropertyBrowser(parent
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-FWPropertySheet::~FWPropertySheet() {
+FWEPropertySheet::~FWEPropertySheet() {
 	// ...
 }
 
@@ -76,7 +74,7 @@ FWPropertySheet::~FWPropertySheet() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void FWPropertySheet::setProperties(const QList<QMap<QString,QString>>& list) {
+void FWEPropertySheet::setProperties(const QList<QMap<QString,QString>>& list) {
 	for (int i = 0; i < list.count(); i++) {
 		setProperty(list[i]);
 	}
@@ -86,7 +84,7 @@ void FWPropertySheet::setProperties(const QList<QMap<QString,QString>>& list) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-QtProperty* FWPropertySheet::setProperty(const QMap<QString,QString> &data) {
+QtProperty* FWEPropertySheet::setProperty(const QMap<QString,QString> &data) {
 	QtProperty* property = NULL;
 
 	//Get information about property being added
@@ -167,7 +165,7 @@ QtProperty* FWPropertySheet::setProperty(const QMap<QString,QString> &data) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void FWPropertySheet::doublePropertyChanged(QtProperty* property, double value) {
+void FWEPropertySheet::doublePropertyChanged(QtProperty* property, double value) {
 	if (initialValueHack) return;
 
 	emit doubleChanged(propertyName[property],value);
@@ -177,7 +175,7 @@ void FWPropertySheet::doublePropertyChanged(QtProperty* property, double value) 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void FWPropertySheet::enumPropertyChanged(QtProperty* property, int value) {
+void FWEPropertySheet::enumPropertyChanged(QtProperty* property, int value) {
 	if (initialValueHack) return;
 
 	emit enumChanged(propertyName[property],enumManager->stringValue(property));
@@ -187,7 +185,7 @@ void FWPropertySheet::enumPropertyChanged(QtProperty* property, int value) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void FWPropertySheet::booleanPropertyChanged(QtProperty* property, bool value) {
+void FWEPropertySheet::booleanPropertyChanged(QtProperty* property, bool value) {
 	if (initialValueHack) return;
 
 	if (value) {
@@ -201,7 +199,7 @@ void FWPropertySheet::booleanPropertyChanged(QtProperty* property, bool value) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void FWPropertySheet::setDouble(const QString& name, double value) {
+void FWEPropertySheet::setDouble(const QString& name, double value) {
 	if (!propertyByName.contains(name)) return;
 
 	if (propertyType[propertyByName[name]] == "double") {
@@ -216,7 +214,7 @@ void FWPropertySheet::setDouble(const QString& name, double value) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void FWPropertySheet::setHiddenDouble(const QString& name, double value) {
+void FWEPropertySheet::setHiddenDouble(const QString& name, double value) {
 	if (!propertyByName.contains(name)) return;
 	doubleManager->setHiddenValue(propertyByName[name],value);
 }
@@ -225,7 +223,7 @@ void FWPropertySheet::setHiddenDouble(const QString& name, double value) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void FWPropertySheet::updateProperty(const QString& name) {
+void FWEPropertySheet::updateProperty(const QString& name) {
 	if (!propertyByName.contains(name)) return;
 	initialValueHack = 1;
 	emit propertyUpdate(name);
@@ -236,7 +234,7 @@ void FWPropertySheet::updateProperty(const QString& name) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void FWPropertySheet::setEnum(const QString& name, const QString& value) {
+void FWEPropertySheet::setEnum(const QString& name, const QString& value) {
 	if (!propertyByName.contains(name)) return;
 	enumManager->setStringValue(propertyByName[name],value);
 }
@@ -245,7 +243,7 @@ void FWPropertySheet::setEnum(const QString& name, const QString& value) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void FWPropertySheet::hackPitchYawRoll(double* p, double *y, double *r) {
+void FWEPropertySheet::hackPitchYawRoll(double* p, double *y, double *r) {
 	*p = doubleManager->value(propertyByName["@4"]);
 	*y = doubleManager->value(propertyByName["@5"]);
 	*r = doubleManager->value(propertyByName["@6"]);

@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="GLC_lib"
-	ProjectGUID="{52FAD2FD-B312-BB4E-83CF-51A4CC708CE9}"
+	ProjectGUID="{7EFB75A3-D60F-F743-91A2-180AE8AC1CA5}"
 	RootNamespace="GLC_lib"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="0"

@@ -37,6 +37,7 @@ class QMenu;
 class QMdiArea;
 class QMdiSubWindow;
 class QSignalMapper;
+class QStackedLayout;
 QT_END_NAMESPACE
 
 
@@ -111,6 +112,12 @@ private:
     QAction *aboutAct;
 };
 
+
+////////////////////////////////////////////////////////////////////////////////
+namespace EVDS {
+	class Editor;
+}
+
 class ChildWindow : public QMainWindow
 {
     Q_OBJECT
@@ -146,6 +153,10 @@ public:
 	MainWindow* getMainWindow() { return mainWindow; }
 protected:
 	MainWindow* mainWindow;
+
+	QWidget* editorsWidget;
+	QStackedLayout* editorsLayout;
+	EVDS::Editor* EVDSEditor;
 };
 
 #endif

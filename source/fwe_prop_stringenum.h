@@ -32,48 +32,46 @@
 #include "qtpropertymanager.h"
 #include "qteditorfactory.h"
 
-namespace EVDS {
-	class StringEnumPropertyManager : public QtEnumPropertyManager
-	{
-		Q_OBJECT
-	public:
-		StringEnumPropertyManager(QObject *parent = 0);
-		~StringEnumPropertyManager();
+class StringEnumPropertyManager : public QtEnumPropertyManager
+{
+	Q_OBJECT
+public:
+	StringEnumPropertyManager(QObject *parent = 0);
+	~StringEnumPropertyManager();
 
-		QString stringValue(const QtProperty *property) const;
-		void setStringValue(QtProperty *property, QString value);
+	QString stringValue(const QtProperty *property) const;
+	void setStringValue(QtProperty *property, QString value);
 
-	public Q_SLOTS:
-		void setEnumValues(QtProperty *property, const QStringList &values);
-	Q_SIGNALS:
-		void enumValuesChanged(QtProperty *property, const QStringList &values);
-	protected:
-		//QString valueText(const QtProperty *property) const;
-		virtual void initializeProperty(QtProperty *property);
-		virtual void uninitializeProperty(QtProperty *property);
-	private:
-		QMap<const QtProperty *, QStringList> propertyToValues;
-	};
+public Q_SLOTS:
+	void setEnumValues(QtProperty *property, const QStringList &values);
+Q_SIGNALS:
+	void enumValuesChanged(QtProperty *property, const QStringList &values);
+protected:
+	//QString valueText(const QtProperty *property) const;
+	virtual void initializeProperty(QtProperty *property);
+	virtual void uninitializeProperty(QtProperty *property);
+private:
+	QMap<const QtProperty *, QStringList> propertyToValues;
+};
 
-	class StringEnumFactory : public QtAbstractEditorFactory<StringEnumPropertyManager>
-	{
-		Q_OBJECT
-	public:
-		StringEnumFactory(QObject *parent = 0);
-		~StringEnumFactory();
-	protected:
-		void connectPropertyManager(StringEnumPropertyManager *manager);
-		QWidget *createEditor(StringEnumPropertyManager *manager, QtProperty *property,
-					QWidget *parent);
-		void disconnectPropertyManager(StringEnumPropertyManager *manager);
-	private slots:
-		void slotEditorDestroyed(QObject *object);
+class StringEnumFactory : public QtAbstractEditorFactory<StringEnumPropertyManager>
+{
+	Q_OBJECT
+public:
+	StringEnumFactory(QObject *parent = 0);
+	~StringEnumFactory();
+protected:
+	void connectPropertyManager(StringEnumPropertyManager *manager);
+	QWidget *createEditor(StringEnumPropertyManager *manager, QtProperty *property,
+				QWidget *parent);
+	void disconnectPropertyManager(StringEnumPropertyManager *manager);
+private slots:
+	void slotEditorDestroyed(QObject *object);
 
-	private:
-		QtEnumEditorFactory *originalFactory;
-		QMap<QtProperty *, QList<QWidget *> > createdEditors;
-		QMap<QWidget *, QtProperty *> editorToProperty;
-	};
-}
+private:
+	QtEnumEditorFactory *originalFactory;
+	QMap<QtProperty *, QList<QWidget *> > createdEditors;
+	QMap<QWidget *, QtProperty *> editorToProperty;
+};
 
 #endif

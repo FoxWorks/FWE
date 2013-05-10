@@ -33,57 +33,55 @@
 #include "qteditorfactory.h"
 #include "qttreepropertybrowser.h"
 
-namespace EVDS {
-	class ThumbWheelPropertyManager;
-	class ThumbWheelFactory;
-	class StringEnumPropertyManager;
-	class StringEnumFactory;
+class ThumbWheelPropertyManager;
+class ThumbWheelFactory;
+class StringEnumPropertyManager;
+class StringEnumFactory;
 
-	class FWPropertySheet : public QtTreePropertyBrowser 
-	{
-		Q_OBJECT
+class FWEPropertySheet : public QtTreePropertyBrowser 
+{
+	Q_OBJECT
 
-	public:
-		FWPropertySheet(QWidget* parent = NULL);
-		~FWPropertySheet();
+public:
+	FWEPropertySheet(QWidget* parent = NULL);
+	~FWEPropertySheet();
 
-	public:
-		QtProperty* setProperty(const QMap<QString,QString> &data);
-		void setProperties(const QList<QMap<QString,QString>>& list);//const QStringList& list);
-		void setDouble(const QString& name, double value);
-		void setHiddenDouble(const QString& name, double value);
-		void setEnum(const QString& name, const QString& value);
-		void updateProperty(const QString& name);
-		void hackPitchYawRoll(double* p, double *y, double *r);
+public:
+	QtProperty* setProperty(const QMap<QString,QString> &data);
+	void setProperties(const QList<QMap<QString,QString>>& list);
+	void setDouble(const QString& name, double value);
+	void setHiddenDouble(const QString& name, double value);
+	void setEnum(const QString& name, const QString& value);
+	void updateProperty(const QString& name);
+	void hackPitchYawRoll(double* p, double *y, double *r);
 
-	signals:
-		/// Called when a double property value is changed by user
-		void doubleChanged(const QString& name, double value);
-		/// Called when an enumeration value is changed by user
-		void enumChanged(const QString& name, const QString& value);
-		/// Called value displayed must be updated
-		void propertyUpdate(const QString& name);
+signals:
+	/// Called when a double property value is changed by user
+	void doubleChanged(const QString& name, double value);
+	/// Called when an enumeration value is changed by user
+	void enumChanged(const QString& name, const QString& value);
+	/// Called value displayed must be updated
+	void propertyUpdate(const QString& name);
 
-	private slots:
-		void doublePropertyChanged(QtProperty* property, double value);
-		void enumPropertyChanged(QtProperty* property, int value);
-		void booleanPropertyChanged(QtProperty* property, bool value);
+private slots:
+	void doublePropertyChanged(QtProperty* property, double value);
+	void enumPropertyChanged(QtProperty* property, int value);
+	void booleanPropertyChanged(QtProperty* property, bool value);
 
-	private:
-		QtGroupPropertyManager *groupManager;
-		ThumbWheelPropertyManager *doubleManager;
-		ThumbWheelFactory *doubleFactory;
-		StringEnumPropertyManager *enumManager;
-		StringEnumFactory *enumFactory;
-		QtBoolPropertyManager* booleanManager;
-		QtCheckBoxFactory *booleanFactory;
+private:
+	QtGroupPropertyManager *groupManager;
+	ThumbWheelPropertyManager *doubleManager;
+	ThumbWheelFactory *doubleFactory;
+	StringEnumPropertyManager *enumManager;
+	StringEnumFactory *enumFactory;
+	QtBoolPropertyManager* booleanManager;
+	QtCheckBoxFactory *booleanFactory;
 
-		int initialValueHack;
-		QMap<QString, QtProperty *> propertyGroupByName;
-		QMap<QtProperty *, QString> propertyName;
-		QMap<QtProperty *, QString> propertyType;
-		QMap<QString, QtProperty *> propertyByName;
-	};
-}
+	int initialValueHack;
+	QMap<QString, QtProperty *> propertyGroupByName;
+	QMap<QtProperty *, QString> propertyName;
+	QMap<QtProperty *, QString> propertyType;
+	QMap<QString, QtProperty *> propertyByName;
+};
 
 #endif

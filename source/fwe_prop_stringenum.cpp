@@ -29,8 +29,6 @@
 #include <QtCore/QMap>
 #include "fwe_prop_stringenum.h"
 
-using namespace EVDS;
-
 StringEnumPropertyManager::StringEnumPropertyManager(QObject *parent)
     : QtEnumPropertyManager(parent)
 {

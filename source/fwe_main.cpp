@@ -29,7 +29,7 @@
 #include <QtGui>
 
 #include "fwe_main.h"
-//#include "fwe_evds.h"
+#include "fwe_evds.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@ void MainWindow::newFile() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::open() {
-	QString fileName = QFileDialog::getOpenFileName(this,"","",
+	QString fileName = QFileDialog::getOpenFileName(this,"Load vessel","",
 		//"FoxWorks Data Files (*.evds *.ivss);;"
 		//"External Vessel Dynamics Simulator (*.evds);;"
 		//"Internal Vessel Systems Simulator (*.ivss);;"
@@ -259,7 +259,7 @@ void MainWindow::updateWindowMenu() {
 ChildWindow *MainWindow::createMdiChild() {
 	ChildWindow *child = new ChildWindow(this);
 	mdiArea->addSubWindow(child);
-	mdiArea->setWindowIcon(QIcon(":/mdi.png"));
+	mdiArea->setWindowIcon(QIcon(":/icon/mdi.png"));
 
 	updateMenus();
 	return child;
@@ -270,50 +270,50 @@ ChildWindow *MainWindow::createMdiChild() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::createActions() {
-	newAct = new QAction(QIcon(":/new.png"), tr("&New"), this);
+	newAct = new QAction(QIcon(":/icon/new.png"), tr("&New"), this);
 	newAct->setShortcuts(QKeySequence::New);
 	newAct->setStatusTip(tr("Create a new file"));
 	connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
 
-	openAct = new QAction(QIcon(":/open.png"), tr("&Open..."), this);
+	openAct = new QAction(QIcon(":/icon/open.png"), tr("&Open..."), this);
 	openAct->setShortcuts(QKeySequence::Open);
 	openAct->setStatusTip(tr("Open an existing file"));
 	connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
 
-	saveAct = new QAction(QIcon(":/save.png"), tr("&Save"), this);
+	saveAct = new QAction(QIcon(":/icon/save.png"), tr("&Save"), this);
 	saveAct->setShortcuts(QKeySequence::Save);
 	saveAct->setStatusTip(tr("Save the document to disk"));
 	connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
 
-	saveAsAct = new QAction(QIcon(":/save_as.png"), tr("Save &As..."), this);
+	saveAsAct = new QAction(QIcon(":/icon/save_as.png"), tr("Save &As..."), this);
 	saveAsAct->setShortcuts(QKeySequence::SaveAs);
 	saveAsAct->setStatusTip(tr("Save the document under a new name"));
 	connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
-	exitAct = new QAction(QIcon(":/exit.png"), tr("E&xit"), this);
+	exitAct = new QAction(QIcon(":/icon/exit.png"), tr("E&xit"), this);
 	exitAct->setShortcuts(QKeySequence::Quit);
 	exitAct->setStatusTip(tr("Exit the application"));
 	connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 
-	cutAct = new QAction(QIcon(":/cut.png"), tr("Cu&t"), this);
+	cutAct = new QAction(QIcon(":/icon/cut.png"), tr("Cu&t"), this);
 	cutAct->setShortcuts(QKeySequence::Cut);
 	cutAct->setStatusTip(tr("Cut the current selection's contents to the "
 							"clipboard"));
 	connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()));
 
-	copyAct = new QAction(QIcon(":/copy.png"), tr("&Copy"), this);
+	copyAct = new QAction(QIcon(":/icon/copy.png"), tr("&Copy"), this);
 	copyAct->setShortcuts(QKeySequence::Copy);
 	copyAct->setStatusTip(tr("Copy the current selection's contents to the "
 							 "clipboard"));
 	connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
 
-	pasteAct = new QAction(QIcon(":/paste.png"), tr("&Paste"), this);
+	pasteAct = new QAction(QIcon(":/icon/paste.png"), tr("&Paste"), this);
 	pasteAct->setShortcuts(QKeySequence::Paste);
 	pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
 							  "selection"));
 	connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 
-	closeAct = new QAction(QIcon(":/close.png"), tr("Cl&ose"), this);
+	closeAct = new QAction(QIcon(":/icon/close.png"), tr("Cl&ose"), this);
 	closeAct->setStatusTip(tr("Close the active window"));
 	connect(closeAct, SIGNAL(triggered()),
 			mdiArea, SLOT(closeActiveSubWindow()));
@@ -331,13 +331,13 @@ void MainWindow::createActions() {
 	cascadeAct->setStatusTip(tr("Cascade the windows"));
 	connect(cascadeAct, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
 
-	nextAct = new QAction(QIcon(":/next.png"), tr("Ne&xt"), this);
+	nextAct = new QAction(QIcon(":/icon/next.png"), tr("Ne&xt"), this);
 	nextAct->setShortcuts(QKeySequence::NextChild);
 	nextAct->setStatusTip(tr("Move the focus to the next window"));
 	connect(nextAct, SIGNAL(triggered()),
 			mdiArea, SLOT(activateNextSubWindow()));
 
-	previousAct = new QAction(QIcon(":/previous.png"), tr("Pre&vious"), this);
+	previousAct = new QAction(QIcon(":/icon/previous.png"), tr("Pre&vious"), this);
 	previousAct->setShortcuts(QKeySequence::PreviousChild);
 	previousAct->setStatusTip(tr("Move the focus to the previous window"));
 	connect(previousAct, SIGNAL(triggered()),
@@ -346,7 +346,7 @@ void MainWindow::createActions() {
 	separatorAct = new QAction(this);
 	separatorAct->setSeparator(true);
 
-	aboutAct = new QAction(QIcon(":/about.png"), tr("&About"), this);
+	aboutAct = new QAction(QIcon(":/icon/about.png"), tr("&About"), this);
 	aboutAct->setStatusTip(tr("Show the About box"));
 	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 }
@@ -473,11 +473,14 @@ void MainWindow::setActiveSubWindow(QWidget *window) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-#include "glwidget.h"
 ChildWindow::ChildWindow(MainWindow* window) { 
 	mainWindow = window;
-	GLWidget* p_GLWidget= new GLWidget(this);
-	setCentralWidget(p_GLWidget);
+	editorsWidget = new QWidget(this);
+	editorsLayout = new QStackedLayout(editorsWidget);
+	setCentralWidget(editorsWidget);
+
+	EVDSEditor = new EVDS::Editor(this);
+	editorsLayout->addWidget(EVDSEditor);
 }
 
 
@@ -485,6 +488,11 @@ ChildWindow::ChildWindow(MainWindow* window) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ChildWindow::newFile() {
+	EVDSEditor->newFile();
+
+	currentFile = "";
+	isModified = false;
+	updateTitle();
 }
 
 
@@ -492,22 +500,10 @@ void ChildWindow::newFile() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 bool ChildWindow::loadFile(const QString &fileName) {
-	return true;
-}
+	if (!EVDSEditor->loadFile(fileName)) return false;
 
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-bool ChildWindow::save() {
-	return true;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-bool ChildWindow::saveAs() {
+	//Setup window
+	updateTitle();
 	return true;
 }
 
@@ -516,7 +512,40 @@ bool ChildWindow::saveAs() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 bool ChildWindow::saveFile(const QString &fileName) {
+	if (!EVDSEditor->saveFile(fileName)) return false;
+
+	isModified = false;
+	currentFile = fileName;
+	updateTitle();
 	return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+bool ChildWindow::save() {
+	if (currentFile == "") {
+		return saveAs();
+	} else {
+		return saveFile(currentFile);
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+bool ChildWindow::saveAs() {
+	QString fileName = QFileDialog::getSaveFileName(this, "Save As", currentFile,
+		//"FoxWorks Data Files (*.evds *.ivss);;"
+		//"External Vessel Dynamics Simulator (*.evds);;"
+		//"Internal Vessel Systems Simulator (*.ivss);;"
+		"External Vessel Dynamics Simulator Model (*.evds);;"
+		"All files (*.*)");
+
+	if (fileName.isEmpty())	return false;
+	return saveFile(fileName);
 }
 
 
@@ -524,6 +553,22 @@ bool ChildWindow::saveFile(const QString &fileName) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 bool ChildWindow::trySave() {
+	if (isModified) {
+		QMessageBox::StandardButton ret;
+		QString fileName = QFileInfo(currentFile).fileName();
+		if (currentFile == "") fileName = "New vessel";
+
+		ret = QMessageBox::warning(this, tr("EVDS Editor"),
+					 tr("'%1' has been modified.\n"
+						"Do you want to save pending changes?")
+						.arg(fileName),
+					 QMessageBox::Save | QMessageBox::Discard
+			 | QMessageBox::Cancel);
+		if (ret == QMessageBox::Save)
+			return save();
+		else if (ret == QMessageBox::Cancel)
+			return false;
+	}
 	return true;
 }
 
@@ -531,15 +576,32 @@ bool ChildWindow::trySave() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::updateTitle() {
+void ChildWindow::closeEvent(QCloseEvent *event) {
+	if (trySave()) {
+		event->accept();
+	} else {
+		event->ignore();
+	}
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::closeEvent(QCloseEvent *event) {
-
+void ChildWindow::updateTitle() {
+	if (currentFile == "") {
+		if (isModified) {
+			setWindowTitle("New vessel*");
+		} else {
+			setWindowTitle("New vessel");
+		}
+	} else {
+		if (isModified) {
+			setWindowTitle(QFileInfo(currentFile).fileName() + "*");
+		} else {
+			setWindowTitle(QFileInfo(currentFile).fileName());
+		}
+	}
 }
 
 

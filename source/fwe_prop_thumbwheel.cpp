@@ -31,8 +31,6 @@
 #include "qtthumbwheel.h"
 #include "fwe_prop_thumbwheel.h"
 
-using namespace EVDS;
-
 ThumbWheelPropertyManager::ThumbWheelPropertyManager(QObject *parent)
     : QtDoublePropertyManager(parent) {
 }

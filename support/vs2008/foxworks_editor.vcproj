@@ -1532,6 +1532,46 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\fwe_evds.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_evds.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_evds_glwidget.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_evds_glwidget.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_evds_object.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_evds_object.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_evds_object_model.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_evds_object_model.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_evds_object_renderer.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_evds_object_renderer.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\fwe_main.cpp"
 			>
 		</File>
@@ -1561,14 +1601,6 @@
 		</File>
 		<File
 			RelativePath="..\..\source\fwe_prop_thumbwheel.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\glwidget.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\glwidget.h"
 			>
 		</File>
 		<Filter
@@ -1948,6 +1980,26 @@
 			Name="qtmoc"
 			Filter=""
 			>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_glwidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_object.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_object_model.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_object_renderer.cpp"
+				>
+			</File>
 			<File
 				RelativePath="..\..\qtmoc\moc_fwe_main.cpp"
 				>
