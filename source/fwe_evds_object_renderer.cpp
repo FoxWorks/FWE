@@ -40,8 +40,22 @@ using namespace EVDS;
 ////////////////////////////////////////////////////////////////////////////////
 ObjectRenderer::ObjectRenderer(Object* in_object) {
 	object = in_object;
-	glcMesh = 0;
-	glcInstance = 0;
+	visibleLod = 0;
+
+	for (int i = 0; i < EVDS_OBJECT_RENDERER_MAX_LODS; i++) {
+		//Create meshes for LOD levels
+		glcMesh[i] = new GLC_Mesh();
+		glcInstance[i] = new GLC_3DViewInstance(glcMesh[i]);
+		glcInstance[i]->setVisibility(false);
+
+		//Create mesh generators
+		lodMeshGenerators[i] = new ObjectMeshGenerator(object,getLODResolution(i),i);
+		connect(lodMeshGenerators[i], SIGNAL(signalMeshReady(int)),
+			this, SLOT(lodMeshGenerated(int)), Qt::QueuedConnection);
+		lodMeshGenerators[i]->start();
+	}
+
+	//Create initial meshes
 	meshChanged();
 	positionChanged();
 }
@@ -51,9 +65,32 @@ ObjectRenderer::ObjectRenderer(Object* in_object) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 ObjectRenderer::~ObjectRenderer() {
-	delete glcInstance;
-	//if (mesh) EVDS_Mesh_Destroy(mesh);
-	//thread->stopWork();
+	for (int i = 0; i < EVDS_OBJECT_RENDERER_MAX_LODS; i++) {
+		delete glcInstance[i];
+		lodMeshGenerators[i]->stopWork();
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+float ObjectRenderer::getLODResolution(int lod) {
+	return 32.0f*((float)(1+5*lod));
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ObjectRenderer::lodMeshGenerated(int lod) {
+	printf("LOD arrived %d\n",lod);
+	
+	lodMeshGenerators[lod]->readingLock.lock();
+	addLODMesh(lodMeshGenerators[lod]->getMesh(),lod);
+	lodMeshGenerators[lod]->readingLock.unlock();
+
+	//positionChanged();
 }
 
 
@@ -64,24 +101,26 @@ void ObjectRenderer::positionChanged() {
 	//Offset GLC instance relative to objects parent
 	Object* parent = object->getParent();
 	if (parent) {
-		if (parent->getRenderer()) {
-			glcInstance->setMatrix(parent->getRenderer()->getInstance()->matrix());
-		} else {
-			glcInstance->resetMatrix();
-		}
+		for (int i = 0; i < EVDS_OBJECT_RENDERER_MAX_LODS; i++) { //FIXME
+			if (parent->getRenderer()) {
+				glcInstance[i]->setMatrix(parent->getRenderer()->getInstance(0)->matrix());
+			} else {
+				glcInstance[i]->resetMatrix();
+			}
 
-		EVDS_OBJECT* obj = object->getEVDSObject();
-		EVDS_STATE_VECTOR vector;
-		EVDS_Object_GetStateVector(obj,&vector);
-		glcInstance->translate(vector.position.x,vector.position.y,vector.position.z);
+			EVDS_OBJECT* obj = object->getEVDSObject();
+			EVDS_STATE_VECTOR vector;
+			EVDS_Object_GetStateVector(obj,&vector);
+			glcInstance[i]->translate(vector.position.x,vector.position.y,vector.position.z);
 
-		//Add/replace in GL widget to update position
-		GLWidget* glview = object->getEVDSEditor()->getGLWidget();
-		if (glview->getCollection()->contains(glcInstance->id())) {
-			glview->getCollection()->remove(glcInstance->id());			
+			//Add/replace in GL widget to update position
+			GLWidget* glview = object->getEVDSEditor()->getGLWidget();
+			if (glview->getCollection()->contains(glcInstance[i]->id())) {
+				glview->getCollection()->remove(glcInstance[i]->id());			
+			}
+			glview->getCollection()->add(*(glcInstance[i]));
+			//object->getEVDSEditor()->getGLWidget()->getCollection()->
 		}
-		glview->getCollection()->add(*glcInstance);
-		//object->getEVDSEditor()->getGLWidget()->getCollection()->
 	}
 
 	//Update position of all children
@@ -97,26 +136,67 @@ void ObjectRenderer::positionChanged() {
 void ObjectRenderer::meshChanged() {
 	EVDS_MESH* coarse_mesh;
 
-	//Update GLC mesh from coarse mesh FIXME
-	if (!glcMesh) {
-		glcMesh = new GLC_Mesh();
-		glcInstance = new GLC_3DViewInstance(glcMesh);
-	}
-	glcMesh->clear();
-
-	//Crate temporary object and generate coarse mesh from it
-	//int lod_offset = 0;
-	//for (int lod = 0; lod < 5; lod++) {
+	//Create temporary object and generate coarse mesh from it
 	EVDS_OBJECT* temp_object;
 	EVDS_Object_CopySingle(object->getEVDSObject(),0,&temp_object);
 	EVDS_Object_Initialize(temp_object,1);
-	EVDS_Mesh_Generate(temp_object,&coarse_mesh,16.0f,EVDS_MESH_USE_DIVISIONS); ///((float)(1+lod))
+	EVDS_Mesh_Generate(temp_object,&coarse_mesh,16.0f,EVDS_MESH_USE_DIVISIONS);
 	EVDS_Object_Destroy(temp_object);
 
-	if (coarse_mesh->num_triangles > 0) {
+	visibleLod = -1; //Coarse mesh always visible
+	for (int i = 0; i < EVDS_OBJECT_RENDERER_MAX_LODS; i++) {
+		lodPresent[i] = 0;
+		lodFinished[i] = 0;
+		glcInstance[i]->setVisibility(false);
+	}
+	addLODMesh(coarse_mesh,0);
+
+
+	//Create temporary object and generate coarse mesh from it
+	/*EVDS_Object_CopySingle(object->getEVDSObject(),0,&temp_object);
+	EVDS_Object_Initialize(temp_object,1);
+	EVDS_Mesh_Generate(temp_object,&coarse_mesh,128.0f,EVDS_MESH_USE_DIVISIONS);
+	EVDS_Object_Destroy(temp_object);
+	addLODMesh(coarse_mesh,1);*/
+
+	//Ask for higher quality mesh from all other generators
+	for (int i = 1; i < EVDS_OBJECT_RENDERER_MAX_LODS; i++) {
+		lodMeshGenerators[i]->updateMesh();
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ObjectRenderer::addLODMesh(EVDS_MESH* mesh, int lod) {
+	for (int i = 0; i < EVDS_OBJECT_RENDERER_MAX_LODS; i++) {
+		if (lod == 0) { //Special case: coarse mesh is always first, clears all others
+			glcMesh[i]->clear();
+		}
+	}
+	if (!mesh) return;
+
+	//Add empty mesh?
+	if (mesh->num_triangles == 0) {
 		GLfloatVector verticesVector;
 		GLfloatVector normalsVector;
 		IndexList indicesList;
+
+		if (lod == 0) { //Add only coarse mesh
+			verticesVector << 0 << 0 << 0;
+			normalsVector << 0 << 0 << 0;
+			indicesList << 0 << 0 << 0;
+
+			for (int i = lod; i < EVDS_OBJECT_RENDERER_MAX_LODS; i++) {
+				glcMesh[i]->addVertice(verticesVector);
+				glcMesh[i]->addNormals(normalsVector);
+				glcMesh[i]->addTriangles(new GLC_Material(), indicesList, 0);
+			}
+		}
+	} else {
+		GLfloatVector verticesVector;
+		GLfloatVector normalsVector;
 		GLC_Material* glcMaterial = new GLC_Material();
 
 		if (object->getType() == "fuel_tank") {
@@ -127,57 +207,78 @@ void ObjectRenderer::meshChanged() {
 			}
 		}
 
-		for (int i = 0; i < coarse_mesh->num_vertices; i++) {
-			verticesVector << coarse_mesh->vertices[i].x;
-			verticesVector << coarse_mesh->vertices[i].y;
-			verticesVector << coarse_mesh->vertices[i].z;
-			normalsVector << coarse_mesh->normals[i].x;
-			normalsVector << coarse_mesh->normals[i].y;
-			normalsVector << coarse_mesh->normals[i].z;
+		//Add all data
+		for (int i = 0; i < mesh->num_vertices; i++) {
+			verticesVector << mesh->vertices[i].x;
+			verticesVector << mesh->vertices[i].y;
+			verticesVector << mesh->vertices[i].z;
+			normalsVector << mesh->normals[i].x;
+			normalsVector << mesh->normals[i].y;
+			normalsVector << mesh->normals[i].z;
 		}
-		glcMesh->addVertice(verticesVector);
-		glcMesh->addNormals(normalsVector);
-		for (int i = 0; i < coarse_mesh->num_triangles; i++) {
-			if ((coarse_mesh->triangles[i].vertex[0].y > 0.0) &&
-				(coarse_mesh->triangles[i].vertex[1].y > 0.0) &&
-				(coarse_mesh->triangles[i].vertex[2].y > 0.0)) {
-				indicesList << coarse_mesh->triangles[i].indices[0];//+lod_offset;
-				indicesList << coarse_mesh->triangles[i].indices[1];//+lod_offset;
-				indicesList << coarse_mesh->triangles[i].indices[2];//+lod_offset;
+
+		for (int i = lod; i < EVDS_OBJECT_RENDERER_MAX_LODS; i++) {
+			int firstVertexIndex = glcMesh[i]->VertexCount();
+
+			IndexList indicesList; //Generate custom indices per each level
+			for (int j = 0; j < mesh->num_triangles; j++) {
+				if ((mesh->triangles[j].vertex[0].y > 0.0) &&
+					(mesh->triangles[j].vertex[1].y > 0.0) &&
+					(mesh->triangles[j].vertex[2].y > 0.0)) {
+					indicesList << mesh->triangles[j].indices[0] + firstVertexIndex;
+					indicesList << mesh->triangles[j].indices[1] + firstVertexIndex;
+					indicesList << mesh->triangles[j].indices[2] + firstVertexIndex;
+				}
+			}
+
+			glcMesh[i]->addVertice(verticesVector);
+			glcMesh[i]->addNormals(normalsVector);
+			glcMesh[i]->addTriangles(glcMaterial, indicesList, lod); //coarse_mesh->resolution);
+		}
+		//glcMesh->reverseNormals();
+	}
+
+	//Make the current LOD
+	lodPresent[lod] = 1;
+
+	//Finish meshes which have complete data
+	for (int i = 0; i < EVDS_OBJECT_RENDERER_MAX_LODS; i++) {
+		int all_present = 1;
+		for (int j = 0; j <= i; j++) {
+			if (!lodPresent[j]) all_present = 0;
+		}
+
+		if (all_present && (!lodFinished[i])) {
+			printf("Finished mesh LOD %d\n",i);
+			glcMesh[i]->finish();
+			lodFinished[i] = true;
+			if (i > visibleLod) {
+				//FIXME: update visibility
+				visibleLod = i;
+
+				for (int j = 0; j < EVDS_OBJECT_RENDERER_MAX_LODS; j++) {
+					if (j != visibleLod) {
+						glcInstance[i]->setVisibility(false);
+					} else {
+						glcInstance[i]->setVisibility(true);
+
+						//Add/replace in GL widget to update position
+						GLWidget* glview = object->getEVDSEditor()->getGLWidget();
+						if (glview->getCollection()->contains(glcInstance[i]->id())) {
+							glview->getCollection()->remove(glcInstance[i]->id());			
+						}
+						//delete glcInstance[i] = new GLC_3DViewInstance(glcMesh[i]);
+						//glcInstance[i]->setVisibility(false);
+						//glview->getCollection()->add(*(glcInstance[i]));
+					}
+				}
 			}
 		}
-		//lod_offset += coarse_mesh->num_vertices;
-		glcMesh->addTriangles(glcMaterial, indicesList, 0); //coarse_mesh->resolution);
-		glcMesh->finish();
-		//glcMesh->reverseNormals();
-	} else {
-		GLfloatVector verticesVector;
-		GLfloatVector normalsVector;
-		IndexList indicesList;
-
-		verticesVector << 0 << 0 << 0;
-		normalsVector << 0 << 0 << 0;
-		indicesList << 0 << 0 << 0;
-		glcMesh->addVertice(verticesVector);
-		glcMesh->addNormals(normalsVector);
-		glcMesh->addTriangles(new GLC_Material(), indicesList, 0);
-		glcMesh->finish();
 	}
-
-	//Add/replace in GL widget to update mesh
-	/*GLWidget* glview = object->getEVDSEditor()->getGLWidget();
-	if (glview->getCollection()->contains(glcInstance->id())) {
-		glview->getCollection()->remove(glcInstance->id());
-		//delete glcInstance;
-		//glcInstance = new GLC_3DViewInstance(glcMesh);
-	}
-	glview->getCollection()->add(*glcInstance);*/
-
-	//}
-	//coarse_mesh
-	//createMeshAndWire(*glcMesh);
 
 	//glcMesh->finish();
+	//glcMesh->finish();
+	//EVDS_Mesh_Destroy(mesh);
 }
 
 
@@ -204,3 +305,92 @@ void ObjectRenderer::meshChanged() {
 		return mesh;
 	}
 }*/
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+ObjectMeshGenerator::ObjectMeshGenerator(Object* in_object, float in_resolution, int in_lod) {
+	object = in_object; 
+	resolution = in_resolution;
+	lod = in_lod;
+
+	//Initialize temporary object
+	object_copy = 0;
+	mesh = 0;
+
+	//Delete thread when work is finished
+	connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));	
+	doStopWork = false;
+	needMesh = false; 
+	meshCompleted = true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+EVDS_MESH* ObjectMeshGenerator::getMesh() { 
+	if ((!needMesh) && mesh && meshCompleted && this->isRunning()) { 
+		return mesh;
+	} else {
+		return 0;
+	} 
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Get a temporary copy of the rendered object
+////////////////////////////////////////////////////////////////////////////////
+void ObjectMeshGenerator::updateMesh() {
+	if (this->isRunning()) {
+		printf("  Copy %p for level %d\n",object,lod);
+		readingLock.lock();
+		EVDS_Object_CopySingle(object->getEVDSObject(),0,&object_copy);
+		readingLock.unlock();
+	}
+	needMesh = true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ObjectMeshGenerator::run() {
+	while (!doStopWork) {
+		if (needMesh) {
+			readingLock.lock();
+			printf("Generating mesh %p for level %d\n",object,lod);
+
+			needMesh = false;
+			meshCompleted = false;
+			EVDS_OBJECT* work_object = object_copy; //Fetch the pointer
+			EVDS_Object_TransferInitialization(work_object); //Get rights to work with variables
+			
+			//Remove old mesh
+			if (mesh) {
+				EVDS_Mesh_Destroy(mesh);
+				mesh = 0;
+			}
+
+			//Create new mesh from initialized object copy
+			if (work_object) { //EVDS_MESH_SKIP_EDGES | EVDS_MESH_SKIP_VERTICES);
+				EVDS_Object_Initialize(work_object,1);
+				EVDS_Mesh_Generate(work_object,&mesh,resolution,EVDS_MESH_USE_DIVISIONS);
+				EVDS_Object_Destroy(work_object); //Release the object that was worked on
+			}
+
+			printf("Done mesh %p %p for level %d\n",object,mesh,lod);
+			meshCompleted = true;
+			readingLock.unlock();
+
+			if (!needMesh) { //If new mesh is needed, do not return generated one - return actually needed one instead
+				emit signalMeshReady(lod);
+			}
+		}
+		msleep(100);
+	}
+
+	//Finish thread work and destroy HQ mesh
+	if (mesh) EVDS_Mesh_Destroy(mesh);
+}

@@ -71,7 +71,7 @@ GLWidget::GLWidget(Object* in_root, QWidget *parent)
 
 	//m_GlView.addClipPlane(GL_CLIP_PLANE0,new GLC_Plane(0,1,0,0));
 	//m_GlView.useClipPlane(true);
-	//m_Collection.setLodUsage(true,&m_GlView);
+	m_Collection.setLodUsage(true,&m_GlView);
 }
 
 
