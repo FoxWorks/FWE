@@ -37,12 +37,9 @@
 
 #include "evds.h"
 
-//Maximum number of LOD levels in use
-#define EVDS_OBJECT_RENDERER_MAX_LODS 2
-
 namespace EVDS {
 	class Object;
-	class ObjectMeshGenerator;
+	class ObjectLODGenerator;
 	class ObjectRenderer : public QObject
 	{
 		Q_OBJECT
@@ -51,44 +48,38 @@ namespace EVDS {
 		ObjectRenderer(Object* in_object);
 		~ObjectRenderer();
 
-		GLC_3DViewInstance* getInstance(int index) { return glcInstance[index]; }
+		GLC_3DViewInstance* getInstance() { return glcInstance; }
 
 	public slots:
 		//Notifies that objects mesh has changed and must be re-generated
 		void meshChanged();
 		//Notifies that objects position in space has changed, and all children must be recalculated
 		void positionChanged();
-		//Notifies that mesh for LOD has been generated
-		void lodMeshGenerated(int lod);
+		//Notifies that LOD meshes have been generated
+		void lodMeshesGenerated();
 
 	private:
-		//Get resolution for LOD level
-		float getLODResolution(int lod);
 		//Add mesh for LOD level
 		void addLODMesh(EVDS_MESH* mesh, int lod);
 
 		//GLC mesh for this object
-		int visibleLod;
-		int lodPresent[EVDS_OBJECT_RENDERER_MAX_LODS];
-		int lodFinished[EVDS_OBJECT_RENDERER_MAX_LODS];
-		GLC_Mesh* glcMesh[EVDS_OBJECT_RENDERER_MAX_LODS];
-		GLC_3DViewInstance* glcInstance[EVDS_OBJECT_RENDERER_MAX_LODS];
-
-		//Threads for LOD levels
-		ObjectMeshGenerator* lodMeshGenerators[EVDS_OBJECT_RENDERER_MAX_LODS];
+		GLC_Mesh* glcMesh;
+		GLC_3DViewInstance* glcInstance;
 
 		//Object to render
 		Object* object;
+		ObjectLODGenerator* lodMeshGenerator;
 	};
 
-	class ObjectMeshGenerator : public QThread {
+
+	class ObjectLODGenerator : public QThread {
 		Q_OBJECT
 
 	public:
-		ObjectMeshGenerator(Object* in_object, float in_resolution, int in_lod);
+		ObjectLODGenerator(Object* in_object, int in_lods);
 
 		//Get mesh (returns 0 if mesh was not generated yet)
-		EVDS_MESH* getMesh();
+		EVDS_MESH* getMesh(int lod);
 		//Update mesh for the given object
 		void updateMesh();
 		//Abort thread work
@@ -96,23 +87,27 @@ namespace EVDS {
 		//Locked when mesh is being generated
 		QMutex readingLock;
 
+		//Get number of lods
+		int getNumLODs() { return numLods; }
+
 	signals:
-		void signalMeshReady(int lod);
+		void signalLODsReady();
 
 	protected:
 		void run();
 	
 	private:
-		float resolution; //Target resolution
-		int lod; //Target LOD level
+		float getLODResolution(int lod); //Get resolution for LOD level
 
 		bool doStopWork; //Stop threads work
 		bool needMesh; //Is new mesh required
 		bool meshCompleted; //Is mesh ready to be read
 
 		Object* object; //Object for which mesh is generated
-		EVDS_MESH* mesh; //Generated mesh
 		EVDS_OBJECT* object_copy; //Copy of the object for this thread
+
+		int numLods; //Total number of LODs
+		EVDS_MESH** mesh; //Generated meshes
 	};
 }
 

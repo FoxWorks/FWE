@@ -54,7 +54,7 @@ GLWidget::GLWidget(Object* in_root, QWidget *parent)
 , m_MoverController()
 {
 	connect(&m_GlView, SIGNAL(updateOpenGL()), this, SLOT(updateGL()));
-	m_Light.setPosition(1.0, 1.0, 1.0);
+	m_Light.setPosition(20.0, 20.0, 20.0);
 	QColor repColor;
 	repColor.setRgbF(1.0, 0.11372, 0.11372, 1.0);
 	m_MoverController= GLC_Factory::instance()->createDefaultMoverController(repColor, &m_GlView);
@@ -72,6 +72,7 @@ GLWidget::GLWidget(Object* in_root, QWidget *parent)
 	//m_GlView.addClipPlane(GL_CLIP_PLANE0,new GLC_Plane(0,1,0,0));
 	//m_GlView.useClipPlane(true);
 	m_Collection.setLodUsage(true,&m_GlView);
+	m_GlView.setMinimumPixelCullingSize(4);
 }
 
 
@@ -219,6 +220,8 @@ void GLWidget::resizeGL(int width, int height)
 ////////////////////////////////////////////////////////////////////////////////
 void GLWidget::paintGL()
 {
+	m_GlView.setToOrtho(true);
+
 	// Clear screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -237,6 +240,7 @@ void GLWidget::paintGL()
 		m_GlView.glExecuteCam();
 
 		// Display the collection of GLC_Object
+		//m_Collection.setPolygonModeForAll(GL_FRONT_AND_BACK, GL_LINE);
 		m_Collection.render(0, glc::ShadingFlag);
 
 		// Display UI Info (orbit circle)
