@@ -19,20 +19,22 @@
     <file>icon/add.png</file>
     <file>icon/remove.png</file>
     
-    <file>evds/csections.png</file>
-    <file>evds/hierarchy.png</file>
-    <file>evds/properties.png</file>
-    <file>evds/materials.png</file>
+    <file>icon/evds/csections.png</file>
+    <file>icon/evds/hierarchy.png</file>
+    <file>icon/evds/properties.png</file>
+    <file>icon/evds/materials.png</file>
+    
+    <file>icon/glview/test.png</file>
 
-    <file>shader/shader_background.frag</file>
-    <file>shader/shader_background.vert</file>
-    <file>shader/shader_fxaa.frag</file>
-    <file>shader/shader_fxaa.vert</file>
-    <file>shader/shader_object.frag</file>
-    <file>shader/shader_object.vert</file>
-    <file>shader/shader_outline_fbo.frag</file>
-    <file>shader/shader_outline_fbo.vert</file>
-    <file>shader/shader_outline_object.frag</file>
-    <file>shader/shader_outline_object.vert</file>
+    <file>shader/background.frag</file>
+    <file>shader/background.vert</file>
+    <file>shader/fxaa.frag</file>
+    <file>shader/fxaa.vert</file>
+    <file>shader/object.frag</file>
+    <file>shader/object.vert</file>
+    <file>shader/outline_fbo.frag</file>
+    <file>shader/outline_fbo.vert</file>
+    <file>shader/outline_object.frag</file>
+    <file>shader/outline_object.vert</file>
 </qresource>
 </RCC>

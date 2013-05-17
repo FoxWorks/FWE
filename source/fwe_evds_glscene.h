@@ -53,6 +53,10 @@ namespace EVDS {
 		QSize sizeHint() const { return QSize(400, 400); }
 		GLC_3DViewCollection* getCollection() { return collection; }
 
+		QGLShaderProgram* compileShader(const QString& name);
+		void loadShaders();
+		void drawScreenQuad();
+
 	protected:
 		void drawBackground(QPainter *painter, const QRectF &rect);
 		void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -71,14 +75,15 @@ namespace EVDS {
 
 		//Is scene initialized OpenGL-wise
 		bool sceneInitialized;
+		int previousWidth,previousHeight;
 
 		//Shaders and framebuffers
 		//QGLFramebufferObject* fbo_outline;
-		//QGLFramebufferObject* fbo_window;
+		QGLFramebufferObject* fbo_fxaa;
 		//QGLShaderProgram* shader_outline_object;
 		//QGLShaderProgram* shader_outline_fbo;
-		//QGLShaderProgram* shader_background;
-		//QGLShaderProgram* shader_fxaa;
+		QGLShaderProgram* shader_background;
+		QGLShaderProgram* shader_fxaa;
 	};
 
 	class GLView : public QGraphicsView

@@ -101,9 +101,9 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window)
 	glview->setScene(glscene);
 	setCentralWidget(glview);
 	{
-		QPushButton* a = new QPushButton("Press me");
-		a->setGeometry(100,100,200,200);
-		a->setWindowOpacity(0.7);
+		QPushButton* a = new QPushButton(QIcon(":/icon/glview/test.png"),"");
+		a->setGeometry(100,8,24,24);
+		a->setWindowOpacity(0.8);
 		glscene->addWidget(a);
 
 		//QGraphicsProxyWidget* aprox = new QGraphicsProxyWidget(0,Qt::Dialog);
@@ -143,17 +143,17 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window)
 	//getMainWindow()->getEditMenu()->addAction(action);
 
 	//View menu structure
-	action = new QAction(QIcon(":/evds/hierarchy.png"), tr("Object &Hierarchy"), this);
+	action = new QAction(QIcon(":/icon/evds/hierarchy.png"), tr("Object &Hierarchy"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(showHierarchy()));
 	actions.append(action);
 	getMainWindow()->getViewMenu()->addAction(action);
 
-	action = new QAction(tr("Object &Properties"), this); //QIcon(":/evds/properties.png"),
+	action = new QAction(tr("Object &Properties"), this); //QIcon(":/icon/evds/properties.png"),
 	connect(action, SIGNAL(triggered()), this, SLOT(showProperties()));
 	actions.append(action);
 	getMainWindow()->getViewMenu()->addAction(action);
 
-	action = new QAction(tr("Edit &Cross Sections"), this); //QIcon(":/evds/csections.png"), 
+	action = new QAction(tr("Edit &Cross Sections"), this); //QIcon(":/icon/evds/csections.png"), 
 	connect(action, SIGNAL(triggered()), this, SLOT(showCrossSections()));
 	actions.append(action);
 	getMainWindow()->getViewMenu()->addAction(action);
@@ -177,7 +177,7 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window)
 
 	actions.append(getMainWindow()->getViewMenu()->addSeparator());
 
-	action = new QAction(QIcon(":/evds/materials.png"), tr("&Materials Database..."), this);
+	action = new QAction(QIcon(":/icon/evds/materials.png"), tr("&Materials Database..."), this);
 	//connect(action, SIGNAL(triggered()), this, SLOT(showCrossSections()));
 	actions.append(action);
 	getMainWindow()->getViewMenu()->addAction(action);*/

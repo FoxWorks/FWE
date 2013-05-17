@@ -56,7 +56,7 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	sceneInitialized = false;
 	parent_scene = in_parent_scene; //FIXME: support for this
 	//fbo_outline = 0;
-	//fbo_window = 0;
+	fbo_fxaa = 0;
 
 	//Create objects
 	viewport = new GLC_Viewport();
@@ -99,53 +99,53 @@ GLScene::~GLScene()
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-/*QGLShaderProgram* GLScene::compileShader(const QString& name) {
-	if (!QGLShaderProgram::hasOpenGLShaderPrograms(context())) {
-		return 0;
-	}
+QGLShaderProgram* GLScene::compileShader(const QString& name) {
+	//if (!QGLShaderProgram::hasOpenGLShaderPrograms(context())) {
+		//return 0;
+	//}
 
 	QGLShader fragment(QGLShader::Fragment);
 	QGLShader vertex(QGLShader::Vertex);
 
-	//if (!fragment.compileSourceFile("../source/foxworks_editor/resources/" + name + ".frag")) {
-	if (!fragment.compileSourceFile(":/" + name + ".frag")) {
+	//if (!fragment.compileSourceFile("../resources/" + name + ".frag")) {
+	if (!fragment.compileSourceFile(":/shader/" + name + ".frag")) {
 		QMessageBox::warning(0, tr("EVDS Editor"),tr("Shader error in [%1.frag]:\n%2.").arg(name).arg(fragment.log()));
 		return 0;
 	}
-	//if (!vertex.compileSourceFile("../source/foxworks_editor/resources/" + name + ".vert")) {
-	if (!vertex.compileSourceFile(":/" + name + ".vert")) {
+	//if (!vertex.compileSourceFile("../resources/" + name + ".vert")) {
+	if (!vertex.compileSourceFile(":/shader/" + name + ".vert")) {
 		QMessageBox::warning(0, tr("EVDS Editor"),tr("Shader error in [%1.vert]:\n%2.").arg(name).arg(fragment.log()));
 		return 0;
 	}
 
-	QGLShaderProgram* shader = new QGLShaderProgram(context());
+	QGLShaderProgram* shader = new QGLShaderProgram();
 	shader->addShader(&fragment);
 	shader->addShader(&vertex);
 	shader->link();
 	return shader;	
-}*/
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-/*void GLScene::reloadShaders() {
-	shader_object = compileShader("shader_object");
-	shader_outline_object = compileShader("shader_outline_object");
-	shader_outline_fbo = compileShader("shader_outline_fbo");
-	shader_background = compileShader("shader_background");
-	shader_fxaa = compileShader("shader_fxaa");
-}*/
+void GLScene::loadShaders() {
+	//shader_object = compileShader("shader_object");
+	//shader_outline_object = compileShader("shader_outline_object");
+	//shader_outline_fbo = compileShader("shader_outline_fbo");
+	shader_background = compileShader("background");
+	shader_fxaa = compileShader("fxaa");
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-/*void GLScene::drawScreenQuad() {
+void GLScene::drawScreenQuad() {
 	//Setup correct projection-view matrix (all views)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-1,1,-1,1, 1.0f, 500.0f);
+	glOrtho(-1, 1, -1, 1, 1.0f, 500.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -157,18 +157,17 @@ GLScene::~GLScene()
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);
 
-	float aspect = ((float)width())/((float)height());
 	glBegin(GL_QUADS);
 		glTexCoord2f( 0.0f, 1.0f);
-		glVertex2f(-1,1);
+		glVertex2f(-1, 1);
 		glTexCoord2f( 1.0f, 1.0f);
-		glVertex2f(1,1);
+		glVertex2f( 1, 1);
 		glTexCoord2f( 1.0f, 0.0f);
-		glVertex2f(1,-1);
+		glVertex2f( 1,-1);
 		glTexCoord2f( 0.0f, 0.0f);
 		glVertex2f(-1,-1);
 	glEnd();
-}*/
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -194,18 +193,44 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 
 		viewport->initGl();
 		viewport->reframe(collection->boundingBox());
+		previousWidth = 0;
+		previousHeight = 0;
+
+		//Load shaders
+		loadShaders();
 	}
 
 	//Setup native rendering and viewport size
 	painter->beginNativePainting();
 	viewport->setWinGLSize(rect.width(), rect.height());
+	if ((rect.width() != previousWidth) || (rect.height() != previousHeight)) {
+		previousWidth = rect.width();
+		previousHeight = rect.height();
+
+		if (fbo_fxaa) delete fbo_fxaa;
+		//fbo_outline = new QGLFramebufferObject(width,height,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
+		//fbo_selected_outline = new QGLFramebufferObject(width,height,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
+		if (fw_editor_settings->value("rendering.use_fxaa",true) == true) {
+			fbo_fxaa = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
+		}
+	}
 
 	//Always use orthographic view
 	viewport->setToOrtho(fw_editor_settings->value("render.use_ortho_projection",true).toBool());
 
-	//Clear buffer
+	//Start FXAA
+	if (fbo_fxaa) fbo_fxaa->bind();
+
+	//Clear screen and draw background if possible
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (shader_background) {
+		shader_background->bind();
+		shader_background->setUniformValue("v_baseColor",190.0f,190.0f,230.0f);
+		drawScreenQuad();
+		shader_background->release();
+		
+	}
 
 	//Load identity matrix
     GLC_Context::current()->glcLoadIdentity();
@@ -220,12 +245,27 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	if (fw_editor_settings->value("render.use_wireframe",false).toBool()) {
 		collection->setPolygonModeForAll(GL_FRONT_AND_BACK, GL_LINE);
 	}
+	//collection->setVboUsage(false);
 	collection->render(0, glc::ShadingFlag);
 
 	//Depth buffer must be cleared and clip plane removed
 	glClear(GL_DEPTH_BUFFER_BIT);
 	viewport->useClipPlane(false);
+
+	//Draw controller UI
 	controller.drawActiveMoverRep(); //FIXME: is there need to force 2D after this call
+	
+	//End FXAA and display it on screen
+	if (fbo_fxaa) {
+		fbo_fxaa->release();
+
+		glBindTexture(GL_TEXTURE_2D, fbo_fxaa->texture());
+		shader_fxaa->bind();
+		shader_fxaa->setUniformValue("textureSampler",0);
+		shader_fxaa->setUniformValue("texcoordOffset",1.0f/((float)rect.width()),1.0f/((float)rect.height()));
+		drawScreenQuad();
+		shader_fxaa->release();
+	}
 
 	//Finish native rendering
 	painter->endNativePainting();
