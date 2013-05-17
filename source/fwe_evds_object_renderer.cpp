@@ -45,10 +45,17 @@ ObjectRenderer::ObjectRenderer(Object* in_object) {
 	glcMesh = new GLC_Mesh();
 	glcInstance = new GLC_3DViewInstance(glcMesh);
 
+	//Read LOD count and make sure it's sane
+	int lod_count = object->getEVDSEditor()->getSettings()->value("rendering.lod_count",6).toInt();
+	if (lod_count < 1) lod_count = 1;
+	if (lod_count > 20) lod_count = 20;
+
 	//Create mesh generators
-	lodMeshGenerator = new ObjectLODGenerator(object,6);
+	lodMeshGenerator = new ObjectLODGenerator(object,lod_count);
 	connect(lodMeshGenerator, SIGNAL(signalLODsReady()), this, SLOT(lodMeshesGenerated()), Qt::QueuedConnection);
-	//lodMeshGenerator->start();
+	if (object->getEVDSEditor()->getSettings()->value("rendering.no_lods",false) == false) {
+		lodMeshGenerator->start();
+	}
 
 	//Create initial data
 	meshChanged();
