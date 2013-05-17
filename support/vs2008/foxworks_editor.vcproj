@@ -1540,11 +1540,11 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\source\fwe_evds_glwidget.cpp"
+			RelativePath="..\..\source\fwe_evds_glscene.cpp"
 			>
 		</File>
 		<File
-			RelativePath="..\..\source\fwe_evds_glwidget.h"
+			RelativePath="..\..\source\fwe_evds_glscene.h"
 			>
 		</File>
 		<File
@@ -1985,7 +1985,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds_glwidget.cpp"
+				RelativePath="..\..\qtmoc\moc_fwe_evds_glscene.cpp"
 				>
 			</File>
 			<File

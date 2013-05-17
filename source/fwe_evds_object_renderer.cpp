@@ -30,7 +30,7 @@
 #include "fwe_evds.h"
 #include "fwe_evds_object.h"
 #include "fwe_evds_object_renderer.h"
-#include "fwe_evds_glwidget.h"
+#include "fwe_evds_glscene.h"
 
 using namespace EVDS;
 
@@ -46,14 +46,14 @@ ObjectRenderer::ObjectRenderer(Object* in_object) {
 	glcInstance = new GLC_3DViewInstance(glcMesh);
 
 	//Read LOD count and make sure it's sane
-	int lod_count = object->getEVDSEditor()->getSettings()->value("rendering.lod_count",6).toInt();
+	int lod_count = fw_editor_settings->value("rendering.lod_count",6).toInt();
 	if (lod_count < 1) lod_count = 1;
 	if (lod_count > 20) lod_count = 20;
 
 	//Create mesh generators
 	lodMeshGenerator = new ObjectLODGenerator(object,lod_count);
 	connect(lodMeshGenerator, SIGNAL(signalLODsReady()), this, SLOT(lodMeshesGenerated()), Qt::QueuedConnection);
-	if (object->getEVDSEditor()->getSettings()->value("rendering.no_lods",false) == false) {
+	if (fw_editor_settings->value("rendering.no_lods",false) == false) {
 		lodMeshGenerator->start();
 	}
 
@@ -90,7 +90,7 @@ void ObjectRenderer::positionChanged() {
 		glcInstance->translate(vector.position.x,vector.position.y,vector.position.z);
 
 		//Add/replace in GL widget to update position
-		GLWidget* glview = object->getEVDSEditor()->getGLWidget();
+		GLScene* glview = object->getEVDSEditor()->getGLScene();
 		if (glview->getCollection()->contains(glcInstance->id())) {
 			glview->getCollection()->remove(glcInstance->id());			
 		}
@@ -133,8 +133,25 @@ void ObjectRenderer::meshChanged() {
 	//addLODMesh(mesh,1);
 	//EVDS_Mesh_Destroy(mesh);
 
+	//glcMesh->reverseNormals();
 	glcMesh->finish();
 	EVDS_Object_Destroy(temp_object);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ObjectRenderer::lodMeshesGenerated() {
+	printf("LODs ready %p\n",this);
+	
+	glcMesh->clear();
+	for (int i = 0; i < lodMeshGenerator->getNumLODs(); i++) {
+		addLODMesh(lodMeshGenerator->getMesh(i),i);
+	}
+	//glcMesh->reverseNormals();
+	glcMesh->finish();
+	object->getEVDSEditor()->updateObject(NULL); //Force into repaint
 }
 
 
@@ -182,13 +199,13 @@ void ObjectRenderer::addLODMesh(EVDS_MESH* mesh, int lod) {
 			normalsVector << mesh->normals[i].z;
 		}
 		for (int i = 0; i < mesh->num_triangles; i++) {
-			if ((mesh->triangles[i].vertex[0].y > 0.0) &&
-				(mesh->triangles[i].vertex[1].y > 0.0) &&
-				(mesh->triangles[i].vertex[2].y > 0.0)) {
+			//if ((mesh->triangles[i].vertex[0].y > 0.0) &&
+				//(mesh->triangles[i].vertex[1].y > 0.0) &&
+				//(mesh->triangles[i].vertex[2].y > 0.0)) {
 				indicesList << mesh->triangles[i].indices[0] + firstVertexIndex;
 				indicesList << mesh->triangles[i].indices[1] + firstVertexIndex;
 				indicesList << mesh->triangles[i].indices[2] + firstVertexIndex;
-			}
+			//}
 		}
 		indicesList << 0 << 0 << 0;
 
@@ -197,21 +214,6 @@ void ObjectRenderer::addLODMesh(EVDS_MESH* mesh, int lod) {
 		glcMesh->addTriangles(glcMaterial, indicesList, lod); //coarse_mesh->resolution);
 		//glcMesh->reverseNormals();
 	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void ObjectRenderer::lodMeshesGenerated() {
-	printf("LODs ready %p\n",this);
-	
-	glcMesh->clear();
-	for (int i = 0; i < lodMeshGenerator->getNumLODs(); i++) {
-		addLODMesh(lodMeshGenerator->getMesh(i),i);
-	}
-	glcMesh->finish();
-	object->getEVDSEditor()->updateObject(NULL); //Force into repaint
 }
 
 

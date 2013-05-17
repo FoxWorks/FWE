@@ -26,8 +26,8 @@
 /// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef FWE_EVDS_GLWIDGET_H
-#define FWE_EVDS_GLWIDGET_H
+#ifndef FWE_EVDS_GLSCENE_H
+#define FWE_EVDS_GLSCENE_H
 
 #include <QGLWidget>
 #include <QGLShader>
@@ -41,48 +41,65 @@
 
 namespace EVDS {
 	class Object;
-	class GLWidget : public QGraphicsScene
+	class GLScene : public QGraphicsScene
 	{
 		Q_OBJECT
 
 	public:
-		GLWidget(Object* in_root, QWidget *parent = 0);
-		~GLWidget();
+		GLScene(GLScene* in_parent_scene, QWidget *parent = 0);
+		~GLScene();
 
-		QSize minimumSizeHint() const;
-		QSize sizeHint() const;
-		void setAntialiasing(bool enable) { antialiasingEnabled = enable; update(); }
-		GLC_3DViewCollection* getCollection() { return &m_Collection; }
+		QSize minimumSizeHint() const { return QSize(50, 50); }
+		QSize sizeHint() const { return QSize(400, 400); }
+		GLC_3DViewCollection* getCollection() { return collection; }
 
 	protected:
 		void drawBackground(QPainter *painter, const QRectF &rect);
-
-		void initializeGL();
-		void paintGL();
-		void resizeGL(int width, int height);
-
 		void mousePressEvent(QGraphicsSceneMouseEvent *event);
 		void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 		void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
 	private:
-		Object* root;
+		//Parent scene from which GLC stuff is taken
+		GLScene* parent_scene;
 
 		//GLC Specific
-		GLC_Light m_Light;
-		GLC_3DViewCollection m_Collection;
-		GLC_Viewport m_GlView;
-		GLC_MoverController m_MoverController;
+		GLC_Light* light[1];
+		GLC_3DViewCollection* collection;
+		GLC_Viewport* viewport;
+		GLC_MoverController controller;
+
+		//Is scene initialized OpenGL-wise
+		bool sceneInitialized;
 
 		//Shaders and framebuffers
-		bool antialiasingEnabled;
 		//QGLFramebufferObject* fbo_outline;
-		//QGLFramebufferObject* fbo_selected_outline;
 		//QGLFramebufferObject* fbo_window;
 		//QGLShaderProgram* shader_outline_object;
 		//QGLShaderProgram* shader_outline_fbo;
 		//QGLShaderProgram* shader_background;
 		//QGLShaderProgram* shader_fxaa;
+	};
+
+	class GLView : public QGraphicsView
+	{
+		Q_OBJECT
+
+	public:
+		GLView(QWidget* parent) : QGraphicsView(parent) {
+			QGLContext* context = new GLC_Context(QGLFormat(QGL::SampleBuffers));
+			QGLWidget* opengl = new QGLWidget(context,this);
+
+			setViewport(opengl);
+			setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+		}
+
+	protected:
+		void resizeEvent(QResizeEvent *event) {
+			if (scene())
+				scene()->setSceneRect(QRect(QPoint(0, 0), event->size()));
+			QGraphicsView::resizeEvent(event);
+		}
 	};
 }
 

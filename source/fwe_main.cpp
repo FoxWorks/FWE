@@ -58,7 +58,6 @@ MainWindow::MainWindow() {
 	resize(1024,640);
 
 	//Load settings
-	settings = new QSettings("FoxWorks", "Editor");
 	//QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
 	//QSize size = settings.value("size", QSize(400, 400)).toSize();
 	//move(pos);
@@ -77,8 +76,8 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 	if (mdiArea->currentSubWindow()) {
 		event->ignore();
 	} else {
-		settings->setValue("window.position", pos());
-		settings->setValue("window.size", size());
+		fw_editor_settings->setValue("window.position", pos());
+		fw_editor_settings->setValue("window.size", size());
 		event->accept();
 	}
 }

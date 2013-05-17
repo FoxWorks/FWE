@@ -28,6 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <QApplication>
 #include <QFile>
+#include <QSettings>
 //#include <QCleanlooksStyle>
 
 #include "fwe.h"
@@ -42,6 +43,9 @@ QApplication* fw_application;
 /// FoxWorks main window
 MainWindow* fw_mainWindow;
 
+/// FoxWorks editor settings
+QSettings* fw_editor_settings = 0;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Initialize FoxWorks Editor with flags
@@ -52,7 +56,8 @@ void fw_editor_initialize(int flags, int argc, char *argv[]) {
 	if (flags & FOXWORKS_EDITOR_STANDALONE) {
 		fw_application = new QApplication(argc,argv);
 		Q_INIT_RESOURCE(resources);
-		//QApplication::setGraphicsSystem(QString("opengl"));
+
+		fw_editor_settings = new QSettings("FoxWorks", "Editor"); //Load settings
 		fw_mainWindow = new MainWindow(); //Show main window
 		fw_mainWindow->show();
 
@@ -74,6 +79,7 @@ void fw_editor_initialize(int flags, int argc, char *argv[]) {
 /// @brief Shutdown and clean up all resources
 ////////////////////////////////////////////////////////////////////////////////
 void fw_editor_deinitialize() {
+	delete fw_editor_settings;
 	delete fw_application;
 }
 

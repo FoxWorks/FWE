@@ -59,7 +59,7 @@
 #include "fwe_evds_object.h"
 #include "fwe_evds_object_model.h"
 #include "fwe_evds_object_renderer.h"
-#include "fwe_evds_glwidget.h"
+#include "fwe_evds_glscene.h"
 #include "fwe_prop_sheet.h"
 
 using namespace EVDS;
@@ -71,6 +71,7 @@ using namespace EVDS;
 Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window)
 {
 	window = in_window;
+	selected = NULL;
 
 	//Create EVDS system. Use flag that lists all children, even uninitialized ones to make sure
 	// tree controls list all objects while they are messed around with.
@@ -95,27 +96,21 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window)
 	createCSectionDock();
 
 	//Create working area/main 3D widget
-	//glview = new GLWidget(root_obj,this);
-	//setCentralWidget(glview);
-	selected = NULL;
+	glscene = new GLScene(0,this);
+	glview = new GLView(this);
+	glview->setScene(glscene);
+	setCentralWidget(glview);
 	{
-		glview = new GLWidget(root_obj,this);
-
-		QGraphicsView* view = new QGraphicsView(this);
-		QGLWidget* glwidget = new QGLWidget(new GLC_Context(QGLFormat(QGL::SampleBuffers)),view);
-		view->setViewport(glwidget);
-		view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-		view->setScene(glview);
-
 		QPushButton* a = new QPushButton("Press me");
 		a->setGeometry(100,100,200,200);
 		a->setWindowOpacity(0.7);
+		glscene->addWidget(a);
 
-		QGraphicsProxyWidget* aprox = new QGraphicsProxyWidget(0,Qt::Dialog);
-		aprox->setWidget(a);
-		glview->addItem(aprox);
-		//glview->setSceneRect(QRect(0,0,500,500));
-		setCentralWidget(view);
+		//QGraphicsProxyWidget* aprox = new QGraphicsProxyWidget(0,Qt::Dialog);
+		//aprox->setWidget(a);
+		//glview->addItem(aprox);
+		//glview->setSceneRect(view->geometry());
+		//setCentralWidget(view);
 	}
 
 	//Create informational docks
@@ -366,7 +361,7 @@ void Editor::updateObject(Object* object) {
 	if (object) {
 		list_model->updateObject(object);
 	}
-	glview->update();
+	glscene->update();
 }
 
 

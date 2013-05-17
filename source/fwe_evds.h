@@ -58,7 +58,8 @@ class GLC_3DViewInstance;
 class FWEPropertySheet;
 class ChildWindow;
 namespace EVDS {
-	class GLWidget;
+	class GLScene;
+	class GLView;
 	class Object;
 	class ObjectTreeModel;
 	class Editor : public QMainWindow
@@ -75,11 +76,10 @@ namespace EVDS {
 		void updateMenus(bool isInFront);
 		void setModified() { window->setModified(); }
 
-		GLWidget* getGLWidget() { return glview; }
+		GLScene* getGLScene() { return glscene; }
 		Object* getEditRoot() { return root_obj; }
 		//Object* getInitializedRoot() { return r
 		//Object* getSelected() { return selected; }
-		QSettings* getSettings() { return window->getSettings(); }
 
 		void updateObject(Object* object);
 		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
@@ -129,7 +129,8 @@ namespace EVDS {
 		QLabel*				csection_none;
 
 		//Main workspace
-		GLWidget*			glview;
+		GLScene*			glscene;
+		GLView*				glview;
 
 		//Menus and actions
 		QList<QAction*>		actions;

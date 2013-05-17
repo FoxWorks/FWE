@@ -41,6 +41,9 @@ class QStackedLayout;
 class QSettings;
 QT_END_NAMESPACE
 
+////////////////////////////////////////////////////////////////////////////////
+extern QSettings* fw_editor_settings; //See fwe.cpp
+
 
 ////////////////////////////////////////////////////////////////////////////////
 class ChildWindow;
@@ -73,7 +76,6 @@ public:
 	QMenu* getEditMenu() { return editMenu; }
 	QMenu* getViewMenu() { return viewMenu; }
 	QMenu* getHelpMenu() { return helpMenu; }
-	QSettings* getSettings() { return settings; }
 
 private:
     void createActions();
@@ -85,8 +87,6 @@ private:
 
     QMdiArea *mdiArea;
     QSignalMapper *windowMapper;
-
-	QSettings* settings;
 
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -153,7 +153,6 @@ private:
 public:
 	QString getCurrentFile() { return currentFile; }
 	MainWindow* getMainWindow() { return mainWindow; }
-	QSettings* getSettings() { return mainWindow->getSettings(); }
 protected:
 	MainWindow* mainWindow;
 
