@@ -50,6 +50,8 @@
 
 #include <GLC_3DViewCollection>
 #include <GLC_3DViewInstance>
+#include <GLC_Context>
+#include <QGLWidget>
 
 #include <math.h>
 
@@ -93,9 +95,28 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window)
 	createCSectionDock();
 
 	//Create working area/main 3D widget
-	glview = new GLWidget(root_obj,this);
-	setCentralWidget(glview);
+	//glview = new GLWidget(root_obj,this);
+	//setCentralWidget(glview);
 	selected = NULL;
+	{
+		glview = new GLWidget(root_obj,this);
+
+		QGraphicsView* view = new QGraphicsView(this);
+		QGLWidget* glwidget = new QGLWidget(new GLC_Context(QGLFormat(QGL::SampleBuffers)),view);
+		view->setViewport(glwidget);
+		view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+		view->setScene(glview);
+
+		QPushButton* a = new QPushButton("Press me");
+		a->setGeometry(100,100,200,200);
+		a->setWindowOpacity(0.7);
+
+		QGraphicsProxyWidget* aprox = new QGraphicsProxyWidget(0,Qt::Dialog);
+		aprox->setWidget(a);
+		glview->addItem(aprox);
+		//glview->setSceneRect(QRect(0,0,500,500));
+		setCentralWidget(view);
+	}
 
 	//Create informational docks
 	//createCutsectionDock();

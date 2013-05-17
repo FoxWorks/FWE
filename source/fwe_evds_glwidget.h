@@ -41,7 +41,7 @@
 
 namespace EVDS {
 	class Object;
-	class GLWidget : public QGLWidget
+	class GLWidget : public QGraphicsScene
 	{
 		Q_OBJECT
 
@@ -55,18 +55,15 @@ namespace EVDS {
 		GLC_3DViewCollection* getCollection() { return &m_Collection; }
 
 	protected:
-		//void drawScreenQuad();
-		//QGLShaderProgram* compileShader(const QString& name);
+		void drawBackground(QPainter *painter, const QRectF &rect);
 
 		void initializeGL();
 		void paintGL();
 		void resizeGL(int width, int height);
-		void paintEvent(QPaintEvent *event);
-		void showEvent(QShowEvent *event);
-		
-		void mousePressEvent(QMouseEvent *event);
-		void mouseMoveEvent(QMouseEvent *event);
-		void mouseReleaseEvent(QMouseEvent *event);
+
+		void mousePressEvent(QGraphicsSceneMouseEvent *event);
+		void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+		void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
 	private:
 		Object* root;

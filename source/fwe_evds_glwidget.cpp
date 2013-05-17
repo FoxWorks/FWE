@@ -43,17 +43,15 @@ using namespace EVDS;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief
+/// @brief new GLC_Context(QGLFormat(QGL::SampleBuffers)
 ////////////////////////////////////////////////////////////////////////////////
-GLWidget::GLWidget(Object* in_root, QWidget *parent)
-	//: QGLWidget(parent)
-	: QGLWidget(new GLC_Context(QGLFormat(QGL::SampleBuffers)), parent)
-, m_Light()
-, m_Collection()
-, m_GlView()
-, m_MoverController()
+GLWidget::GLWidget(Object* in_root, QWidget *parent) : QGraphicsScene(parent)
+	, m_Light()
+	, m_Collection()
+	, m_GlView()
+	, m_MoverController()
 {
-	connect(&m_GlView, SIGNAL(updateOpenGL()), this, SLOT(updateGL()));
+	connect(&m_GlView, SIGNAL(updateOpenGL()), this, SLOT(update()));
 	m_Light.setPosition(20.0, 20.0, 20.0);
 	QColor repColor;
 	repColor.setRgbF(1.0, 0.11372, 0.11372, 1.0);
@@ -74,7 +72,7 @@ GLWidget::GLWidget(Object* in_root, QWidget *parent)
 	m_Collection.setLodUsage(true,&m_GlView);
 	m_GlView.setMinimumPixelCullingSize(4);
 
-	setAutoFillBackground(false);
+	//setAutoFillBackground(false);
 }
 
 
@@ -222,6 +220,12 @@ void GLWidget::resizeGL(int width, int height)
 ////////////////////////////////////////////////////////////////////////////////
 void GLWidget::paintGL()
 {
+	static int init = 0;
+	if (!init) {
+		init = 1;
+		initializeGL();
+	}
+
 	m_GlView.setToOrtho(true);
 
 	// Clear screen
@@ -252,68 +256,65 @@ void GLWidget::paintGL()
 	{
 		qDebug() << e.what();
 	}
-
-	QPaintDevice* device = QPainter::redirected(this);
-    if (device != NULL && device != this)
-    {
-        QImage image = grabFrameBuffer();
-        QPainter painter(this);
-        painter.drawImage(QPointF(0.0,0.0),image);
-    }
 }
 
-void GLWidget::paintEvent(QPaintEvent *event) {
-	static int init = 0;
-	if (!init) {
-		initializeGL();
-		init = 1;
+void GLWidget::drawBackground(QPainter *painter, const QRectF& rect)
+{
+	if (painter->paintEngine()->type() != QPaintEngine::OpenGL
+		&& painter->paintEngine()->type() != QPaintEngine::OpenGL2)
+	{
+		qWarning("OpenGLScene: drawBackground needs a QGLWidget to be set as viewport on the graphics view");
+		return;
 	}
 
+	painter->beginNativePainting();
+	
+	//QGLWidget *glWidget = dynamic_cast<QGLWidget*>(views().at(0)->viewport());
+	//if (glWidget) glWidget->makeCurrent();
+
+	//static int resized = 0;
+	//if (!resized) {
+		//printf("RECT %f x %f\n",rect.width(),rect.height());
+		resizeGL(rect.width(),rect.height());
+		//resized = 1;
+	//}
+	//static float test = 0.0f;
+	//test += 0.1f;
+	//if (test > 1.0f) test = 0.0f;
+    //glClearColor(test,0,0, 1.0f);
+
 	paintGL();
+	
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClearColor(1.0f,0.0f,1.0f, 1.0f);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	QPainter painter(this);
-     painter.setRenderHint(QPainter::Antialiasing);
-     QString text = tr("Temporary panel");
-     QFontMetrics metrics = QFontMetrics(font());
-     int border = qMax(4, metrics.leading());
-
-     QRect rect = metrics.boundingRect(0, 0, width() - 2*border, int(height()*0.125),
-                                       Qt::AlignCenter | Qt::TextWordWrap, text);
-     painter.setRenderHint(QPainter::TextAntialiasing);
-     painter.fillRect(QRect(0, 0, width(), rect.height() + 2*border),
-                      QColor(0, 0, 0, 127));
-     painter.setPen(Qt::white);
-     painter.fillRect(QRect(0, 0, width(), rect.height() + 2*border),
-                       QColor(0, 0, 0, 127));
-     painter.drawText((width() - rect.width())/2, border,
-                       rect.width(), rect.height(),
-                       Qt::AlignCenter | Qt::TextWordWrap, text);
-	 painter.end();
-
-}
-
-void GLWidget::showEvent(QShowEvent *event) {
-
+	painter->endNativePainting();
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void GLWidget::mousePressEvent(QMouseEvent* e) {
+void GLWidget::mousePressEvent(QGraphicsSceneMouseEvent* e) {
+	QGraphicsScene::mousePressEvent(e);
+	if (e->isAccepted()) return;
+
 	if (m_MoverController.hasActiveMover()) return;
+	int x = e->scenePos().x() + sceneRect().width() * 0.5f;
+	int y = e->scenePos().y() + sceneRect().height() * 0.5f;
 	switch (e->button())
 	{
 	case (Qt::RightButton):
-		m_MoverController.setActiveMover(GLC_MoverController::TrackBall, GLC_UserInput(e->x(), e->y()));
+		m_MoverController.setActiveMover(GLC_MoverController::TrackBall, GLC_UserInput(x,y));
 		update();
 		break;
 	case (Qt::LeftButton):
-		m_MoverController.setActiveMover(GLC_MoverController::Pan, GLC_UserInput(e->x(), e->y()));
+		m_MoverController.setActiveMover(GLC_MoverController::Pan, GLC_UserInput(x,y));
 		update();
 		break;
 	case (Qt::MidButton):
-		m_MoverController.setActiveMover(GLC_MoverController::Zoom, GLC_UserInput(e->x(), e->y()));
+		m_MoverController.setActiveMover(GLC_MoverController::Zoom, GLC_UserInput(x,y));
 		update();
 		break;
 
@@ -326,10 +327,16 @@ void GLWidget::mousePressEvent(QMouseEvent* e) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void GLWidget::mouseMoveEvent(QMouseEvent* e) {
+void GLWidget::mouseMoveEvent(QGraphicsSceneMouseEvent* e) {
+	QGraphicsScene::mouseMoveEvent(e);
+	if (e->isAccepted()) return;
+
+	int x = e->scenePos().x() + sceneRect().width() * 0.5f;
+	int y = e->scenePos().y() + sceneRect().height() * 0.5f;
 	if (m_MoverController.hasActiveMover())
 	{
-		m_MoverController.move(GLC_UserInput(e->x(), e->y()));
+		printf("move %d x %d\n",x,y);
+		m_MoverController.move(GLC_UserInput(x,y));
 		m_GlView.setDistMinAndMax(m_Collection.boundingBox());
 		update();
 	}
@@ -339,7 +346,10 @@ void GLWidget::mouseMoveEvent(QMouseEvent* e) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void GLWidget::mouseReleaseEvent(QMouseEvent* e) {
+void GLWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent* e) {
+	QGraphicsScene::mouseReleaseEvent(e);
+	if (e->isAccepted()) return;
+
 	if (m_MoverController.hasActiveMover())
 	{
 		m_MoverController.setNoMover();
