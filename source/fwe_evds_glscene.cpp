@@ -216,7 +216,7 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	}
 
 	//Always use orthographic view
-	viewport->setToOrtho(fw_editor_settings->value("render.use_ortho_projection",true).toBool());
+	viewport->setToOrtho(fw_editor_settings->value("rendering.use_ortho_projection",true).toBool());
 
 	//Start FXAA
 	if (fbo_fxaa) fbo_fxaa->bind();
