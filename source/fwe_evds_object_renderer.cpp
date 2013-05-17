@@ -48,7 +48,7 @@ ObjectRenderer::ObjectRenderer(Object* in_object) {
 	//Create mesh generators
 	lodMeshGenerator = new ObjectLODGenerator(object,6);
 	connect(lodMeshGenerator, SIGNAL(signalLODsReady()), this, SLOT(lodMeshesGenerated()), Qt::QueuedConnection);
-	lodMeshGenerator->start();
+	//lodMeshGenerator->start();
 
 	//Create initial data
 	meshChanged();

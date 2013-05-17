@@ -73,6 +73,8 @@ GLWidget::GLWidget(Object* in_root, QWidget *parent)
 	//m_GlView.useClipPlane(true);
 	m_Collection.setLodUsage(true,&m_GlView);
 	m_GlView.setMinimumPixelCullingSize(4);
+
+	setAutoFillBackground(false);
 }
 
 
@@ -250,6 +252,48 @@ void GLWidget::paintGL()
 	{
 		qDebug() << e.what();
 	}
+
+	QPaintDevice* device = QPainter::redirected(this);
+    if (device != NULL && device != this)
+    {
+        QImage image = grabFrameBuffer();
+        QPainter painter(this);
+        painter.drawImage(QPointF(0.0,0.0),image);
+    }
+}
+
+void GLWidget::paintEvent(QPaintEvent *event) {
+	static int init = 0;
+	if (!init) {
+		initializeGL();
+		init = 1;
+	}
+
+	paintGL();
+
+	QPainter painter(this);
+     painter.setRenderHint(QPainter::Antialiasing);
+     QString text = tr("Temporary panel");
+     QFontMetrics metrics = QFontMetrics(font());
+     int border = qMax(4, metrics.leading());
+
+     QRect rect = metrics.boundingRect(0, 0, width() - 2*border, int(height()*0.125),
+                                       Qt::AlignCenter | Qt::TextWordWrap, text);
+     painter.setRenderHint(QPainter::TextAntialiasing);
+     painter.fillRect(QRect(0, 0, width(), rect.height() + 2*border),
+                      QColor(0, 0, 0, 127));
+     painter.setPen(Qt::white);
+     painter.fillRect(QRect(0, 0, width(), rect.height() + 2*border),
+                       QColor(0, 0, 0, 127));
+     painter.drawText((width() - rect.width())/2, border,
+                       rect.width(), rect.height(),
+                       Qt::AlignCenter | Qt::TextWordWrap, text);
+	 painter.end();
+
+}
+
+void GLWidget::showEvent(QShowEvent *event) {
+
 }
 
 
@@ -262,15 +306,15 @@ void GLWidget::mousePressEvent(QMouseEvent* e) {
 	{
 	case (Qt::RightButton):
 		m_MoverController.setActiveMover(GLC_MoverController::TrackBall, GLC_UserInput(e->x(), e->y()));
-		updateGL();
+		update();
 		break;
 	case (Qt::LeftButton):
 		m_MoverController.setActiveMover(GLC_MoverController::Pan, GLC_UserInput(e->x(), e->y()));
-		updateGL();
+		update();
 		break;
 	case (Qt::MidButton):
 		m_MoverController.setActiveMover(GLC_MoverController::Zoom, GLC_UserInput(e->x(), e->y()));
-		updateGL();
+		update();
 		break;
 
 	default:
@@ -287,7 +331,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent* e) {
 	{
 		m_MoverController.move(GLC_UserInput(e->x(), e->y()));
 		m_GlView.setDistMinAndMax(m_Collection.boundingBox());
-		updateGL();
+		update();
 	}
 }
 
@@ -299,6 +343,6 @@ void GLWidget::mouseReleaseEvent(QMouseEvent* e) {
 	if (m_MoverController.hasActiveMover())
 	{
 		m_MoverController.setNoMover();
-		updateGL();
+		update();
 	}
 }
