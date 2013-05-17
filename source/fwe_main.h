@@ -38,6 +38,7 @@ class QMdiArea;
 class QMdiSubWindow;
 class QSignalMapper;
 class QStackedLayout;
+class QSettings;
 QT_END_NAMESPACE
 
 
@@ -72,19 +73,20 @@ public:
 	QMenu* getEditMenu() { return editMenu; }
 	QMenu* getViewMenu() { return viewMenu; }
 	QMenu* getHelpMenu() { return helpMenu; }
+	QSettings* getSettings() { return settings; }
 
 private:
     void createActions();
     void createMenus();
     void createToolBars();
     void createStatusBar();
-    void readSettings();
-    void writeSettings();
     ChildWindow *activeMdiChild();
     QMdiSubWindow *findMdiChild(const QString &fileName);
 
     QMdiArea *mdiArea;
     QSignalMapper *windowMapper;
+
+	QSettings* settings;
 
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -151,6 +153,7 @@ private:
 public:
 	QString getCurrentFile() { return currentFile; }
 	MainWindow* getMainWindow() { return mainWindow; }
+	QSettings* getSettings() { return mainWindow->getSettings(); }
 protected:
 	MainWindow* mainWindow;
 

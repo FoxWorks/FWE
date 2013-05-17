@@ -79,6 +79,7 @@ namespace EVDS {
 		Object* getEditRoot() { return root_obj; }
 		//Object* getInitializedRoot() { return r
 		//Object* getSelected() { return selected; }
+		QSettings* getSettings() { return window->getSettings(); }
 
 		void updateObject(Object* object);
 		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);

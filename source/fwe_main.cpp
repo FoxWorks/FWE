@@ -58,7 +58,11 @@ MainWindow::MainWindow() {
 	resize(1024,640);
 
 	//Load settings
-	readSettings();
+	settings = new QSettings("FoxWorks", "Editor");
+	//QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
+	//QSize size = settings.value("size", QSize(400, 400)).toSize();
+	//move(pos);
+	//resize(size);
 
 	//Create new empty file
 	newFile();
@@ -73,7 +77,8 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 	if (mdiArea->currentSubWindow()) {
 		event->ignore();
 	} else {
-		writeSettings();
+		settings->setValue("window.position", pos());
+		settings->setValue("window.size", size());
 		event->accept();
 	}
 }
@@ -403,28 +408,6 @@ void MainWindow::createToolBars() {
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::createStatusBar() {
 	statusBar()->showMessage(tr("Ready"));
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::readSettings() {
-	//QSettings settings("FoxWorks", "Editor");
-	//QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-	//QSize size = settings.value("size", QSize(400, 400)).toSize();
-	//move(pos);
-	//resize(size);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::writeSettings() {
-	//QSettings settings("FoxWorks", "Editor");
-	//settings.setValue("pos", pos());
-	//settings.setValue("size", size());
 }
 
 
