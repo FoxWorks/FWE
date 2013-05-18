@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="GLC_lib"
-	ProjectGUID="{EC153889-409E-474C-A75B-65C02655FCF2}"
+	ProjectGUID="{20C68173-84C6-D548-9F3E-F174B23B730E}"
 	RootNamespace="GLC_lib"
 	Keyword="Win32Proj"
 	>
@@ -3801,143 +3801,59 @@
 						Filter=""
 						>
 						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\JlCompress.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\JlCompress.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\crypt.h"
 							>
 						</File>
 						<File
-							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\ioapi.c"
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\ioapi.h"
 							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug|x64"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|x64"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="DebugDynamic|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="DebugDynamic|x64"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="ReleaseDynamic|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="ReleaseDynamic|x64"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="DebugSingleThread|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="DebugSingleThread|x64"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="ReleaseSingleThread|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="ReleaseSingleThread|x64"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="DebugSingleThreadDynamic|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="DebugSingleThreadDynamic|x64"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="ReleaseSingleThreadDynamic|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="ReleaseSingleThreadDynamic|x64"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									CompileAs="1"
-								/>
-							</FileConfiguration>
 						</File>
 						<File
-							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\ioapi.h"
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\qioapi.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quaadler32.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quaadler32.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quachecksum32.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quacrc32.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quacrc32.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quagzipfile.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quagzipfile.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quaziodevice.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quaziodevice.h"
 							>
 						</File>
 						<File
@@ -3949,11 +3865,27 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quazip_global.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quazipdir.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quazipdir.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quazipfile.cpp"
 							>
 						</File>
 						<File
 							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quazipfile.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\quazipfileinfo.cpp"
 							>
 						</File>
 						<File
@@ -6857,6 +6789,10 @@
 				Filter=""
 				>
 				<File
+					RelativePath="..\..\qtmoc\glc\moc_JlCompress.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\qtmoc\glc\moc_atmosphere.cpp"
 					>
 				</File>
@@ -7397,11 +7333,39 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\qtmoc\glc\moc_quaadler32.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\qtmoc\glc\moc_quachecksum32.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\qtmoc\glc\moc_quacrc32.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\qtmoc\glc\moc_quagzipfile.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\qtmoc\glc\moc_quat.cpp"
 					>
 				</File>
 				<File
+					RelativePath="..\..\qtmoc\glc\moc_quaziodevice.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\qtmoc\glc\moc_quazip.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\qtmoc\glc\moc_quazip_global.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\qtmoc\glc\moc_quazipdir.cpp"
 					>
 				</File>
 				<File

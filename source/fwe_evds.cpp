@@ -100,18 +100,6 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window)
 	glview = new GLView(this);
 	glview->setScene(glscene);
 	setCentralWidget(glview);
-	{
-		QPushButton* a = new QPushButton(QIcon(":/icon/glview/test.png"),"");
-		a->setGeometry(100,8,24,24);
-		a->setWindowOpacity(0.8);
-		glscene->addWidget(a);
-
-		//QGraphicsProxyWidget* aprox = new QGraphicsProxyWidget(0,Qt::Dialog);
-		//aprox->setWidget(a);
-		//glview->addItem(aprox);
-		//glview->setSceneRect(view->geometry());
-		//setCentralWidget(view);
-	}
 
 	//Create informational docks
 	//createCutsectionDock();

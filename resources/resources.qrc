@@ -24,7 +24,18 @@
     <file>icon/evds/properties.png</file>
     <file>icon/evds/materials.png</file>
     
-    <file>icon/glview/test.png</file>
+    <file>icon/glview/center.png</file>
+    <file>icon/glview/projection_ortho.png</file>
+    <file>icon/glview/projection_perspective.png</file>
+    <file>icon/glview/render_shadow.png</file>
+    <file>icon/glview/render_wireframe.png</file>
+    <file>icon/glview/view_iso.png</file>
+    <file>icon/glview/view_back.png</file>
+    <file>icon/glview/view_front.png</file>
+    <file>icon/glview/view_left.png</file>
+    <file>icon/glview/view_right.png</file>
+    <file>icon/glview/view_top.png</file>
+    <file>icon/glview/view_bottom.png</file>
 
     <file>shader/background.frag</file>
     <file>shader/background.vert</file>

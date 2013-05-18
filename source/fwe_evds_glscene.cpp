@@ -30,6 +30,10 @@
 #include <QtOpenGL>
 #include <QMessageBox>
 
+#include <QPushButton>
+#include <QMenu>
+#include <QHBoxLayout>
+
 #include <GLC_UserInput>
 #include <GLC_Exception>
 #include <GLC_Context>
@@ -79,12 +83,96 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	GLC_3DViewInstance instance(GLC_Factory::instance()->createCircle(0.0));
 	collection->add(instance);
 
-	GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(0,1,0), GLC_Point3d(0,0,0));
-	viewport->addClipPlane(GL_CLIP_PLANE0, m_pClipPlane);
+	//GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(0,1,0), GLC_Point3d(0,0,0));
+	//viewport->addClipPlane(GL_CLIP_PLANE0, m_pClipPlane);
 
 	//Enable LOD
 	collection->setLodUsage(true,viewport);
 	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("render.min_pixel_culling",4).toInt());
+
+	//Create panels
+	panel_control = new QWidget();
+	panel_control->setWindowOpacity(0.7);
+	panel_control->setLayout(new QHBoxLayout);
+	panel_control->layout()->setSpacing(0);
+	panel_control->layout()->setMargin(0);
+	panel_control->setStyleSheet("#glview_ui_panel { background: transparent } QPushButton { min-width: 24; min-height: 24; border-width: 2; }");
+	panel_control->setObjectName("glview_ui_panel");
+	addWidget(panel_control);
+
+	panel_view = new QWidget();
+	panel_view->setWindowOpacity(0.7);
+	panel_view->setLayout(new QHBoxLayout);
+	panel_view->layout()->setSpacing(0);
+	panel_view->layout()->setMargin(0);
+	panel_view->setStyleSheet("#glview_ui_panel { background: transparent } QPushButton { min-width: 24; min-height: 24; border-width: 2; }");
+	panel_view->setObjectName("glview_ui_panel");
+	addWidget(panel_view);
+
+
+	//Fill control panel with buttons
+	button_center = new QPushButton(QIcon(":/icon/glview/center.png"),"");
+	connect(button_center, SIGNAL(pressed()), this, SLOT(doCenter()));
+	panel_control->layout()->addWidget(button_center);
+
+	button_projection = new QPushButton(QIcon(":/icon/glview/projection_ortho.png"),"");
+	connect(button_projection, SIGNAL(pressed()), this, SLOT(toggleProjection()));
+	panel_control->layout()->addWidget(button_projection);
+
+	button_shadow = new QPushButton(QIcon(":/icon/glview/render_shadow.png"),"");
+	panel_control->layout()->addWidget(button_shadow);
+
+	button_material_mode = new QPushButton(QIcon(":/icon/glview/render_wireframe.png"),"");
+	panel_control->layout()->addWidget(button_material_mode);
+
+	//Fill view panel with buttons
+	QPushButton* button = new QPushButton(QIcon(":/icon/glview/view_iso.png"),"");
+	button->setIconSize(QSize(20,20));
+	connect(button, SIGNAL(pressed()), this, SLOT(setIsoView()));
+	panel_view->layout()->addWidget(button);
+
+	button = new QPushButton(QIcon(":/icon/glview/view_left.png"),"");
+	button->setIconSize(QSize(20,20));
+	connect(button, SIGNAL(pressed()), this, SLOT(setLeftView()));
+	panel_view->layout()->addWidget(button);
+
+	button = new QPushButton(QIcon(":/icon/glview/view_right.png"),"");
+	button->setIconSize(QSize(20,20));
+	connect(button, SIGNAL(pressed()), this, SLOT(setRightView()));
+	panel_view->layout()->addWidget(button);
+
+	button = new QPushButton(QIcon(":/icon/glview/view_top.png"),"");
+	button->setIconSize(QSize(20,20));
+	connect(button, SIGNAL(pressed()), this, SLOT(setTopView()));
+	panel_view->layout()->addWidget(button);
+
+	button = new QPushButton(QIcon(":/icon/glview/view_bottom.png"),"");
+	button->setIconSize(QSize(20,20));
+	connect(button, SIGNAL(pressed()), this, SLOT(setBottomView()));
+	panel_view->layout()->addWidget(button);
+
+	button = new QPushButton(QIcon(":/icon/glview/view_front.png"),"");
+	button->setIconSize(QSize(20,20));
+	connect(button, SIGNAL(pressed()), this, SLOT(setFrontView()));
+	panel_view->layout()->addWidget(button);
+
+	button = new QPushButton(QIcon(":/icon/glview/view_back.png"),"");
+	button->setIconSize(QSize(20,20));
+	connect(button, SIGNAL(pressed()), this, SLOT(setBackView()));
+	panel_view->layout()->addWidget(button);
+
+	/*QMenu* view_menu = new QMenu(button_view);
+	button_view->setMenu(view_menu);
+	QAction* action = new QAction(QIcon(":/icon/glview/view_iso.png"), tr("Isometric"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(setIsoView()));
+	view_menu->addAction(action);
+	action = new QAction(QIcon(":/icon/glview/view_left.png"), tr("Left"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(setLeftView()));
+	view_menu->addAction(action);
+	view_menu->setMinimumHeight(24);*/
+
+	//Ortho by default
+	sceneOrthographic = true;
 }
 
 
@@ -93,6 +181,56 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 ////////////////////////////////////////////////////////////////////////////////
 GLScene::~GLScene()
 {
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void GLScene::doCenter() {
+	viewport->reframe(collection->boundingBox(),1.6);
+}
+void GLScene::toggleProjection() {
+	sceneOrthographic = !sceneOrthographic;
+	if (sceneOrthographic) {
+		button_projection->setIcon(QIcon(":/icon/glview/projection_ortho.png"));
+	} else {
+		button_projection->setIcon(QIcon(":/icon/glview/projection_perspective.png"));
+	}
+}
+void GLScene::setIsoView() {
+	viewport->cameraHandle()->setIsoView();
+}
+void GLScene::setLeftView() {
+	viewport->cameraHandle()->setLeftView();
+}
+void GLScene::setRightView() {
+	viewport->cameraHandle()->setRightView();
+}
+void GLScene::setFrontView() {
+	viewport->cameraHandle()->setFrontView();
+}
+void GLScene::setBackView() {
+	viewport->cameraHandle()->setRearView();
+}
+void GLScene::setTopView() {
+	viewport->cameraHandle()->setTopView();
+}
+void GLScene::setBottomView() {
+	viewport->cameraHandle()->setBottomView();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void GLScene::geometryChanged(const QRectF &rect) {
+	QSize minSize = panel_control->layout()->minimumSize();
+	panel_control->setGeometry(rect.width()/2 - minSize.width()/2,rect.y()+4,
+		minSize.width(),minSize.height());
+
+	minSize = panel_view->layout()->minimumSize();
+	panel_view->setGeometry(rect.width()/2 - minSize.width()/2,rect.y()+rect.height()-minSize.height()-4,
+		minSize.width(),minSize.height());
 }
 
 
@@ -192,9 +330,9 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 		#endif
 
 		viewport->initGl();
-		viewport->reframe(collection->boundingBox());
 		previousWidth = 0;
 		previousHeight = 0;
+		doCenter();
 
 		//Load shaders
 		loadShaders();
@@ -204,6 +342,7 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	painter->beginNativePainting();
 	viewport->setWinGLSize(rect.width(), rect.height());
 	if ((rect.width() != previousWidth) || (rect.height() != previousHeight)) {
+		geometryChanged(rect);
 		previousWidth = rect.width();
 		previousHeight = rect.height();
 
@@ -216,7 +355,7 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	}
 
 	//Always use orthographic view
-	viewport->setToOrtho(fw_editor_settings->value("rendering.use_ortho_projection",true).toBool());
+	viewport->setToOrtho(sceneOrthographic);
 
 	//Start FXAA
 	if (fbo_fxaa) fbo_fxaa->bind();

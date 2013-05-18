@@ -177,16 +177,30 @@ void ObjectRenderer::addLODMesh(EVDS_MESH* mesh, int lod) {
 	} else {
 		GLfloatVector verticesVector;
 		GLfloatVector normalsVector;
-		IndexList indicesList;
-		GLC_Material* glcMaterial = new GLC_Material();
+		//IndexList indicesList;
+		//GLC_Material* glcMaterial = new GLC_Material();
+		QList<GLC_Material*> glcGroupMaterials;
+		QList<IndexList> indicesLists;
 
-		if (object->getType() == "fuel_tank") {
+		//Must have at least one smoothing group
+		if (mesh->num_smoothing_groups == 0) mesh->num_smoothing_groups = 1;
+
+		//Prepare materials for every group
+		for (int i = 0; i < mesh->num_smoothing_groups; i++) {
+			GLC_Material* glcMaterial = new GLC_Material();
+			int j = i+1;
+			glcMaterial->setDiffuseColor(QColor((j*128) % 256,((j/4)*128) % 256,((j/16)*128) % 256));
+			glcGroupMaterials.append(glcMaterial);
+			indicesLists.append(IndexList());
+		}
+
+		/*if (object->getType() == "fuel_tank") {
 			if (object->isOxidizerTank()) {
 				glcMaterial->setDiffuseColor(QColor(0,0,255));
 			} else {
 				glcMaterial->setDiffuseColor(QColor(255,255,0));
 			}
-		}
+		}*/
 
 		//Add all data
 		int firstVertexIndex = glcMesh->VertexCount();	
@@ -194,25 +208,24 @@ void ObjectRenderer::addLODMesh(EVDS_MESH* mesh, int lod) {
 			verticesVector << mesh->vertices[i].x;
 			verticesVector << mesh->vertices[i].y;
 			verticesVector << mesh->vertices[i].z;
-			normalsVector << mesh->normals[i].x;
-			normalsVector << mesh->normals[i].y;
-			normalsVector << mesh->normals[i].z;
+			normalsVector << -mesh->normals[i].x;
+			normalsVector << -mesh->normals[i].y;
+			normalsVector << -mesh->normals[i].z;
 		}
 		for (int i = 0; i < mesh->num_triangles; i++) {
-			//if ((mesh->triangles[i].vertex[0].y > 0.0) &&
-				//(mesh->triangles[i].vertex[1].y > 0.0) &&
-				//(mesh->triangles[i].vertex[2].y > 0.0)) {
-				indicesList << mesh->triangles[i].indices[0] + firstVertexIndex;
-				indicesList << mesh->triangles[i].indices[1] + firstVertexIndex;
-				indicesList << mesh->triangles[i].indices[2] + firstVertexIndex;
-			//}
+			indicesLists[mesh->triangles[i].smoothing_group] << mesh->triangles[i].indices[0] + firstVertexIndex;
+			indicesLists[mesh->triangles[i].smoothing_group] << mesh->triangles[i].indices[1] + firstVertexIndex;
+			indicesLists[mesh->triangles[i].smoothing_group] << mesh->triangles[i].indices[2] + firstVertexIndex;
 		}
-		indicesList << 0 << 0 << 0;
+		indicesLists[0] << 0 << 0 << 0; //Prevent empty lists
 
 		glcMesh->addVertice(verticesVector);
 		glcMesh->addNormals(normalsVector);
-		glcMesh->addTriangles(glcMaterial, indicesList, lod); //coarse_mesh->resolution);
-		//glcMesh->reverseNormals();
+		for (int i = 0; i < mesh->num_smoothing_groups; i++) {
+			if (!indicesLists[i].isEmpty()) {
+				glcMesh->addTriangles(glcGroupMaterials[i], indicesLists[i], lod); //coarse_mesh->resolution);
+			}
+		}
 	}
 }
 
@@ -277,6 +290,7 @@ void ObjectLODGenerator::updateMesh() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectLODGenerator::run() {
+	msleep(2000); //Give enough time for the rest of application to initialize
 	while (!doStopWork) {
 		if (needMesh) {
 			readingLock.lock();
@@ -292,7 +306,7 @@ void ObjectLODGenerator::run() {
 			object_copy = 0;
 
 			for (int lod = 0; lod < numLods; lod++) {
-				printf("Generating mesh %p for level %d\n",object,lod);
+				//printf("Generating mesh %p for level %d\n",object,lod);
 			
 				//Remove old mesh
 				if (mesh[lod]) {
@@ -308,7 +322,7 @@ void ObjectLODGenerator::run() {
 
 				//Create new one
 				EVDS_Mesh_Generate(work_object,&mesh[lod],getLODResolution(numLods-lod-1),EVDS_MESH_USE_DIVISIONS);
-				printf("Done mesh %p %p for level %d\n",object,mesh,lod);
+				//printf("Done mesh %p %p for level %d\n",object,mesh,lod);
 			}
 
 			//Release the object that was worked on
@@ -325,7 +339,7 @@ void ObjectLODGenerator::run() {
 				emit signalLODsReady();
 			}
 		}
-		msleep(100);
+		msleep(50);
 	}
 
 	//Finish thread work and destroy HQ mesh

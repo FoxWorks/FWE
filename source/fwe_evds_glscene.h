@@ -58,14 +58,34 @@ namespace EVDS {
 		void drawScreenQuad();
 
 	protected:
+		void geometryChanged(const QRectF &rect);
 		void drawBackground(QPainter *painter, const QRectF &rect);
 		void mousePressEvent(QGraphicsSceneMouseEvent *event);
 		void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 		void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
+	private slots:
+		void doCenter();
+		void toggleProjection();
+		void setIsoView();
+		void setLeftView();
+		void setRightView();
+		void setFrontView();
+		void setBackView();
+		void setTopView();
+		void setBottomView();
+
 	private:
 		//Parent scene from which GLC stuff is taken
 		GLScene* parent_scene;
+
+		//UI elements
+		QWidget* panel_control;
+		QWidget* panel_view;
+		QPushButton* button_center;
+		QPushButton* button_projection;
+		QPushButton* button_shadow;
+		QPushButton* button_material_mode;
 
 		//GLC Specific
 		GLC_Light* light[1];
@@ -74,6 +94,7 @@ namespace EVDS {
 		GLC_MoverController controller;
 
 		//Is scene initialized OpenGL-wise
+		bool sceneOrthographic;
 		bool sceneInitialized;
 		int previousWidth,previousHeight;
 
