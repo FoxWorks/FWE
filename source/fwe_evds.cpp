@@ -251,8 +251,8 @@ void Editor::createCSectionDock() {
 
 	csection = new QWidget(properties_dock);
 	csection_dock->setWidget(csection);
-	//addDockWidget(Qt::BottomDockWidgetArea, csection_dock);
-	tabifyDockWidget(list_dock,csection_dock);
+	addDockWidget(Qt::RightDockWidgetArea, csection_dock);
+	//tabifyDockWidget(list_dock,csection_dock);
 
 	csection_layout = new QStackedLayout;
 	csection->setLayout(csection_layout);
@@ -315,7 +315,7 @@ void Editor::selectObject(const QModelIndex& index) {
 	properties_layout->setCurrentWidget(property_sheet);
 
 	//Show cross-sections editor
-	/*QWidget* csection_editor = object->getCrossSectionsEditor();
+	QWidget* csection_editor = object->getCrossSectionsEditor();
 	if (csection_editor) {
 		if (csection_layout->indexOf(csection_editor) < 0) {
 			csection_layout->addWidget(csection_editor);
@@ -323,7 +323,7 @@ void Editor::selectObject(const QModelIndex& index) {
 		csection_layout->setCurrentWidget(csection_editor);
 	} else {
 		csection_layout->setCurrentWidget(csection_none);
-	}*/
+	}
 
 	//Show information
 	//object->updateInformationObject();
@@ -530,7 +530,46 @@ bool Editor::loadFile(const QString &fileName) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+void FWE_SaveFile_RemoveRedundantVariables(EVDS_OBJECT* object) {
+	//Search for geometry
+	EVDS_VARIABLE* variable;
+	if (EVDS_Object_GetVariable(object,"geometry.cross_sections",&variable) == EVDS_OK) {
+		SIMC_LIST* list;
+		SIMC_LIST_ENTRY* entry;
+		EVDS_Variable_GetList(variable,&list);
+
+		//Count number of entries
+		int count = 0;
+		entry = SIMC_List_GetFirst(list);
+		while (entry) {
+			count++;
+			entry = SIMC_List_GetNext(list,entry);
+		}
+
+		//Remove if only one cross-section present
+		if (count <= 1) {
+			EVDS_Variable_Destroy(variable);
+		}
+	}
+
+	//Get list of children
+	SIMC_LIST* list;
+	SIMC_LIST_ENTRY* entry;
+	EVDS_Object_GetAllChildren(object,&list);
+
+	//Do same for every child
+	entry = SIMC_List_GetFirst(list);
+	while (entry) {
+		FWE_SaveFile_RemoveRedundantVariables((EVDS_OBJECT*)SIMC_List_GetData(list,entry));
+		entry = SIMC_List_GetNext(list,entry);
+	}
+}
+
 bool Editor::saveFile(const QString &fileName) {
+	//Filter out redundant variables
+	FWE_SaveFile_RemoveRedundantVariables(root);
+
+	//Save the file itself
 	EVDS_OBJECT_SAVEEX info = { 0 };
 	info.flags = EVDS_OBJECT_SAVEEX_ONLY_CHILDREN;
 	EVDS_Object_SaveEx(root,fileName.toUtf8().data(),&info);

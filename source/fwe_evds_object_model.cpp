@@ -165,9 +165,11 @@ bool ObjectTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 		object = (Object*)(parent.internalPointer());
 	}
 
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	beginInsertRows(parent,beginRow,beginRow);
 	object->insertChild(beginRow,data->text());
 	endInsertRows();
+	QApplication::restoreOverrideCursor();
 
 	editor->setModified();
 	return true;

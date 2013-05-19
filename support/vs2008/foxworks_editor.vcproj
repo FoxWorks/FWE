@@ -1556,6 +1556,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\fwe_evds_object_csection.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_evds_object_csection.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\fwe_evds_object_model.cpp"
 			>
 		</File>
@@ -1990,6 +1998,10 @@
 			</File>
 			<File
 				RelativePath="..\..\qtmoc\moc_fwe_evds_object.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_object_csection.cpp"
 				>
 			</File>
 			<File

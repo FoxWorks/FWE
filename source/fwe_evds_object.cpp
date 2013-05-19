@@ -33,7 +33,7 @@
 #include "fwe_evds.h"
 #include "fwe_evds_object.h"
 #include "fwe_evds_object_renderer.h"
-//#include "fwe_evds_object_csection.h"
+#include "fwe_evds_object_csection.h"
 #include "fwe_prop_sheet.h"
 
 using namespace EVDS;
@@ -54,8 +54,15 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 	//Create a renderer for the object before children are created (FIXME: not for initialized objects)
 	renderer = 0;
 	if (in_parent) {
+		QTime time; time.start();
+
 		renderer = new ObjectRenderer(this);
 		editor->updateObject(this);
+
+		int elapsed = time.elapsed();
+		if (elapsed > 40) {
+			qDebug("Object::Object: Long generation: %s (%d msec)",getName().toAscii().data(),elapsed);
+		}
 	}
 
 	//Enumerate and store all children
@@ -65,7 +72,7 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 	property_sheet = 0;
 
 	//No cross-sections editor
-	//csection_editor = 0;
+	csection_editor = 0;
 }
 
 
@@ -78,7 +85,7 @@ Object::~Object() {
 	}
 	if (renderer) delete renderer;
 	if (property_sheet) property_sheet->deleteLater();
-	//if (csection_editor) csection_editor->deleteLater();
+	if (csection_editor) csection_editor->deleteLater();
 }
 
 
@@ -86,12 +93,11 @@ Object::~Object() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 int Object::getSelectedCrossSection() {
-	/*if (csection_editor) {
+	if (csection_editor) {
 		return csection_editor->getSelectedIndex();
 	} else {
 		return -1;
-	}*/
-	return -1;
+	}
 }
 
 
@@ -503,12 +509,12 @@ bool Object::isOxidizerTank() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 QWidget* Object::getCrossSectionsEditor() {
-	/*if (csection_editor) {
+	if (csection_editor) {
 		return csection_editor;
 	} else {
 		csection_editor = new CrossSectionEditor(this);
 		return csection_editor;
-	}*/
+	}
 	return 0;
 }
 

@@ -26,83 +26,84 @@
 /// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef FWE_EVDS_OBJECT_H
-#define FWE_EVDS_OBJECT_H
+#ifndef FWE_EVDS_OBJECT_CSECTION_H
+#define FWE_EVDS_OBJECT_CSECTION_H
 
-#include <QObject>
-#include <QString>
-#include <QVector3D>
-#include <QThread>
-#include <QMutex>
+#include <QWidget>
+#include <QMap>
 #include "evds.h"
 
 QT_BEGIN_NAMESPACE
-class QtProperty;
+class QTabBar;
+class QStackedWidget;
+class QVBoxLayout;
 QT_END_NAMESPACE
 
 class FWEPropertySheet;
 namespace EVDS {
 	class Editor;
-	class ObjectRenderer;
-	class CrossSectionEditor;
-	class Object : public QObject
+	class Object;
+	class CrossSection;
+	class CrossSectionEditor : public QWidget
 	{
 		Q_OBJECT
 
 	public:
-		Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in_editor);
-		~Object();
+		CrossSectionEditor(Object* in_object);
+		~CrossSectionEditor();
+
+		Object* getObject() { return object; }
+		Editor* getEVDSEditor() { return editor; }
+		int getSelectedIndex();
+
+	private slots:
+		void sectionSelected(int index);
+		void sectionDeleted(int index);
+		void sectionMoved(int from, int to);
+
+	private:
+		QTabBar* tab;
+		QStackedWidget* sections;
+		QVBoxLayout* layout;
+
+		Editor* editor;
+		Object* object;
+		EVDS_VARIABLE* geometry;
+
+		QMap<int, CrossSection*> csectionWidgetByIndex;
+		QMap<CrossSection*, int> indexByCSectionWidget;
+	};
+
+	class CrossSection : public QWidget
+	{
+		Q_OBJECT
+
+	public:
+		CrossSection(EVDS_VARIABLE* in_cross_section, CrossSectionEditor* in_editor);
+		~CrossSection();
 
 		void setVariable(const QString &name, double value);
 		void setVariable(const QString &name, const QString &value);
 		double getVariable(const QString &name);
-		QString getString(const QString &name);
-		QVector3D getVector(const QString &name);
-		QString getName();
-		void setName(const QString &name);
 		QString getType();
-		void setType(const QString &type);
 
-		int getChildrenCount() { return children.count(); }
-		Object* getChild(int index) { return children.at(index); }
-		int getChildIndex(Object* child) { return children.indexOf(child); }
-		Object* getParent() { return parent; }
-		Object* insertNewChild(int index);
-		Object* insertChild(int index, const QString &description);
-		void removeChild(int index);
-		void invalidateChildren();
-
-		bool isOxidizerTank();
-
-		QWidget* getPropertySheet();
-		QWidget* getCrossSectionsEditor();
-		EVDS::Editor* getEVDSEditor() { return editor; }
-		EVDS_OBJECT* getEVDSObject() { return object; }
-		int getSelectedCrossSection();
-
-		Object* getInitializedObject(); //Part of the entirely initialized copy of the vessel
-		ObjectRenderer* getRenderer() { return renderer; }
-
-		void update(bool visually);
-		//void draw(bool objectSelected);
+		EVDS_VARIABLE* getEVDSCrossSection() { return cross_section; }
 
 	private slots:
 		void doubleChanged(const QString& name, double value);
 		void enumChanged(const QString& name, const QString& value);
 		void propertyUpdate(const QString& name);
-		void meshReady();
 
 	private:
-		EVDS_OBJECT* object;
-		EVDS::Editor* editor;
+		void createPropertySheet();
 
-		EVDS::Object* parent;
-		QList<Object*> children;
-
-		ObjectRenderer* renderer;
-		CrossSectionEditor* csection_editor;
 		FWEPropertySheet* property_sheet;
+		QVBoxLayout* layout;
+		
+		CrossSectionEditor* editor;
+		EVDS_VARIABLE* cross_section;
 	};
 }
+
 
 #endif
