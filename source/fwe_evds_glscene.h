@@ -68,6 +68,9 @@ namespace EVDS {
 	private slots:
 		void doCenter();
 		void toggleProjection();
+		void toggleShadow();
+		void toggleMaterialMode();
+		void saveScreenshot();
 		void setIsoView();
 		void setLeftView();
 		void setRightView();
@@ -87,6 +90,7 @@ namespace EVDS {
 		QPushButton* button_projection;
 		QPushButton* button_shadow;
 		QPushButton* button_material_mode;
+		QPushButton* button_save_picture;
 
 		//GLC Specific
 		GLC_Light* light[1];
@@ -96,14 +100,18 @@ namespace EVDS {
 
 		//Is scene initialized OpenGL-wise
 		bool sceneOrthographic;
+		bool sceneShadowed;
+		bool sceneWireframe;
 		bool sceneInitialized;
 		int previousWidth,previousHeight;
 
 		//Shaders and framebuffers
 		QGLFramebufferObject* fbo_outline;
+		QGLFramebufferObject* fbo_shadow;
 		QGLFramebufferObject* fbo_fxaa;
 		QGLShaderProgram* shader_background;
 		QGLShaderProgram* shader_outline;
+		QGLShaderProgram* shader_shadow;
 		QGLShaderProgram* shader_fxaa;
 	};
 

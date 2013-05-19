@@ -120,55 +120,46 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window)
 	loadObjectData();
 
 
-	//Edit menu structure
-/*	QAction* action;
-	//actions.append(getMainWindow()->getEditMenu()->addSeparator());
-
-	//action = new QAction(QIcon(":/previous.png"), tr("Update Shaders"), this);
-	//action->setShortcuts(QKeySequence::SelectAll);
-	//connect(action, SIGNAL(triggered()), this, SLOT(updateShaders()));
-	//actions.append(action);
-	//getMainWindow()->getEditMenu()->addAction(action);
-
 	//View menu structure
+	QAction* action;
 	action = new QAction(QIcon(":/icon/evds/hierarchy.png"), tr("Object &Hierarchy"), this);
-	connect(action, SIGNAL(triggered()), this, SLOT(showHierarchy()));
+	//connect(action, SIGNAL(triggered()), this, SLOT(showHierarchy()));
 	actions.append(action);
-	getMainWindow()->getViewMenu()->addAction(action);
+	window->getMainWindow()->getViewMenu()->addAction(action);
 
 	action = new QAction(tr("Object &Properties"), this); //QIcon(":/icon/evds/properties.png"),
-	connect(action, SIGNAL(triggered()), this, SLOT(showProperties()));
+	//connect(action, SIGNAL(triggered()), this, SLOT(showProperties()));
 	actions.append(action);
-	getMainWindow()->getViewMenu()->addAction(action);
+	window->getMainWindow()->getViewMenu()->addAction(action);
 
 	action = new QAction(tr("Edit &Cross Sections"), this); //QIcon(":/icon/evds/csections.png"), 
-	connect(action, SIGNAL(triggered()), this, SLOT(showCrossSections()));
+	//connect(action, SIGNAL(triggered()), this, SLOT(showCrossSections()));
 	actions.append(action);
-	getMainWindow()->getViewMenu()->addAction(action);
+	window->getMainWindow()->getViewMenu()->addAction(action);
 
-	actions.append(getMainWindow()->getViewMenu()->addSeparator());
+	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
 
 	action = new QAction(tr("Show Cut&section..."), this);
-	connect(action, SIGNAL(triggered()), this, SLOT(showCutsection()));
+	//connect(action, SIGNAL(triggered()), this, SLOT(showCutsection()));
 	actions.append(action);
-	getMainWindow()->getViewMenu()->addAction(action);
+	window->getMainWindow()->getViewMenu()->addAction(action);
 
-	actions.append(getMainWindow()->getViewMenu()->addSeparator());
+	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
 
 	action = new QAction(tr("&Rigid Body Information..."), this);
 	actions.append(action);
-	getMainWindow()->getViewMenu()->addAction(action);
+	window->getMainWindow()->getViewMenu()->addAction(action);
 
 	action = new QAction(tr("&Rocket Engine Designer..."), this);
 	actions.append(action);
-	getMainWindow()->getViewMenu()->addAction(action);
+	window->getMainWindow()->getViewMenu()->addAction(action);
 
-	actions.append(getMainWindow()->getViewMenu()->addSeparator());
+	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
 
 	action = new QAction(QIcon(":/icon/evds/materials.png"), tr("&Materials Database..."), this);
 	//connect(action, SIGNAL(triggered()), this, SLOT(showCrossSections()));
 	actions.append(action);
-	getMainWindow()->getViewMenu()->addAction(action);*/
+	window->getMainWindow()->getViewMenu()->addAction(action);
 }
 
 
@@ -550,7 +541,7 @@ bool Editor::saveFile(const QString &fileName) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void Editor::updateMenus(bool isInFront) {
+void Editor::updateInterface(bool isInFront) {
 	for (int i = 0; i < actions.count(); i++) {
 		actions[i]->setVisible(isInFront);
 	}

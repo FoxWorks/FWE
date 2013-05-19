@@ -15,7 +15,7 @@ varying vec4 vertTexcoord;
 void main() {
   // The parameters are hardcoded for now, but could be
   // made into uniforms to control from the program.
-  float FXAA_SPAN_MAX = 4.0;
+  float FXAA_SPAN_MAX = 2.0;
   float FXAA_REDUCE_MUL = 1.0/8.0;
   float FXAA_REDUCE_MIN = (1.0/128.0);
   

@@ -41,7 +41,7 @@ MainWindow::MainWindow() {
 	mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 	mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 	setCentralWidget(mdiArea);
-	connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(updateMenus()));
+	connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(updateInterface()));
 	windowMapper = new QSignalMapper(this);
 	connect(windowMapper, SIGNAL(mapped(QWidget*)), this, SLOT(setActiveSubWindow(QWidget*)));
 
@@ -50,7 +50,7 @@ MainWindow::MainWindow() {
 	createMenus();
 	//createToolBars();
 	createStatusBar();
-	updateMenus();
+	updateInterface();
 
 	//Set default title and size
 	setWindowTitle(tr("FoxWorks Editor"));
@@ -192,7 +192,7 @@ void MainWindow::about() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::updateMenus() {
+void MainWindow::updateInterface() {
 	bool hasMdiChild = (activeMdiChild() != 0);
 	saveAct->setEnabled(hasMdiChild);
 	saveAsAct->setEnabled(hasMdiChild);
@@ -213,7 +213,7 @@ void MainWindow::updateMenus() {
 		ChildWindow *child = qobject_cast<ChildWindow *>(windows.at(i)->widget());
 		if (!child) continue;
 
-		child->updateMenus(child == activeMdiChild());
+		child->updateInterface(child == activeMdiChild());
 	}
 }
 
@@ -265,7 +265,7 @@ ChildWindow *MainWindow::createMdiChild() {
 	mdiArea->addSubWindow(child);
 	mdiArea->setWindowIcon(QIcon(":/icon/mdi.png"));
 
-	updateMenus();
+	updateInterface();
 	return child;
 }
 
@@ -590,7 +590,7 @@ void ChildWindow::updateTitle() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::updateMenus(bool isInFront) {
+void ChildWindow::updateInterface(bool isInFront) {
 }
 
 

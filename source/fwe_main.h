@@ -66,7 +66,7 @@ private slots:
     void copy();
     void paste();
     void about();
-    void updateMenus();
+    void updateInterface();
     void updateWindowMenu();
     ChildWindow *createMdiChild();
     void setActiveSubWindow(QWidget *window);
@@ -133,7 +133,7 @@ public:
 	bool saveAs();
 	bool saveFile(const QString &fileName);
 
-	void updateMenus(bool isInFront);
+	void updateInterface(bool isInFront);
 
 	void cut();
 	void copy();

@@ -60,6 +60,7 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	sceneInitialized = false;
 	parent_scene = in_parent_scene; //FIXME: support for this
 	fbo_outline = 0;
+	fbo_shadow = 0;
 	fbo_fxaa = 0;
 
 	//Create objects
@@ -123,10 +124,16 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	panel_control->layout()->addWidget(button_projection);
 
 	button_shadow = new QPushButton(QIcon(":/icon/glview/render_shadow.png"),"");
+	connect(button_shadow, SIGNAL(pressed()), this, SLOT(toggleShadow()));
 	panel_control->layout()->addWidget(button_shadow);
 
-	button_material_mode = new QPushButton(QIcon(":/icon/glview/render_wireframe.png"),"");
+	button_material_mode = new QPushButton(QIcon(":/icon/glview/render_shaded.png"),"");
+	connect(button_material_mode, SIGNAL(pressed()), this, SLOT(toggleMaterialMode()));
 	panel_control->layout()->addWidget(button_material_mode);
+
+	button_save_picture = new QPushButton(QIcon(":/icon/glview/render_screenshot.png"),"");
+	connect(button_save_picture, SIGNAL(pressed()), this, SLOT(saveScreenshot()));
+	panel_control->layout()->addWidget(button_save_picture);
 
 	//Fill view panel with buttons
 	QPushButton* button = new QPushButton(QIcon(":/icon/glview/view_iso.png"),"");
@@ -176,6 +183,8 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 
 	//Ortho by default
 	sceneOrthographic = true;
+	sceneShadowed = false;
+	sceneWireframe = false;
 }
 
 
@@ -200,6 +209,45 @@ void GLScene::toggleProjection() {
 	} else {
 		button_projection->setIcon(QIcon(":/icon/glview/projection_perspective.png"));
 	}
+}
+void GLScene::toggleShadow() {
+	sceneShadowed = !sceneShadowed;
+}
+void GLScene::toggleMaterialMode() {
+	sceneWireframe = !sceneWireframe;
+	if (sceneWireframe) {
+		button_material_mode->setIcon(QIcon(":/icon/glview/render_wireframe.png"));
+	} else {
+		button_material_mode->setIcon(QIcon(":/icon/glview/render_shaded.png"));
+	}
+}
+void GLScene::saveScreenshot() {
+	/*QImage image(QSize(previousWidth,previousHeight), QImage::Format_ARGB32_Premultiplied);
+	image.fill(0);
+
+	QPainter painter(&image);
+	render(&painter);
+	image.save("test.jpg");*/
+	QGLFramebufferObjectFormat format;
+	format.setSamples(16);
+
+	int scale = 2;
+	QGLFramebufferObject renderFbo(previousWidth*scale,previousHeight*scale);
+	QPainter fboPainter(&renderFbo);
+	fboPainter.setRenderHint(QPainter::Antialiasing);
+	fboPainter.setRenderHint(QPainter::HighQualityAntialiasing);
+
+		QRectF oldRect = sceneRect();
+		setSceneRect(QRectF(0,0,oldRect.width()*scale,oldRect.height()*scale));
+		panel_control->hide();
+		panel_view->hide();
+			render(&fboPainter);
+		setSceneRect(oldRect);
+		panel_control->show();
+		panel_view->show();
+
+	fboPainter.end();
+	renderFbo.toImage().save("test.jpg", 0, 95);
 }
 void GLScene::setIsoView() {
 	viewport->cameraHandle()->setIsoView();
@@ -275,6 +323,7 @@ QGLShaderProgram* GLScene::compileShader(const QString& name) {
 void GLScene::loadShaders() {
 	shader_background = compileShader("background");
 	shader_outline = compileShader("outline");
+	shader_shadow = compileShader("shadow");
 	shader_fxaa = compileShader("fxaa");
 }
 
@@ -285,19 +334,21 @@ void GLScene::loadShaders() {
 void GLScene::drawScreenQuad() {
 	//Setup correct projection-view matrix (all views)
 	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
 	glLoadIdentity();
 	glOrtho(-1, 1, -1, 1, 1.0f, 500.0f);
 	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
 	glLoadIdentity();
 
+	glTranslatef(0.0, 0.0, -1.0);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glTranslatef(0.0, 0.0, -1.0);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);
 
+	//Draw screen quad
 	glBegin(GL_QUADS);
 		glTexCoord2f( 0.0f, 1.0f);
 		glVertex2f(-1, 1);
@@ -308,6 +359,13 @@ void GLScene::drawScreenQuad() {
 		glTexCoord2f( 0.0f, 0.0f);
 		glVertex2f(-1,-1);
 	glEnd();
+
+	//Restore state
+	glDisable(GL_TEXTURE_2D);
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
 }
 
 
@@ -350,8 +408,10 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 		previousHeight = rect.height();
 
 		if (fbo_outline) delete fbo_outline;
+		if (fbo_shadow) delete fbo_shadow;
 		if (fbo_fxaa) delete fbo_fxaa;
 		fbo_outline = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
+		fbo_shadow = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
 		if (fw_editor_settings->value("rendering.use_fxaa",true) == true) {
 			fbo_fxaa = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
 		}
@@ -361,22 +421,32 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	viewport->setToOrtho(sceneOrthographic);
 	bool inSelectionMode = GLC_State::isInSelectionMode();
 
+
+	//==========================================================================
 	//Clear screen and buffers
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (fbo_fxaa) {
-		fbo_fxaa->bind();
-			glClearColor(0.0f,0.0f,0.0f,0.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		fbo_fxaa->release();
-	}
 	if (fbo_outline) {
 		fbo_outline->bind();
 			glClearColor(0.0f,0.0f,0.0f,0.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		fbo_outline->release();
 	}
+	if (fbo_shadow) {
+		fbo_shadow->bind();
+			glClearColor(0.0f,0.0f,0.0f,0.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fbo_shadow->release();
+	}
+	if (fbo_fxaa) {
+		fbo_fxaa->bind();
+			glClearColor(0.0f,0.0f,0.0f,0.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fbo_fxaa->release();
+	}
 
+
+	//==========================================================================
 	//Draw background
 	if (!inSelectionMode) {
 		if (fbo_fxaa) fbo_fxaa->bind();
@@ -389,6 +459,8 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 		if (fbo_fxaa) fbo_fxaa->release();
 	}
 
+
+	//==========================================================================
 	//Prepare scene rendering
     GLC_Context::current()->glcLoadIdentity();
 	viewport->setDistMinAndMax(world->collection()->boundingBox()); //Clipping planes defined by bounding box
@@ -404,27 +476,46 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 		fbo_outline->release();
 	}
 
+	//Draw into shadows buffer
+	if ((!inSelectionMode) && fbo_shadow && shader_shadow && sceneShadowed) {
+		fbo_shadow->bind();
+			GLC_Context::current()->glcPushMatrix();
+			GLC_Context::current()->glcTranslated(0,0,-0.6*world->collection()->boundingBox().zLength());
+			GLC_Context::current()->glcScaled(1,1,0);
+				//viewport->setWinGLSize(rect.width()/2, rect.height()/2);
+				world->collection()->setLodUsage(false,viewport);
+
+				world->render(0, glc::ShadingFlag);
+
+				world->collection()->setLodUsage(true,viewport);
+				//viewport->setWinGLSize(rect.width(), rect.height());
+			GLC_Context::current()->glcPopMatrix();
+		fbo_shadow->release();
+
+		if (fbo_fxaa) fbo_fxaa->bind();
+			viewport->useClipPlane(false);
+			glBindTexture(GL_TEXTURE_2D, fbo_shadow->texture());
+			shader_shadow->bind();
+			shader_shadow->setUniformValue("s_Data",0);
+			shader_shadow->setUniformValue("v_invScreenSize",1.0f/rect.width(),1.0f/rect.height());
+			drawScreenQuad();
+			shader_shadow->release();
+			viewport->useClipPlane(true);
+		if (fbo_fxaa) fbo_fxaa->release();
+	}
+
 	//Render scene into world
 	if ((!inSelectionMode) && fbo_fxaa) fbo_fxaa->bind();
-		//if (fw_editor_settings->value("render.use_wireframe",false).toBool()) {
-			//world->collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, GL_LINE);
-		//}
-		//world->collection()->setVboUsage(false);
-		//world->render(0, glc::OutlineSilhouetteRenderFlag);
-		world->render(0, glc::ShadingFlag);
+		if (!sceneWireframe) {
+			world->render(0, glc::ShadingFlag);
+		}
 		//world->render(0, glc::WireRenderFlag);
 	if ((!inSelectionMode) && fbo_fxaa) fbo_fxaa->release();
 
-	//Disable clipping plane to work with 2D rendering again
-	viewport->useClipPlane(false);
 
-	//Draw controller UI
-	if (!inSelectionMode) {
-		if (fbo_fxaa) fbo_fxaa->bind();
-			glClear(GL_DEPTH_BUFFER_BIT);
-			controller.drawActiveMoverRep();
-		if (fbo_fxaa) fbo_fxaa->release();
-	}
+	//==========================================================================
+	//Draw the rest of UI related stuff/outlines without clipping planes
+	viewport->useClipPlane(false);
 
 	//Draw object outlines
 	if ((!inSelectionMode) && fbo_outline && shader_outline) {
@@ -438,7 +529,17 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 			shader_outline->release();
 		if (fbo_fxaa) fbo_fxaa->release();
 	}
+
+	//Draw controller UI
+	if (!inSelectionMode) {
+		if (fbo_fxaa) fbo_fxaa->bind();
+			glClear(GL_DEPTH_BUFFER_BIT);
+			controller.drawActiveMoverRep();
+		if (fbo_fxaa) fbo_fxaa->release();
+	}
 	
+
+	//==========================================================================
 	//End FXAA and display it on screen
 	if ((!inSelectionMode) && fbo_fxaa) {
 		glBindTexture(GL_TEXTURE_2D, fbo_fxaa->texture());

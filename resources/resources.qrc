@@ -29,6 +29,8 @@
     <file>icon/glview/projection_perspective.png</file>
     <file>icon/glview/render_shadow.png</file>
     <file>icon/glview/render_wireframe.png</file>
+    <file>icon/glview/render_shaded.png</file>
+    <file>icon/glview/render_screenshot.png</file>
     <file>icon/glview/view_iso.png</file>
     <file>icon/glview/view_back.png</file>
     <file>icon/glview/view_front.png</file>
