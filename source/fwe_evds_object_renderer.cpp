@@ -143,7 +143,7 @@ void ObjectRenderer::meshChanged() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectRenderer::lodMeshesGenerated() {
-	printf("LODs ready %p\n",this);
+	qDebug("ObjectRenderer: LOD ready %p",this);
 	
 	glcMesh->clear();
 	for (int i = 0; i < lodMeshGenerator->getNumLODs(); i++) {
@@ -247,8 +247,8 @@ void ObjectRenderer::addLODMesh(EVDS_MESH* mesh, int lod) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 float ObjectLODGenerator::getLODResolution(int lod) {
-	return 32.0f + 32.0f * lod;
-	//return 1.0f / (1.0f + 2*lod);
+	float quality = fw_editor_settings->value("rendering.lod_quality",32.0f).toFloat();
+	return quality * (1 + lod);
 }
 
 
@@ -327,7 +327,7 @@ void ObjectLODGenerator::run() {
 
 				//Check if job must be aborted
 				if (needMesh) {
-					printf("Aborted job early\n");
+					qDebug("ObjectLODGenerator: aborted job early");
 					break;
 				}
 

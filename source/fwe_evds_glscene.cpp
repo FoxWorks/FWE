@@ -86,8 +86,8 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	GLC_3DViewInstance instance(GLC_Factory::instance()->createCircle(0.0));
 	world->collection()->add(instance);
 
-	//GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(0,1,0), GLC_Point3d(0,0,0));
-	//viewport->addClipPlane(GL_CLIP_PLANE0, m_pClipPlane);
+	GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(0,1,0), GLC_Point3d(0,0,0));
+	viewport->addClipPlane(GL_CLIP_PLANE0, m_pClipPlane);
 
 	//Enable LOD
 	world->collection()->setLodUsage(true,viewport);
@@ -394,7 +394,7 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	viewport->setDistMinAndMax(world->collection()->boundingBox()); //Clipping planes defined by bounding box
 	viewport->glExecuteCam(); //Camera
 	viewport->useClipPlane(true); //Enable section plane
-	light[0]->setPosition(viewport->cameraHandle()->eye());
+	light[0]->setPosition(viewport->cameraHandle()->eye() - viewport->cameraHandle()->forward() * 1000.0); //Parallel lighting
 	light[0]->glExecute(); //Scene light #1
 
 	//Draw into outline buffer
@@ -418,6 +418,14 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	//Disable clipping plane to work with 2D rendering again
 	viewport->useClipPlane(false);
 
+	//Draw controller UI
+	if (!inSelectionMode) {
+		if (fbo_fxaa) fbo_fxaa->bind();
+			glClear(GL_DEPTH_BUFFER_BIT);
+			controller.drawActiveMoverRep();
+		if (fbo_fxaa) fbo_fxaa->release();
+	}
+
 	//Draw object outlines
 	if ((!inSelectionMode) && fbo_outline && shader_outline) {
 		if (fbo_fxaa) fbo_fxaa->bind();
@@ -429,13 +437,6 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 			drawScreenQuad();
 			shader_outline->release();
 		if (fbo_fxaa) fbo_fxaa->release();
-	}
-
-	//Draw controller UI
-	if (!inSelectionMode) {
-		//if (fbo_fxaa) fbo_fxaa->bind();
-		controller.drawActiveMoverRep(); //FIXME: is there need to force 2D after this call
-		//if (fbo_fxaa) fbo_fxaa->release();
 	}
 	
 	//End FXAA and display it on screen
