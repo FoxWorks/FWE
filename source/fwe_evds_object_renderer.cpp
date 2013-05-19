@@ -177,30 +177,30 @@ void ObjectRenderer::addLODMesh(EVDS_MESH* mesh, int lod) {
 	} else {
 		GLfloatVector verticesVector;
 		GLfloatVector normalsVector;
-		//IndexList indicesList;
-		//GLC_Material* glcMaterial = new GLC_Material();
 		QList<GLC_Material*> glcGroupMaterials;
 		QList<IndexList> indicesLists;
 
 		//Must have at least one smoothing group
 		if (mesh->num_smoothing_groups == 0) mesh->num_smoothing_groups = 1;
 
-		//Prepare materials for every group
+		//Prepare indices and materials lists for every group
 		for (int i = 0; i < mesh->num_smoothing_groups; i++) {
 			GLC_Material* glcMaterial = new GLC_Material();
-			int j = i+1;
-			glcMaterial->setDiffuseColor(QColor((j*128) % 256,((j/4)*128) % 256,((j/16)*128) % 256));
 			glcGroupMaterials.append(glcMaterial);
 			indicesLists.append(IndexList());
 		}
 
-		/*if (object->getType() == "fuel_tank") {
+		if (object->getType() == "fuel_tank") {
 			if (object->isOxidizerTank()) {
-				glcMaterial->setDiffuseColor(QColor(0,0,255));
+				for (int i = 0; i < mesh->num_smoothing_groups; i++) {
+					glcGroupMaterials[i]->setDiffuseColor(QColor(0,0,255));
+				}
 			} else {
-				glcMaterial->setDiffuseColor(QColor(255,255,0));
+				for (int i = 0; i < mesh->num_smoothing_groups; i++) {
+					glcGroupMaterials[i]->setDiffuseColor(QColor(255,255,0));
+				}
 			}
-		}*/
+		}
 
 		//Add all data
 		int firstVertexIndex = glcMesh->VertexCount();	
@@ -208,9 +208,9 @@ void ObjectRenderer::addLODMesh(EVDS_MESH* mesh, int lod) {
 			verticesVector << mesh->vertices[i].x;
 			verticesVector << mesh->vertices[i].y;
 			verticesVector << mesh->vertices[i].z;
-			normalsVector << -mesh->normals[i].x;
-			normalsVector << -mesh->normals[i].y;
-			normalsVector << -mesh->normals[i].z;
+			normalsVector << mesh->normals[i].x;
+			normalsVector << mesh->normals[i].y;
+			normalsVector << mesh->normals[i].z;
 		}
 		for (int i = 0; i < mesh->num_triangles; i++) {
 			indicesLists[mesh->triangles[i].smoothing_group] << mesh->triangles[i].indices[0] + firstVertexIndex;
@@ -226,6 +226,17 @@ void ObjectRenderer::addLODMesh(EVDS_MESH* mesh, int lod) {
 				glcMesh->addTriangles(glcGroupMaterials[i], indicesLists[i], lod); //coarse_mesh->resolution);
 			}
 		}
+
+		/*for (int i = 0; i < mesh->num_triangles; i++) {
+			GLfloatVector floatVector;
+			floatVector << mesh->triangles[i].center.x;
+			floatVector << mesh->triangles[i].center.y;
+			floatVector << mesh->triangles[i].center.z;
+			floatVector << mesh->triangles[i].center.x + mesh->triangles[i].triangle_normal.x*0.2;
+			floatVector << mesh->triangles[i].center.y + mesh->triangles[i].triangle_normal.y*0.2;
+			floatVector << mesh->triangles[i].center.z + mesh->triangles[i].triangle_normal.z*0.2;
+			glcMesh->addVerticeGroup(floatVector);
+		}*/
 	}
 }
 

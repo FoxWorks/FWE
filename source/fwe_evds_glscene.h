@@ -51,11 +51,12 @@ namespace EVDS {
 
 		QSize minimumSizeHint() const { return QSize(50, 50); }
 		QSize sizeHint() const { return QSize(400, 400); }
-		GLC_3DViewCollection* getCollection() { return collection; }
+		GLC_3DViewCollection* getCollection() { return world->collection(); }
 
 		QGLShaderProgram* compileShader(const QString& name);
 		void loadShaders();
 		void drawScreenQuad();
+		//void selectByCoordinates(int x, int y, bool multi, QMouseEvent* pMouseEvent);
 
 	protected:
 		void geometryChanged(const QRectF &rect);
@@ -89,7 +90,7 @@ namespace EVDS {
 
 		//GLC Specific
 		GLC_Light* light[1];
-		GLC_3DViewCollection* collection;
+		GLC_World* world;
 		GLC_Viewport* viewport;
 		GLC_MoverController controller;
 
@@ -99,11 +100,10 @@ namespace EVDS {
 		int previousWidth,previousHeight;
 
 		//Shaders and framebuffers
-		//QGLFramebufferObject* fbo_outline;
+		QGLFramebufferObject* fbo_outline;
 		QGLFramebufferObject* fbo_fxaa;
-		//QGLShaderProgram* shader_outline_object;
-		//QGLShaderProgram* shader_outline_fbo;
 		QGLShaderProgram* shader_background;
+		QGLShaderProgram* shader_outline;
 		QGLShaderProgram* shader_fxaa;
 	};
 

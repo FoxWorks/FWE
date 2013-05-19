@@ -59,17 +59,20 @@ using namespace EVDS;
 GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(parent) {
 	sceneInitialized = false;
 	parent_scene = in_parent_scene; //FIXME: support for this
-	//fbo_outline = 0;
+	fbo_outline = 0;
 	fbo_fxaa = 0;
 
 	//Create objects
 	viewport = new GLC_Viewport();
-	collection = new GLC_3DViewCollection();
 	controller = GLC_Factory::instance()->createDefaultMoverController(QColor(255,30,30), viewport);
+	//GLC_3DViewCollection* collection = new GLC_3DViewCollection();
+	world = new GLC_World();
+
 
 	//Create lights
 	light[0] = new GLC_Light();
 	light[0]->setPosition(20.0,20.0,20.0);
+	light[0]->setTwoSided(true);
 
 	//Setup signals
 	connect(viewport, SIGNAL(updateOpenGL()), this, SLOT(update()));
@@ -81,13 +84,13 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 
 	//Make sure scene is not empty (otherwise GLC crashes)
 	GLC_3DViewInstance instance(GLC_Factory::instance()->createCircle(0.0));
-	collection->add(instance);
+	world->collection()->add(instance);
 
 	//GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(0,1,0), GLC_Point3d(0,0,0));
 	//viewport->addClipPlane(GL_CLIP_PLANE0, m_pClipPlane);
 
 	//Enable LOD
-	collection->setLodUsage(true,viewport);
+	world->collection()->setLodUsage(true,viewport);
 	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("render.min_pixel_culling",4).toInt());
 
 	//Create panels
@@ -96,7 +99,7 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	panel_control->setLayout(new QHBoxLayout);
 	panel_control->layout()->setSpacing(0);
 	panel_control->layout()->setMargin(0);
-	panel_control->setStyleSheet("#glview_ui_panel { background: transparent } QPushButton { min-width: 24; min-height: 24; border-width: 2; }");
+	panel_control->setStyleSheet("#glview_ui_panel { background: transparent } QPushButton { min-width: 24; min-height: 24; }");
 	panel_control->setObjectName("glview_ui_panel");
 	addWidget(panel_control);
 
@@ -105,7 +108,7 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	panel_view->setLayout(new QHBoxLayout);
 	panel_view->layout()->setSpacing(0);
 	panel_view->layout()->setMargin(0);
-	panel_view->setStyleSheet("#glview_ui_panel { background: transparent } QPushButton { min-width: 24; min-height: 24; border-width: 2; }");
+	panel_view->setStyleSheet("#glview_ui_panel { background: transparent } QPushButton { min-width: 24; min-height: 24; }");
 	panel_view->setObjectName("glview_ui_panel");
 	addWidget(panel_view);
 
@@ -131,6 +134,16 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	connect(button, SIGNAL(pressed()), this, SLOT(setIsoView()));
 	panel_view->layout()->addWidget(button);
 
+	button = new QPushButton(QIcon(":/icon/glview/view_front.png"),"");
+	button->setIconSize(QSize(20,20));
+	connect(button, SIGNAL(pressed()), this, SLOT(setFrontView()));
+	panel_view->layout()->addWidget(button);
+
+	button = new QPushButton(QIcon(":/icon/glview/view_back.png"),"");
+	button->setIconSize(QSize(20,20));
+	connect(button, SIGNAL(pressed()), this, SLOT(setBackView()));
+	panel_view->layout()->addWidget(button);
+
 	button = new QPushButton(QIcon(":/icon/glview/view_left.png"),"");
 	button->setIconSize(QSize(20,20));
 	connect(button, SIGNAL(pressed()), this, SLOT(setLeftView()));
@@ -149,16 +162,6 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	button = new QPushButton(QIcon(":/icon/glview/view_bottom.png"),"");
 	button->setIconSize(QSize(20,20));
 	connect(button, SIGNAL(pressed()), this, SLOT(setBottomView()));
-	panel_view->layout()->addWidget(button);
-
-	button = new QPushButton(QIcon(":/icon/glview/view_front.png"),"");
-	button->setIconSize(QSize(20,20));
-	connect(button, SIGNAL(pressed()), this, SLOT(setFrontView()));
-	panel_view->layout()->addWidget(button);
-
-	button = new QPushButton(QIcon(":/icon/glview/view_back.png"),"");
-	button->setIconSize(QSize(20,20));
-	connect(button, SIGNAL(pressed()), this, SLOT(setBackView()));
 	panel_view->layout()->addWidget(button);
 
 	/*QMenu* view_menu = new QMenu(button_view);
@@ -188,7 +191,7 @@ GLScene::~GLScene()
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void GLScene::doCenter() {
-	viewport->reframe(collection->boundingBox(),1.6);
+	viewport->reframe(world->collection()->boundingBox(),1.6);
 }
 void GLScene::toggleProjection() {
 	sceneOrthographic = !sceneOrthographic;
@@ -202,16 +205,16 @@ void GLScene::setIsoView() {
 	viewport->cameraHandle()->setIsoView();
 }
 void GLScene::setLeftView() {
-	viewport->cameraHandle()->setLeftView();
-}
-void GLScene::setRightView() {
-	viewport->cameraHandle()->setRightView();
-}
-void GLScene::setFrontView() {
 	viewport->cameraHandle()->setFrontView();
 }
-void GLScene::setBackView() {
+void GLScene::setRightView() {
 	viewport->cameraHandle()->setRearView();
+}
+void GLScene::setFrontView() {
+	viewport->cameraHandle()->setLeftView();
+}
+void GLScene::setBackView() {
+	viewport->cameraHandle()->setRightView();
 }
 void GLScene::setTopView() {
 	viewport->cameraHandle()->setTopView();
@@ -245,22 +248,24 @@ QGLShaderProgram* GLScene::compileShader(const QString& name) {
 	QGLShader fragment(QGLShader::Fragment);
 	QGLShader vertex(QGLShader::Vertex);
 
-	//if (!fragment.compileSourceFile("../resources/" + name + ".frag")) {
-	if (!fragment.compileSourceFile(":/shader/" + name + ".frag")) {
-		QMessageBox::warning(0, tr("EVDS Editor"),tr("Shader error in [%1.frag]:\n%2.").arg(name).arg(fragment.log()));
+	if (!fragment.compileSourceFile("../resources/shader/" + name + ".frag")) {
 		return 0;
 	}
-	//if (!vertex.compileSourceFile("../resources/" + name + ".vert")) {
-	if (!vertex.compileSourceFile(":/shader/" + name + ".vert")) {
-		QMessageBox::warning(0, tr("EVDS Editor"),tr("Shader error in [%1.vert]:\n%2.").arg(name).arg(fragment.log()));
+	if (!vertex.compileSourceFile("../resources/shader/" + name + ".vert")) {
 		return 0;
 	}
+	//if (!fragment.compileSourceFile(":/shader/" + name + ".frag")) {
+		//return 0;
+	//}
+	//if (!vertex.compileSourceFile(":/shader/" + name + ".vert")) {
+		//return 0;
+	//}
 
 	QGLShaderProgram* shader = new QGLShaderProgram();
 	shader->addShader(&fragment);
 	shader->addShader(&vertex);
 	shader->link();
-	return shader;	
+	return shader;
 }
 
 
@@ -268,10 +273,8 @@ QGLShaderProgram* GLScene::compileShader(const QString& name) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void GLScene::loadShaders() {
-	//shader_object = compileShader("shader_object");
-	//shader_outline_object = compileShader("shader_outline_object");
-	//shader_outline_fbo = compileShader("shader_outline_fbo");
 	shader_background = compileShader("background");
+	shader_outline = compileShader("outline");
 	shader_fxaa = compileShader("fxaa");
 }
 
@@ -346,9 +349,9 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 		previousWidth = rect.width();
 		previousHeight = rect.height();
 
+		if (fbo_outline) delete fbo_outline;
 		if (fbo_fxaa) delete fbo_fxaa;
-		//fbo_outline = new QGLFramebufferObject(width,height,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
-		//fbo_selected_outline = new QGLFramebufferObject(width,height,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
+		fbo_outline = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
 		if (fw_editor_settings->value("rendering.use_fxaa",true) == true) {
 			fbo_fxaa = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
 		}
@@ -356,48 +359,87 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 
 	//Always use orthographic view
 	viewport->setToOrtho(sceneOrthographic);
+	bool inSelectionMode = GLC_State::isInSelectionMode();
 
-	//Start FXAA
-	if (fbo_fxaa) fbo_fxaa->bind();
-
-	//Clear screen and draw background if possible
+	//Clear screen and buffers
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (shader_background) {
-		shader_background->bind();
-		shader_background->setUniformValue("v_baseColor",190.0f,190.0f,230.0f);
-		drawScreenQuad();
-		shader_background->release();
-		
+	if (fbo_fxaa) {
+		fbo_fxaa->bind();
+			glClearColor(0.0f,0.0f,0.0f,0.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fbo_fxaa->release();
+	}
+	if (fbo_outline) {
+		fbo_outline->bind();
+			glClearColor(0.0f,0.0f,0.0f,0.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fbo_outline->release();
 	}
 
-	//Load identity matrix
-    GLC_Context::current()->glcLoadIdentity();
+	//Draw background
+	if (!inSelectionMode) {
+		if (fbo_fxaa) fbo_fxaa->bind();
+			if (shader_background) {
+				shader_background->bind();
+				shader_background->setUniformValue("v_baseColor",190.0f,190.0f,230.0f);
+				drawScreenQuad();
+				shader_background->release();
+			}
+		if (fbo_fxaa) fbo_fxaa->release();
+	}
 
-	//Prepare rendering
-	viewport->setDistMinAndMax(collection->boundingBox()); //Clipping planes defined by bounding box
-	light[0]->glExecute(); //Scene light #1
+	//Prepare scene rendering
+    GLC_Context::current()->glcLoadIdentity();
+	viewport->setDistMinAndMax(world->collection()->boundingBox()); //Clipping planes defined by bounding box
 	viewport->glExecuteCam(); //Camera
 	viewport->useClipPlane(true); //Enable section plane
+	light[0]->setPosition(viewport->cameraHandle()->eye());
+	light[0]->glExecute(); //Scene light #1
 
-	//Render scene
-	if (fw_editor_settings->value("render.use_wireframe",false).toBool()) {
-		collection->setPolygonModeForAll(GL_FRONT_AND_BACK, GL_LINE);
+	//Draw into outline buffer
+	if ((!inSelectionMode) && fbo_outline) {
+		fbo_outline->bind();
+			world->render(0, glc::OutlineSilhouetteRenderFlag);
+		fbo_outline->release();
 	}
-	//collection->setVboUsage(false);
-	collection->render(0, glc::ShadingFlag);
 
-	//Depth buffer must be cleared and clip plane removed
-	glClear(GL_DEPTH_BUFFER_BIT);
+	//Render scene into world
+	if ((!inSelectionMode) && fbo_fxaa) fbo_fxaa->bind();
+		//if (fw_editor_settings->value("render.use_wireframe",false).toBool()) {
+			//world->collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, GL_LINE);
+		//}
+		//world->collection()->setVboUsage(false);
+		//world->render(0, glc::OutlineSilhouetteRenderFlag);
+		world->render(0, glc::ShadingFlag);
+		//world->render(0, glc::WireRenderFlag);
+	if ((!inSelectionMode) && fbo_fxaa) fbo_fxaa->release();
+
+	//Disable clipping plane to work with 2D rendering again
 	viewport->useClipPlane(false);
 
+	//Draw object outlines
+	if ((!inSelectionMode) && fbo_outline && shader_outline) {
+		if (fbo_fxaa) fbo_fxaa->bind();
+			glBindTexture(GL_TEXTURE_2D, fbo_outline->texture());
+			shader_outline->bind();
+			shader_outline->setUniformValue("s_Data",0);
+			shader_outline->setUniformValue("v_invScreenSize",1.0f/rect.width(),1.0f/rect.height());
+			shader_outline->setUniformValue("f_outlineThickness",1.0f);
+			drawScreenQuad();
+			shader_outline->release();
+		if (fbo_fxaa) fbo_fxaa->release();
+	}
+
 	//Draw controller UI
-	controller.drawActiveMoverRep(); //FIXME: is there need to force 2D after this call
+	if (!inSelectionMode) {
+		//if (fbo_fxaa) fbo_fxaa->bind();
+		controller.drawActiveMoverRep(); //FIXME: is there need to force 2D after this call
+		//if (fbo_fxaa) fbo_fxaa->release();
+	}
 	
 	//End FXAA and display it on screen
-	if (fbo_fxaa) {
-		fbo_fxaa->release();
-
+	if ((!inSelectionMode) && fbo_fxaa) {
 		glBindTexture(GL_TEXTURE_2D, fbo_fxaa->texture());
 		shader_fxaa->bind();
 		shader_fxaa->setUniformValue("textureSampler",0);
@@ -429,6 +471,8 @@ void GLScene::mousePressEvent(QGraphicsSceneMouseEvent* e) {
 			break;
 		case (Qt::LeftButton):
 			controller.setActiveMover(GLC_MoverController::Pan, GLC_UserInput(x,y));
+			//{ GLC_uint selectedID = viewport->renderAndSelect(x,y);
+			//qDebug("Id: %d\n",selectedID);}
 			update();
 			break;
 		case (Qt::MidButton):
@@ -444,6 +488,69 @@ void GLScene::mousePressEvent(QGraphicsSceneMouseEvent* e) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+/*void GLScene::selectByCoordinates(int x, int y, bool multi, QMouseEvent* pMouseEvent) {
+	const bool spacePartitioningIsUsed= m_World.collection()->spacePartitioningIsUsed();
+	// Selection frustum
+	if (spacePartitioningIsUsed) {
+		GLC_Frustum selectionFrustum(m_GlView.selectionFrustum(x, y));
+		m_World.collection()->updateInstanceViewableState(selectionFrustum);
+		m_World.collection()->setSpacePartitionningUsage(false);
+	}
+
+	m_SelectionMode= true;
+	setAutoBufferSwap(false);
+
+	m_World.collection()->setLodUsage(true, &m_GlView);
+	GLC_uint SelectionID= m_GlView.renderAndSelect(x, y);
+	m_World.collection()->setLodUsage(false, &m_GlView);
+
+	if (spacePartitioningIsUsed) {
+		m_World.collection()->updateInstanceViewableState(m_GlView.frustum());
+		m_World.collection()->setSpacePartitionningUsage(true);
+	}
+
+	// 3DWidget manager test
+	glc::WidgetEventFlag eventFlag = m_3DWidgetManager.mousePressEvent(pMouseEvent);
+
+	m_SelectionMode= false;
+	setAutoBufferSwap(true);
+
+	if (eventFlag == glc::BlockedEvent) {
+		updateGL();
+		return;
+	} else if (m_World.containsOccurence(SelectionID)) {
+		if ((!m_World.isSelected(SelectionID)) && (m_World.selectionSize() > 0) && (!multiSelection)) {
+			m_World.unselectAll();
+			emit unselectAll();
+		}
+		if (!m_World.isSelected(SelectionID)) {
+			m_World.select(SelectionID);
+			updateGL();
+			emit updateSelection(m_World.collection()->selection());
+		} else if (m_World.isSelected(SelectionID) && multiSelection) {
+			m_World.unselect(SelectionID);
+			updateGL();
+			emit updateSelection(m_World.collection()->selection());
+		} else {
+			m_World.unselectAll();
+			m_World.select(SelectionID);
+			updateGL();
+			emit updateSelection(m_World.collection()->selection());
+		}
+	} else if ((m_World.selectionSize() > 0) && (!multiSelection)) {
+		// if a geometry is selected, unselect it
+		m_World.unselectAll();
+		updateGL();
+		emit unselectAll();
+	} else if (eventFlag == glc::AcceptEvent) {
+		updateGL();
+	}
+}*/
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 void GLScene::mouseMoveEvent(QGraphicsSceneMouseEvent* e) {
 	QGraphicsScene::mouseMoveEvent(e);
 	if (e->isAccepted()) return;
@@ -453,7 +560,7 @@ void GLScene::mouseMoveEvent(QGraphicsSceneMouseEvent* e) {
 	int y = e->scenePos().y();
 	if (controller.hasActiveMover()) {
 		controller.move(GLC_UserInput(x,y));
-		//viewport->setDistMinAndMax(collection->boundingBox());
+		//viewport->setDistMinAndMax(world->collection()->boundingBox());
 		update();
 	}
 }

@@ -41,11 +41,7 @@
     <file>shader/background.vert</file>
     <file>shader/fxaa.frag</file>
     <file>shader/fxaa.vert</file>
-    <file>shader/object.frag</file>
-    <file>shader/object.vert</file>
-    <file>shader/outline_fbo.frag</file>
-    <file>shader/outline_fbo.vert</file>
-    <file>shader/outline_object.frag</file>
-    <file>shader/outline_object.vert</file>
+    <file>shader/outline.frag</file>
+    <file>shader/outline.vert</file>
 </qresource>
 </RCC>
