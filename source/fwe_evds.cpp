@@ -72,9 +72,6 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 	window = in_window;
 	selected = NULL;
 
-	//Load object types
-	loadObjectData();
-
 	//Create EVDS system. Use flag that lists all children, even uninitialized ones to make sure
 	// tree controls list all objects while they are messed around with.
 	EVDS_System_Create(&system);
@@ -85,6 +82,9 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 	EVDS_Common_LoadDatabase(initialized_system);
 	//EVDS_Antenna_Register(system);
 	//EVDS_Antenna_Register(initialized_system);
+
+	//Load object types
+	loadObjectData();
 
 	//Clear EVDS objects no longer used in other threads
 	QTimer *timer = new QTimer(this);
@@ -184,7 +184,7 @@ void Editor::createMenuToolbar() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::createListDock() {
-	list = new QWidget(list_dock);
+	list = new QWidget();
 	list->setMinimumWidth(200);
 	list->setMinimumHeight(80);
 
@@ -228,7 +228,7 @@ void Editor::createListDock() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::createPropertiesDock() {
-	properties = new QWidget(properties_dock);
+	properties = new QWidget();
 	properties->setMinimumWidth(200);
 	properties->setMinimumHeight(80);
 
@@ -253,8 +253,8 @@ void Editor::createPropertiesDock() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::createCSectionDock() {
-	csection = new QWidget(properties_dock);
-	csection->setMinimumWidth(200);
+	csection = new QWidget();
+	csection->setMinimumWidth(250);
 	csection->setMinimumHeight(80);
 
 	//Create cross-sections editor interface

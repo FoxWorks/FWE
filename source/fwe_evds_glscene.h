@@ -80,6 +80,9 @@ namespace EVDS {
 		void setBottomView();
 
 	private:
+		//Create panels and interface
+		void createInterface(); 
+
 		//Parent scene from which GLC stuff is taken
 		GLScene* parent_scene;
 
@@ -124,6 +127,7 @@ namespace EVDS {
 			QGLContext* context = new GLC_Context(QGLFormat(QGL::SampleBuffers));
 			QGLWidget* opengl = new QGLWidget(context,this);
 
+			setAcceptDrops(true);
 			setViewport(opengl);
 			setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 		}
@@ -133,6 +137,12 @@ namespace EVDS {
 			if (scene())
 				scene()->setSceneRect(QRect(QPoint(0, 0), event->size()));
 			QGraphicsView::resizeEvent(event);
+		}
+		void dropEvent(QDropEvent *event) {
+		}
+		void dragMoveEvent(QDragMoveEvent *event) {
+		}
+		void dragEnterEvent(QDragEnterEvent *event) {
 		}
 	};
 }

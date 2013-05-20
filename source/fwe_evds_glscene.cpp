@@ -29,7 +29,6 @@
 #include <QWidget>
 #include <QtOpenGL>
 #include <QMessageBox>
-
 #include <QPushButton>
 #include <QMenu>
 #include <QHBoxLayout>
@@ -57,18 +56,22 @@ using namespace EVDS;
 ///
 ////////////////////////////////////////////////////////////////////////////////
 GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(parent) {
-	sceneInitialized = false;
 	parent_scene = in_parent_scene; //FIXME: support for this
+
+	//Have everything be initialized later
+	sceneInitialized = false;
 	fbo_outline = 0;
 	fbo_shadow = 0;
 	fbo_fxaa = 0;
 
-	//Create objects
+	//Create GLC objects
 	viewport = new GLC_Viewport();
 	controller = GLC_Factory::instance()->createDefaultMoverController(QColor(255,30,30), viewport);
-	//GLC_3DViewCollection* collection = new GLC_3DViewCollection();
 	world = new GLC_World();
 
+	//GLC scene cannot be empty, either it crashes
+	GLC_3DViewInstance instance(GLC_Factory::instance()->createCircle(0.0));
+	world->collection()->add(instance);
 
 	//Create lights
 	light[0] = new GLC_Light();
@@ -76,24 +79,41 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	light[0]->setTwoSided(true);
 
 	//Setup signals
-	connect(viewport, SIGNAL(updateOpenGL()), this, SLOT(update()));
+	connect(viewport, SIGNAL(updateOpenGL()), this, SLOT(update())); //FIXME: use render() instead
 	connect(&controller, SIGNAL(repaintNeeded()), this, SLOT(update()));
 
-	//Default camera setup
+	//Enable LOD, setup default camera
 	viewport->cameraHandle()->setDefaultUpVector(glc::Z_AXIS);
 	viewport->cameraHandle()->setIsoView();
-
-	//Make sure scene is not empty (otherwise GLC crashes)
-	GLC_3DViewInstance instance(GLC_Factory::instance()->createCircle(0.0));
-	world->collection()->add(instance);
-
-	GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(0,1,0), GLC_Point3d(0,0,0));
-	viewport->addClipPlane(GL_CLIP_PLANE0, m_pClipPlane);
-
-	//Enable LOD
 	world->collection()->setLodUsage(true,viewport);
 	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("render.min_pixel_culling",4).toInt());
 
+	//Add clipping plane
+	GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(0,1,0), GLC_Point3d(0,0,0));
+	viewport->addClipPlane(GL_CLIP_PLANE0, m_pClipPlane);
+
+	//Default modes
+	sceneOrthographic = true;
+	sceneShadowed = false;
+	sceneWireframe = false;
+
+	//Create interface and enable drag and drop
+	createInterface();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+GLScene::~GLScene()
+{
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void GLScene::createInterface() {
 	//Create panels
 	panel_control = new QWidget();
 	panel_control->setWindowOpacity(0.7);
@@ -134,6 +154,7 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	button_save_picture = new QPushButton(QIcon(":/icon/glview/render_screenshot.png"),"");
 	connect(button_save_picture, SIGNAL(pressed()), this, SLOT(saveScreenshot()));
 	panel_control->layout()->addWidget(button_save_picture);
+	
 
 	//Fill view panel with buttons
 	QPushButton* button = new QPushButton(QIcon(":/icon/glview/view_iso.png"),"");
@@ -180,19 +201,6 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	connect(action, SIGNAL(triggered()), this, SLOT(setLeftView()));
 	view_menu->addAction(action);
 	view_menu->setMinimumHeight(24);*/
-
-	//Ortho by default
-	sceneOrthographic = true;
-	sceneShadowed = false;
-	sceneWireframe = false;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-GLScene::~GLScene()
-{
 }
 
 
@@ -222,23 +230,27 @@ void GLScene::toggleMaterialMode() {
 	}
 }
 void GLScene::saveScreenshot() {
-	/*QImage image(QSize(previousWidth,previousHeight), QImage::Format_ARGB32_Premultiplied);
-	image.fill(0);
-
-	QPainter painter(&image);
-	render(&painter);
-	image.save("test.jpg");*/
 	QGLFramebufferObjectFormat format;
 	format.setSamples(16);
 
-	int scale = 2;
-	QGLFramebufferObject renderFbo(previousWidth*scale,previousHeight*scale);
+	//Determine best maximum size
+	float aspectRatio = ((float)previousHeight) / ((float)previousWidth);
+	int width = 2048;
+	int height = width*aspectRatio;
+
+	if (height > 2048) {
+		height = 2048;
+		width = height/aspectRatio;
+	}
+	
+	//Create FBO and draw into it
+	QGLFramebufferObject renderFbo(width,height);
 	QPainter fboPainter(&renderFbo);
 	fboPainter.setRenderHint(QPainter::Antialiasing);
 	fboPainter.setRenderHint(QPainter::HighQualityAntialiasing);
 
 		QRectF oldRect = sceneRect();
-		setSceneRect(QRectF(0,0,oldRect.width()*scale,oldRect.height()*scale));
+		setSceneRect(QRectF(0,0,width,height));
 		panel_control->hide();
 		panel_view->hide();
 			render(&fboPainter);
@@ -247,7 +259,15 @@ void GLScene::saveScreenshot() {
 		panel_view->show();
 
 	fboPainter.end();
-	renderFbo.toImage().save("test.jpg", 0, 95);
+
+	//Get image and save it
+	QString fileName = QFileDialog::getSaveFileName(static_cast<QWidget*>(this->parent()), "Save Screenshot", "",
+		"JPEG/PNG image (*.jpg;*.png);;"
+		"All files (*.*)");
+
+	if (!fileName.isEmpty()) {
+		renderFbo.toImage().save(fileName,0,95);
+	}
 }
 void GLScene::setIsoView() {
 	viewport->cameraHandle()->setIsoView();
@@ -270,6 +290,7 @@ void GLScene::setTopView() {
 void GLScene::setBottomView() {
 	viewport->cameraHandle()->setBottomView();
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
