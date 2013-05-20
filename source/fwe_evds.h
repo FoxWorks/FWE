@@ -89,6 +89,11 @@ namespace EVDS {
 		QMap<QString,QList<QMap<QString,QString>>> objectVariables;
 		QMap<QString,QList<QMap<QString,QString>>> csectionVariables;
 
+	protected:
+		void dropEvent(QDropEvent *event);
+		void dragMoveEvent(QDragMoveEvent *event);
+		void dragEnterEvent(QDragEnterEvent *event);
+
 	private slots:
 		void addObject();
 		void removeObject();
@@ -98,6 +103,7 @@ namespace EVDS {
 	private:
 		QString currentFile;
 
+		void createMenuToolbar();
 		void createListDock();
 		void createPropertiesDock();
 		void createCSectionDock();

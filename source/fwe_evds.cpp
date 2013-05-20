@@ -68,10 +68,12 @@ using namespace EVDS;
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window)
-{
+Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 	window = in_window;
 	selected = NULL;
+
+	//Load object types
+	loadObjectData();
 
 	//Create EVDS system. Use flag that lists all children, even uninitialized ones to make sure
 	// tree controls list all objects while they are messed around with.
@@ -81,16 +83,22 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window)
 	EVDS_Common_Register(initialized_system);
 	EVDS_Common_LoadDatabase(system);
 	EVDS_Common_LoadDatabase(initialized_system);
-
 	//EVDS_Antenna_Register(system);
 	//EVDS_Antenna_Register(initialized_system);
+
+	//Clear EVDS objects no longer used in other threads
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(cleanupTimer()));
+	timer->start(1000);
 
 	//Create empty root object
 	EVDS_Object_Create(system,0,&root);
 	EVDS_Object_Initialize(root,1);
 	root_obj = new Object(root,0,this);
    
-	//Create dock panels
+
+	//Create parts of main UI
+	createMenuToolbar();
 	createListDock();
 	createPropertiesDock();
 	createCSectionDock();
@@ -108,19 +116,28 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window)
 	//Setup initial layout
 	list_dock->raise();
 
-	//Clear EVDS objects no longer used in other threads
-	QTimer *timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(cleanupTimer()));
-	timer->start(1000);
 
-	//Set MDI style
+	//Set MDI style, enable drag and drop
 	setAttribute(Qt::WA_DeleteOnClose);
+	setAcceptDrops(true);
+}
 
-	//Load object types
-	loadObjectData();
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+Editor::~Editor() {
+	delete root_obj;
+	EVDS_System_Destroy(system);
+	EVDS_System_Destroy(initialized_system);
+}
 
 
-	//View menu structure
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void Editor::createMenuToolbar() {
+		//View menu structure
 	QAction* action;
 	action = new QAction(QIcon(":/icon/evds/hierarchy.png"), tr("Object &Hierarchy"), this);
 	//connect(action, SIGNAL(triggered()), this, SLOT(showHierarchy()));
@@ -166,35 +183,24 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window)
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-Editor::~Editor()
-{
-	delete root_obj;
-	EVDS_System_Destroy(system);
-	EVDS_System_Destroy(initialized_system);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
 void Editor::createListDock() {
+	list = new QWidget(list_dock);
+	list->setMinimumWidth(200);
+	list->setMinimumHeight(80);
+
 	//Create object hierarchy window and dock
 	list_dock = new QDockWidget(tr("Hierarchy"), this);
 	list_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
 	list_dock->setAllowedAreas(Qt::AllDockWidgetAreas);
-
-	list = new QWidget(list_dock);
 	list_dock->setWidget(list);
 	addDockWidget(Qt::LeftDockWidgetArea, list_dock);
 
 	//Create remaining interface
-	list_layout = new QVBoxLayout;
-	list_tree = new QTreeView(this);
 	list_model = new ObjectTreeModel(this,this);
+	list_tree = new QTreeView(this);
 	list_tree->setModel(list_model);
 	list_tree->expandAll();
 	list_tree->setColumnWidth(0,150);
-	list_tree->setMinimumWidth(200);
 
 	list_tree->viewport()->setAcceptDrops(true);
 	list_tree->setDragDropMode(QAbstractItemView::DragDrop);
@@ -203,12 +209,14 @@ void Editor::createListDock() {
 	list_tree->setDragDropOverwriteMode(false);
 	list_tree->setDefaultDropAction(Qt::MoveAction);
 
-	list_add = new QPushButton(QIcon(":/add.png"),"Add object",this);
-	list_remove = new QPushButton(QIcon(":/remove.png"),"Remove selected",this);
+	list_add = new QPushButton(QIcon(":/icon/add.png"),"Add object",this);
+	list_remove = new QPushButton(QIcon(":/icon/remove.png"),"Remove selected",this);
 	connect(list_add, SIGNAL(released()), this, SLOT(addObject()));
 	connect(list_remove, SIGNAL(released()), this, SLOT(removeObject()));
 	connect(list_tree, SIGNAL(clicked(const QModelIndex&)), this, SLOT(selectObject(const QModelIndex&)));
 
+	//Create layout
+	list_layout = new QVBoxLayout;
 	list_layout->addWidget(list_add);
 	list_layout->addWidget(list_tree);
 	list_layout->addWidget(list_remove);
@@ -220,22 +228,24 @@ void Editor::createListDock() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::createPropertiesDock() {
+	properties = new QWidget(properties_dock);
+	properties->setMinimumWidth(200);
+	properties->setMinimumHeight(80);
+
 	//Create properties interface
 	properties_dock = new QDockWidget(tr("Properties"), this);
 	properties_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
 	properties_dock->setAllowedAreas(Qt::AllDockWidgetAreas);
-
-	properties = new QWidget(properties_dock);
 	properties_dock->setWidget(properties);
 	addDockWidget(Qt::LeftDockWidgetArea, properties_dock);
 
-	properties_layout = new QStackedLayout;
-	properties->setLayout(properties_layout);
-	properties->setMinimumHeight(128);
-
-	//FIXME: document properties
+	//Create document properties
 	properties_document = new FWEPropertySheet(this);
+
+	//Create layout
+	properties_layout = new QStackedLayout;
 	properties_layout->addWidget(properties_document);
+	properties->setLayout(properties_layout);
 }
 
 
@@ -243,27 +253,30 @@ void Editor::createPropertiesDock() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::createCSectionDock() {
+	csection = new QWidget(properties_dock);
+	csection->setMinimumWidth(200);
+	csection->setMinimumHeight(80);
+
 	//Create cross-sections editor interface
 	csection_dock = new QDockWidget(tr("Cross sections"), this);
 	csection_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-	csection_dock->setAllowedAreas(Qt::AllDockWidgetAreas);
-	//csection_dock->hide();
-
-	csection = new QWidget(properties_dock);
+	csection_dock->setAllowedAreas(Qt::AllDockWidgetAreas);	
 	csection_dock->setWidget(csection);
 	addDockWidget(Qt::RightDockWidgetArea, csection_dock);
+	//csection_dock->hide();
 	//tabifyDockWidget(list_dock,csection_dock);
 
-	csection_layout = new QStackedLayout;
-	csection->setLayout(csection_layout);
-	csection->setMinimumHeight(192);
-
+	//No cross-sections
 	csection_none = new QLabel(csection);
 	//csection_none->setText("Ain't no cross-sections to edit");
 	//csection_none->setPixmap(QPixmap(":/none.png"));
 	csection_none->setText("No object selected");
 	csection_none->setAlignment(Qt::AlignCenter);
+
+	//Create layout
+	csection_layout = new QStackedLayout;
 	csection_layout->addWidget(csection_none);
+	csection->setLayout(csection_layout);
 }
 
 
@@ -574,6 +587,22 @@ bool Editor::saveFile(const QString &fileName) {
 	info.flags = EVDS_OBJECT_SAVEEX_ONLY_CHILDREN;
 	EVDS_Object_SaveEx(root,fileName.toUtf8().data(),&info);
 	return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void Editor::dropEvent(QDropEvent *event) {
+	qDebug("Contents: %s", event->mimeData()->text().toLatin1().data());
+}
+
+void Editor::dragMoveEvent(QDragMoveEvent *event) {
+	event->accept();
+}
+
+void Editor::dragEnterEvent(QDragEnterEvent *event) {
+	event->acceptProposedAction();
 }
 
 
