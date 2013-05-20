@@ -99,6 +99,11 @@ QtProperty* FWEPropertySheet::setProperty(const QMap<QString,QString> &data) {
 	QString desc = data["description"];
 	QStringList values = data["values"].split("\n",QString::SkipEmptyParts);
 
+	if (propertyByName.contains(var_name)) {
+		qFatal("Property already exists");
+		return 0;
+	}
+
 	//Add to property sheet
 	if (type == "double") {
 		property = doubleManager->addProperty(name);

@@ -89,7 +89,7 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("render.min_pixel_culling",4).toInt());
 
 	//Add clipping plane
-	//GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(0,1,0), GLC_Point3d(0,0,0));
+	//GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(1,1,1), GLC_Point3d(0,0,0));
 	//viewport->addClipPlane(GL_CLIP_PLANE0, m_pClipPlane);
 
 	//Default modes
@@ -501,7 +501,7 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	if ((!inSelectionMode) && fbo_shadow && shader_shadow && sceneShadowed) {
 		fbo_shadow->bind();
 			GLC_Context::current()->glcPushMatrix();
-			GLC_Context::current()->glcTranslated(0,0,-0.6*world->collection()->boundingBox().zLength());
+			GLC_Context::current()->glcTranslated(0,0,1.2*world->collection()->boundingBox().lowerCorner().z());
 			GLC_Context::current()->glcScaled(1,1,0);
 				//viewport->setWinGLSize(rect.width()/2, rect.height()/2);
 				world->collection()->setLodUsage(false,viewport);
@@ -512,6 +512,20 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 				//viewport->setWinGLSize(rect.width(), rect.height());
 			GLC_Context::current()->glcPopMatrix();
 		fbo_shadow->release();
+
+		//Make shadows even more blurry
+		for (int i = 0; i < 8; i++) {
+			fbo_shadow->bind();
+				viewport->useClipPlane(false);
+				glBindTexture(GL_TEXTURE_2D, fbo_shadow->texture());
+				shader_shadow->bind();
+				shader_shadow->setUniformValue("s_Data",0);
+				shader_shadow->setUniformValue("v_invScreenSize",1.0f/rect.width(),1.0f/rect.height());
+				drawScreenQuad();
+				shader_shadow->release();
+				viewport->useClipPlane(true);
+			fbo_shadow->release();
+		}
 
 		if (fbo_fxaa) fbo_fxaa->bind();
 			viewport->useClipPlane(false);

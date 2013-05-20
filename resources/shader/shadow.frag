@@ -40,7 +40,7 @@ void main(void) {
     v_texCoord2D.x - 0.50*f_BlurMagnitude*v_invScreenSize.x,
     v_texCoord2D.y + 0.50*f_BlurMagnitude*v_invScreenSize.y)) * 0.10;
 
-  gl_FragColor = vec4(0.0,0.0,0.0,result.a*0.30);
+  gl_FragColor = vec4(0.0,0.0,0.0,result.a*0.40);
   
 //  gl_FragColor = result;
 //  gl_FragColor = vec4(texture2D(s_Data,v_texCoord2D).r,0.0,0.0,1.0);

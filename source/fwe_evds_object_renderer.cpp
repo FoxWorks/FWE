@@ -67,6 +67,11 @@ ObjectRenderer::ObjectRenderer(Object* in_object) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 ObjectRenderer::~ObjectRenderer() {
+	GLScene* glview = object->getEVDSEditor()->getGLScene();
+	if (glview->getCollection()->contains(glcInstance->id())) {
+		glview->getCollection()->remove(glcInstance->id());			
+	}
+
 	delete glcInstance;
 }
 
@@ -78,17 +83,25 @@ void ObjectRenderer::positionChanged() {
 	//Offset GLC instance relative to objects parent
 	Object* parent = object->getParent();
 	if (parent) {
-		if (parent->getRenderer()) {
-			glcInstance->setMatrix(parent->getRenderer()->getInstance()->matrix());
-		} else {
-			glcInstance->resetMatrix();
-		}
-
+		//Get state vector
 		EVDS_OBJECT* obj = object->getEVDSObject();
 		EVDS_STATE_VECTOR vector;
 		EVDS_Object_GetStateVector(obj,&vector);
+
+		//Get rotation matrix
+		EVDS_MATRIX rotationMatrix;
+		EVDS_Quaternion_ToMatrix(&vector.orientation,rotationMatrix);
+
+		//Apply transformations
+		glcInstance->resetMatrix();
+		glcInstance->multMatrix(GLC_Matrix4x4(rotationMatrix));
 		glcInstance->translate(vector.position.x,vector.position.y,vector.position.z);
 
+		if (parent->getRenderer()) {
+			//The multiplication is right instead of left in multMatrix. So the order is "all wrong"
+			glcInstance->multMatrix(parent->getRenderer()->getInstance()->matrix());
+		}
+		
 		//Add/replace in GL widget to update position
 		GLScene* glview = object->getEVDSEditor()->getGLScene();
 		if (glview->getCollection()->contains(glcInstance->id())) {
@@ -135,6 +148,7 @@ void ObjectRenderer::meshChanged() {
 
 	//glcMesh->reverseNormals();
 	glcMesh->finish();
+	glcInstance->setMatrix(glcInstance->matrix()); //This causes bounding box to be updated
 	EVDS_Object_Destroy(temp_object);
 }
 
@@ -151,6 +165,7 @@ void ObjectRenderer::lodMeshesGenerated() {
 	}
 	//glcMesh->reverseNormals();
 	glcMesh->finish();
+	glcInstance->setMatrix(glcInstance->matrix()); //This causes bounding box to be updated
 	object->getEVDSEditor()->updateObject(NULL); //Force into repaint
 }
 

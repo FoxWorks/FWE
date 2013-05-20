@@ -48,12 +48,41 @@ QSettings* fw_editor_settings = 0;
 
 
 ////////////////////////////////////////////////////////////////////////////////
+/// @brief Qt messages
+////////////////////////////////////////////////////////////////////////////////
+void fw_editor_message(QtMsgType type, const char *msg) {
+	switch (type) {
+		case QtDebugMsg:
+			fprintf(stderr, "[ ] %s\n", msg);
+			break;
+		case QtWarningMsg:
+			fprintf(stderr, "[!] %s\n", msg);
+			break;
+		case QtCriticalMsg:
+			fprintf(stderr, "Critical: %s\n", msg);
+#ifdef _DEBUG
+			_asm { int 3 };
+#endif
+			break;
+		case QtFatalMsg:
+			fprintf(stderr, "Fatal: %s\n", msg);
+#ifdef _DEBUG
+			_asm { int 3 };
+#endif
+			abort();
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 /// @brief Initialize FoxWorks Editor with flags
 ////////////////////////////////////////////////////////////////////////////////
 void fw_editor_initialize(int flags, int argc, char *argv[]) {
 	fw_editor_flags = flags;
 
 	if (flags & FOXWORKS_EDITOR_STANDALONE) {
+		qInstallMsgHandler(fw_editor_message);
+
 		fw_application = new QApplication(argc,argv);
 		Q_INIT_RESOURCE(resources);
 

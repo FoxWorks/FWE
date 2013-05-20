@@ -117,7 +117,7 @@ void CrossSectionEditor::sectionSelected(int index) {
 	if (index == sections->count()) { //Create new section
 		EVDS_VARIABLE* csection;
 		EVDS_VARIABLE* type;
-		EVDS_Variable_AddNested(geometry,"section",EVDS_VARIABLE_TYPE_NESTED,&csection);
+		EVDS_Variable_AddNested(geometry,"section",EVDS_VARIABLE_TYPE_NESTED,&csection); //FIXME crash here
 		EVDS_Variable_AddAttribute(csection,"type",EVDS_VARIABLE_TYPE_STRING,&type);
 		EVDS_Variable_SetString(type,"ellipse",8);
 		EVDS_Variable_AddAttribute(csection,"offset",EVDS_VARIABLE_TYPE_FLOAT,&type);

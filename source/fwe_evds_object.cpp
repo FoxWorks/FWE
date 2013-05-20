@@ -316,7 +316,7 @@ QWidget* Object::getPropertySheet() {
 
 		//Create default set of properties
 		property_sheet->setProperties(editor->objectVariables[""]);
-		property_sheet->setProperties(editor->objectVariables[getType()]);
+		if (!getType().isEmpty()) property_sheet->setProperties(editor->objectVariables[getType()]);
 		return property_sheet;
 	}
 }
