@@ -89,8 +89,8 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("render.min_pixel_culling",4).toInt());
 
 	//Add clipping plane
-	GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(0,1,0), GLC_Point3d(0,0,0));
-	viewport->addClipPlane(GL_CLIP_PLANE0, m_pClipPlane);
+	//GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(0,1,0), GLC_Point3d(0,0,0));
+	//viewport->addClipPlane(GL_CLIP_PLANE0, m_pClipPlane);
 
 	//Default modes
 	sceneOrthographic = true;

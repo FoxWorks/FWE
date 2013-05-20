@@ -71,8 +71,8 @@ CrossSectionEditor::CrossSectionEditor(Object* in_object) {
 	EVDS_VARIABLE* csection;
 
 	geometry = 0;
-	if (EVDS_Object_GetVariable(object->getEVDSObject(),"csection_geometry",&geometry) != EVDS_OK) {
-		EVDS_Object_AddVariable(object->getEVDSObject(),"csection_geometry",EVDS_VARIABLE_TYPE_NESTED,&geometry);
+	if (EVDS_Object_GetVariable(object->getEVDSObject(),"geometry.cross_sections",&geometry) != EVDS_OK) {
+		EVDS_Object_AddVariable(object->getEVDSObject(),"geometry.cross_sections",EVDS_VARIABLE_TYPE_NESTED,&geometry);
 	}
 	EVDS_Variable_GetList(geometry,&csections_list);
 
@@ -122,8 +122,6 @@ void CrossSectionEditor::sectionSelected(int index) {
 		EVDS_Variable_SetString(type,"ellipse",8);
 		EVDS_Variable_AddAttribute(csection,"offset",EVDS_VARIABLE_TYPE_FLOAT,&type);
 		EVDS_Variable_SetReal(type,0.0);
-		EVDS_Variable_AddAttribute(csection,"add_offset",EVDS_VARIABLE_TYPE_FLOAT,&type);
-		EVDS_Variable_SetReal(type,1.0);
 
 		//Create widget
 		CrossSection* csection_widget = new CrossSection(csection,this);
@@ -283,20 +281,20 @@ void CrossSection::setVariable(const QString &name, double value) {
 		//if (value == 0.0) return;
 		switch (specialIndex) {
 			case 1: {
-				EVDS_Variable_AddAttribute(cross_section,"tangent_p_offset",EVDS_VARIABLE_TYPE_FLOAT,&pv);
-				EVDS_Variable_AddAttribute(cross_section,"tangent_m_offset",EVDS_VARIABLE_TYPE_FLOAT,&mv);
+				EVDS_Variable_AddAttribute(cross_section,"tangent.offset.pos",EVDS_VARIABLE_TYPE_FLOAT,&pv);
+				EVDS_Variable_AddAttribute(cross_section,"tangent.offset.neg",EVDS_VARIABLE_TYPE_FLOAT,&mv);
 				EVDS_Variable_SetReal(pv,value);
 				EVDS_Variable_SetReal(mv,value);
-				property_sheet->updateProperty("tangent_p_offset");
-				property_sheet->updateProperty("tangent_m_offset");
+				property_sheet->updateProperty("tangent.offset.pos");
+				property_sheet->updateProperty("tangent.offset.neg");
 			} break;
 			case 2: {
-				EVDS_Variable_AddAttribute(cross_section,"tangent_p_radial",EVDS_VARIABLE_TYPE_FLOAT,&pv);
-				EVDS_Variable_AddAttribute(cross_section,"tangent_m_radial",EVDS_VARIABLE_TYPE_FLOAT,&mv);
+				EVDS_Variable_AddAttribute(cross_section,"tangent.radial.pos",EVDS_VARIABLE_TYPE_FLOAT,&pv);
+				EVDS_Variable_AddAttribute(cross_section,"tangent.radial.neg",EVDS_VARIABLE_TYPE_FLOAT,&mv);
 				EVDS_Variable_SetReal(pv,value);
 				EVDS_Variable_SetReal(mv,value);
-				property_sheet->updateProperty("tangent_p_radial");
-				property_sheet->updateProperty("tangent_m_radial");
+				property_sheet->updateProperty("tangent.radial.pos");
+				property_sheet->updateProperty("tangent.radial.neg");
 			} break;
 		}
 	} else {
@@ -309,10 +307,10 @@ void CrossSection::setVariable(const QString &name, double value) {
 		}
 
 		//Special logic
-		if (name == "tangent_p_offset")	property_sheet->updateProperty("\x01");
-		if (name == "tangent_m_offset")	property_sheet->updateProperty("\x01");
-		if (name == "tangent_p_radial")	property_sheet->updateProperty("\x02");
-		if (name == "tangent_m_radial")	property_sheet->updateProperty("\x02");
+		if (name == "tangent.offset.pos") property_sheet->updateProperty("\x01");
+		if (name == "tangent.offset.neg") property_sheet->updateProperty("\x01");
+		if (name == "tangent.radial.pos") property_sheet->updateProperty("\x02");
+		if (name == "tangent.radial.neg") property_sheet->updateProperty("\x02");
 		if (name == "rx") {
 			EVDS_REAL ry;
 			if (EVDS_Variable_GetAttribute(cross_section,"ry",&v) == EVDS_OK) {

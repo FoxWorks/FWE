@@ -493,7 +493,8 @@ void Editor::cleanupTimer() {
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::newFile() {
 	EVDS_OBJECT_LOADEX info = { 0 };
-	EVDS_Object_LoadEx(root,"RV-505.evds",&info);
+	//EVDS_Object_LoadEx(root,"RV-505.evds",&info);
+	EVDS_Object_LoadEx(root,"asd.evds",&info);
 	root_obj->invalidateChildren();
 }
 
