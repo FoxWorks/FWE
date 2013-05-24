@@ -63,6 +63,7 @@ GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent) :
 	//Have everything be initialized later
 	sceneInitialized = false;
 	fbo_outline = 0;
+	fbo_outline_selected = 0;
 	fbo_shadow = 0;
 	fbo_fxaa = 0;
 
@@ -96,7 +97,7 @@ GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent) :
 	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("render.min_pixel_culling",4).toInt());
 
 	//Add clipping plane
-	//GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(1,1,1), GLC_Point3d(0,0,0));
+	//GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(0,1,0), GLC_Point3d(0,0,0));
 	//viewport->addClipPlane(GL_CLIP_PLANE0, m_pClipPlane);
 
 	//Default modes
@@ -400,6 +401,13 @@ void GLScene::drawScreenQuad() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+void GLScene::recursiveSelect(Object* object) {
+	world->collection()->select(object->getRenderer()->getInstance()->id());
+	for (int i = 0; i < object->getChildrenCount(); i++) {
+		recursiveSelect(object->getChild(i));
+	}
+}
+
 void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 {
 	if ((painter->paintEngine()->type() != QPaintEngine::OpenGL) &&
@@ -436,9 +444,11 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 		previousHeight = rect.height();
 
 		if (fbo_outline) delete fbo_outline;
+		if (fbo_outline_selected) delete fbo_outline_selected;
 		if (fbo_shadow) delete fbo_shadow;
 		if (fbo_fxaa) delete fbo_fxaa;
 		fbo_outline = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
+		fbo_outline_selected = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
 		fbo_shadow = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
 		if (fw_editor_settings->value("rendering.use_fxaa",true) == true) {
 			fbo_fxaa = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
@@ -448,6 +458,12 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	//Always use orthographic view
 	viewport->setToOrtho(sceneOrthographic);
 	bool inSelectionMode = GLC_State::isInSelectionMode();
+
+	//Process selection from the editor
+	world->collection()->unselectAll();
+	if (editor->getSelected()) {
+		recursiveSelect(editor->getSelected());
+	}
 
 
 	//==========================================================================
@@ -459,6 +475,12 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 			glClearColor(0.0f,0.0f,0.0f,0.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		fbo_outline->release();
+	}
+	if (fbo_outline_selected) {
+		fbo_outline_selected->bind();
+			glClearColor(0.0f,0.0f,0.0f,0.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fbo_outline_selected->release();
 	}
 	if (fbo_shadow) {
 		fbo_shadow->bind();
@@ -501,7 +523,13 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	if ((!inSelectionMode) && fbo_outline) {
 		fbo_outline->bind();
 			world->render(0, glc::OutlineSilhouetteRenderFlag);
+			world->render(1, glc::OutlineSilhouetteRenderFlag);
 		fbo_outline->release();
+	}
+	if ((!inSelectionMode) && fbo_outline_selected) {
+		fbo_outline_selected->bind();
+			world->render(1, glc::OutlineSilhouetteRenderFlag);
+		fbo_outline_selected->release();
 	}
 
 	//Draw into shadows buffer
@@ -514,6 +542,7 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 				world->collection()->setLodUsage(false,viewport);
 
 				world->render(0, glc::ShadingFlag);
+				world->render(1, glc::ShadingFlag);
 
 				world->collection()->setLodUsage(true,viewport);
 				//viewport->setWinGLSize(rect.width(), rect.height());
@@ -550,6 +579,8 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	if ((!inSelectionMode) && fbo_fxaa) fbo_fxaa->bind();
 		if (!sceneWireframe) {
 			world->render(0, glc::ShadingFlag);
+			//glClear(GL_DEPTH_BUFFER_BIT);
+			world->render(1, glc::ShadingFlag);
 		}
 	if ((!inSelectionMode) && fbo_fxaa) fbo_fxaa->release();
 
@@ -561,12 +592,14 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	//Draw object outlines
 	if ((!inSelectionMode) && fbo_outline && shader_outline) {
 		if (fbo_fxaa) fbo_fxaa->bind();
-			glBindTexture(GL_TEXTURE_2D, fbo_outline->texture());
 			shader_outline->bind();
 			shader_outline->setUniformValue("s_Data",0);
 			shader_outline->setUniformValue("v_invScreenSize",1.0f/rect.width(),1.0f/rect.height());
 			shader_outline->setUniformValue("f_outlineThickness",1.0f);
-			drawScreenQuad();
+				glBindTexture(GL_TEXTURE_2D, fbo_outline->texture());
+				drawScreenQuad();
+				glBindTexture(GL_TEXTURE_2D, fbo_outline_selected->texture());
+				drawScreenQuad();
 			shader_outline->release();
 		if (fbo_fxaa) fbo_fxaa->release();
 	}

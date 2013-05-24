@@ -157,13 +157,14 @@ void ObjectRenderer::meshChanged() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectRenderer::lodMeshesGenerated() {
-	//qDebug("ObjectRenderer: LOD ready %p",this);
+	qDebug("ObjectRenderer: LOD ready %p",this);
 	
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 
 	glcMesh->clear();
 	for (int i = 0; i < lodMeshGenerator->getNumLODs(); i++) {
 		addLODMesh(lodMeshGenerator->getMesh(i),i);
+		//lodMeshGenerator->destroyMesh(i);
 	}
 	//glcMesh->reverseNormals();
 	glcMesh->finish();
@@ -274,6 +275,17 @@ float ObjectLODGenerator::getLODResolution(int lod) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+void ObjectLODGenerator::destroyMesh(int lod) {
+	if (mesh[lod]) {
+		EVDS_Mesh_Destroy(mesh[lod]);
+		mesh[lod] = 0;
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 ObjectLODGenerator::ObjectLODGenerator(Object* in_object, int in_lods) {
 	object = in_object;
 	numLods = in_lods;
@@ -320,7 +332,7 @@ void ObjectLODGenerator::updateMesh() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectLODGenerator::run() {
-	msleep(2000); //Give enough time for the rest of application to initialize
+	msleep(1000 + (qrand() % 4000)); //Give enough time for the rest of application to initialize
 	while (!doStopWork) {
 		if (needMesh) {
 			readingLock.lock();

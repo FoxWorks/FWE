@@ -9,7 +9,7 @@ float unpack_id(vec4 c) {
   return (c.r + c.g*256.0 + c.b*256.0*256.0 + c.a*256.0*256.0*256.0)*255.0;
 }
 
-float outline() {
+vec4 outline() {
   //Get color of nearby points
   vec4 c00 = texture2D(s_Data, vec2(v_texCoord2D.x-v_invScreenSize.x*f_outlineThickness,v_texCoord2D.y));
   vec4 c01 = texture2D(s_Data, vec2(v_texCoord2D.x+v_invScreenSize.x*f_outlineThickness,v_texCoord2D.y));
@@ -26,15 +26,24 @@ float outline() {
   float dx = v00 - v01;
   float dy = v10 - v11;
   float d = sqrt(dx*dx+dy*dy);
+  
+  //Check if selection is present
+  vec3 contour_color = vec3(0,0,0);
+  if ((v00 > 8388607.0) ||
+      (v01 > 8388607.0) ||
+      (v10 > 8388607.0) ||
+      (v11 > 8388607.0)) {
+    contour_color = v_selectionColor;
+  }
 
   //Edge detection
   if (d > 0.0) {
-    return 1.0;
+    return vec4(contour_color,1.0);
   }
-  return 0.0;
+  return vec4(contour_color,0.0);
 }
 
-float outline_aa() {
+vec4 outline_aa() {
   //Get color of nearby points
   vec4 c00 = texture2D(s_Data, vec2(v_texCoord2D.x-v_invScreenSize.x*0.5*f_outlineThickness,v_texCoord2D.y));
   vec4 c01 = texture2D(s_Data, vec2(v_texCoord2D.x+v_invScreenSize.x*0.5*f_outlineThickness,v_texCoord2D.y));
@@ -79,18 +88,26 @@ float outline_aa() {
   float d3x = w00 - w01;
   float d3y = w10 - w11;
   float d3 = sqrt(d3x*d3x+d3y*d3y);
+  
+  //Check if selection is present
+  vec3 contour_color = vec3(0,0,0);
+  if ((v00 > 8388607.0) ||
+      (v01 > 8388607.0) ||
+      (v10 > 8388607.0) ||
+      (v11 > 8388607.0)) {
+    contour_color = v_selectionColor;
+  }
 
   //Edge detection
   float contour = 0.0;
   if (d1 > 0.0) contour += 0.25;
   if (d2 > 0.0) contour += 0.50;
   if (d3 > 0.0) contour += 0.25;
-  return contour;
+  return vec4(contour_color,contour);
 }
 
 void main(void) {
-  float contour = outline_aa();
-  gl_FragColor = vec4(0,0,0,contour);
+  gl_FragColor = outline_aa();
   
 //  gl_FragColor = vec4(dx*100.0,dy*100.0,d*100.0,1.0);
 //  gl_FragColor = vec4(c00.a*255.0,c00.a*255.0,c00.a*255.0,1.0);

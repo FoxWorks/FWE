@@ -82,7 +82,9 @@ namespace EVDS {
 
 	private:
 		//Create panels and interface
-		void createInterface(); 
+		void createInterface();
+		//Recursively GLC-select object and its children
+		void recursiveSelect(Object* object);
 
 		//Parent scene from which GLC stuff is taken
 		GLScene* parent_scene;
@@ -113,6 +115,7 @@ namespace EVDS {
 
 		//Shaders and framebuffers
 		QGLFramebufferObject* fbo_outline;
+		QGLFramebufferObject* fbo_outline_selected;
 		QGLFramebufferObject* fbo_shadow;
 		QGLFramebufferObject* fbo_fxaa;
 		QGLShaderProgram* shader_background;

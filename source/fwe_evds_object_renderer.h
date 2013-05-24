@@ -80,6 +80,8 @@ namespace EVDS {
 
 		//Get mesh (returns 0 if mesh was not generated yet)
 		EVDS_MESH* getMesh(int lod);
+		//Destroy mesh to conserve memory when it is no longer needed
+		void destroyMesh(int lod);
 		//Update mesh for the given object
 		void updateMesh();
 		//Abort thread work
