@@ -157,8 +157,10 @@ void ObjectRenderer::meshChanged() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectRenderer::lodMeshesGenerated() {
-	qDebug("ObjectRenderer: LOD ready %p",this);
+	//qDebug("ObjectRenderer: LOD ready %p",this);
 	
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+
 	glcMesh->clear();
 	for (int i = 0; i < lodMeshGenerator->getNumLODs(); i++) {
 		addLODMesh(lodMeshGenerator->getMesh(i),i);
@@ -167,6 +169,8 @@ void ObjectRenderer::lodMeshesGenerated() {
 	glcMesh->finish();
 	glcInstance->setMatrix(glcInstance->matrix()); //This causes bounding box to be updated
 	object->getEVDSEditor()->updateObject(NULL); //Force into repaint
+
+	QApplication::restoreOverrideCursor();
 }
 
 

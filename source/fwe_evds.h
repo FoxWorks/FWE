@@ -61,6 +61,7 @@ namespace EVDS {
 	class GLScene;
 	class GLView;
 	class Object;
+	class ObjectInitializer;
 	class ObjectTreeModel;
 	class Editor : public QMainWindow
 	{
@@ -74,13 +75,14 @@ namespace EVDS {
 		bool loadFile(const QString &fileName);
 		bool saveFile(const QString &fileName);
 		void updateInterface(bool isInFront);
-		void setModified() { window->setModified(); }
+		void setModified();
 
 		GLScene* getGLScene() { return glscene; }
 		Object* getEditRoot() { return root_obj; }
 		//Object* getInitializedRoot() { return r
 		//Object* getSelected() { return selected; }
 
+		void updateInformation(bool ready);
 		void updateObject(Object* object);
 		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
 		void loadError(const QString& error);
@@ -99,6 +101,7 @@ namespace EVDS {
 		void removeObject();
 		void selectObject(const QModelIndex& index);
 		void cleanupTimer();
+		void rootInitialized();
 
 	private:
 		QString currentFile;
@@ -151,6 +154,7 @@ namespace EVDS {
 		EVDS::Object* selected;
 
 		//EVDS objects (initialized/simulation area)
+		ObjectInitializer* initializer;
 		EVDS_SYSTEM* initialized_system;
 		EVDS_OBJECT* initialized_root;
 	};

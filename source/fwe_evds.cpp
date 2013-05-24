@@ -93,8 +93,14 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 
 	//Create empty root object
 	EVDS_Object_Create(system,0,&root);
-	EVDS_Object_Initialize(root,1);
+	//EVDS_Object_Initialize(root,1);
 	root_obj = new Object(root,0,this);
+
+	//Create initializer thread
+	initializer = new ObjectInitializer(root_obj);
+	connect(initializer, SIGNAL(signalObjectReady()), this, SLOT(rootInitialized()), Qt::QueuedConnection);
+	initializer->start();
+	initializer->updateObject(); //Must be called before first call to getObject
    
 
 	//Create parts of main UI
@@ -281,6 +287,43 @@ void Editor::createCSectionDock() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+/// @brief Callback when root object was initialized
+////////////////////////////////////////////////////////////////////////////////
+void Editor::rootInitialized() {
+	updateInformation(true);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Callback from when object was modified
+////////////////////////////////////////////////////////////////////////////////
+void Editor::setModified() {
+	window->setModified();
+	initializer->updateObject();
+	updateInformation(false);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void Editor::updateInformation(bool ready) {
+	qDebug("Editor::updateInformation: is ready: %s",(ready ? "true" : "false"));
+	if (selected && ready) {
+		TemporaryObject temp_object = initializer->getObject(selected);
+		QVector3D cm = temp_object.getVector("cm");
+		QString test = tr("(%1; %2; %3) m")
+			.arg(cm.x(),0,'F',3)
+			.arg(cm.y(),0,'F',3)
+			.arg(cm.z(),0,'F',3);
+
+		qDebug("Editor::updateInformation: selected: %s",test.toAscii().data());
+
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::addObject() {
@@ -337,9 +380,6 @@ void Editor::selectObject(const QModelIndex& index) {
 	} else {
 		csection_layout->setCurrentWidget(csection_none);
 	}
-
-	//Show information
-	//object->updateInformationObject();
 
 	//Redraw
 	updateObject(NULL);
@@ -496,6 +536,8 @@ void Editor::newFile() {
 	//EVDS_Object_LoadEx(root,"RV-505.evds",&info);
 	EVDS_Object_LoadEx(root,"TRAIN_TEST.evds",&info);
 	root_obj->invalidateChildren();
+	initializer->updateObject();
+	updateInformation(false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -537,6 +579,8 @@ bool Editor::loadFile(const QString &fileName) {
 
 	}
 	root_obj->invalidateChildren();
+	initializer->updateObject();
+	updateInformation(false);
 	QApplication::restoreOverrideCursor();
 	return true;
 }

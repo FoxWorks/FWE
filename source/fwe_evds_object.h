@@ -45,8 +45,7 @@ namespace EVDS {
 	class Editor;
 	class ObjectRenderer;
 	class CrossSectionEditor;
-	class Object : public QObject
-	{
+	class Object : public QObject {
 		Q_OBJECT
 
 	public:
@@ -82,6 +81,7 @@ namespace EVDS {
 
 		Object* getInitializedObject(); //Part of the entirely initialized copy of the vessel
 		ObjectRenderer* getRenderer() { return renderer; }
+		int getEditorUID() { return editor_uid; }
 
 		void update(bool visually);
 		//void draw(bool objectSelected);
@@ -93,6 +93,8 @@ namespace EVDS {
 		void meshReady();
 
 	private:
+		int editor_uid;
+
 		EVDS_OBJECT* object;
 		EVDS::Editor* editor;
 
@@ -102,6 +104,54 @@ namespace EVDS {
 		ObjectRenderer* renderer;
 		CrossSectionEditor* csection_editor;
 		FWEPropertySheet* property_sheet;
+	};
+
+
+	class TemporaryObject : public Object {
+		Q_OBJECT
+
+	public:
+		TemporaryObject(EVDS_OBJECT* in_object, QMutex* in_unlockMutex) : Object(in_object,0,0) {
+			unlockMutex = in_unlockMutex;
+		}
+		~TemporaryObject() {
+			if (unlockMutex) unlockMutex->unlock();
+		}
+
+	private:
+		QMutex* unlockMutex;
+	};
+
+
+	class ObjectInitializer : public QThread {
+		Q_OBJECT
+
+	public:
+		ObjectInitializer(Object* in_object);
+
+		//Re-initialize object
+		void updateObject();
+		//Abort thread work
+		void stopWork() { doStopWork = true; }
+		//Locked when object is still inconsistent or when it's being read
+		QMutex readingLock;
+
+		//Get temporary object for a real object (by unique identifier)
+		TemporaryObject getObject(Object* object);
+
+	signals:
+		void signalObjectReady();
+
+	protected:
+		void run();
+	
+	private:
+		bool doStopWork; //Stop threads work
+		bool needObject; //Is new object required
+		bool objectCompleted; //Is object ready to be read
+
+		Object* object; //Object which is initialized
+		EVDS_OBJECT* object_copy;
 	};
 }
 

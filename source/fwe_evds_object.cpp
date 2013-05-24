@@ -48,12 +48,16 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 	editor = in_editor;
 	parent = in_parent;
 
-	//Store this object as EVDS userdata
-	EVDS_Object_SetUserdata(object,(void*)this);
+	//Is object initialized
+	int initialized;
+	EVDS_Object_IsInitialized(object,&initialized);
 
-	//Create a renderer for the object before children are created (FIXME: not for initialized objects)
+	//Store this object as EVDS userdata
+	if (!initialized) EVDS_Object_SetUserdata(object,(void*)this);
+
+	//Create a renderer for the object before children are created
 	renderer = 0;
-	if (in_parent) {
+	if ((!initialized) && (in_parent)) {
 		QTime time; time.start();
 
 		renderer = new ObjectRenderer(this);
@@ -66,13 +70,17 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 	}
 
 	//Enumerate and store all children
-	invalidateChildren();
+	if (!initialized) invalidateChildren();
 
 	//No property sheet by default
 	property_sheet = 0;
 
 	//No cross-sections editor
 	csection_editor = 0;
+
+	//Create editor-wide unique identifier
+	static int editor_uid_counter = 0;
+	editor_uid = editor_uid_counter++;
 }
 
 
@@ -532,4 +540,119 @@ void Object::update(bool visually) {
 	}
 	//if (visually && renderer) renderer->meshChanged();
 	editor->updateObject(this);
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+ObjectInitializer::ObjectInitializer(Object* in_object) {
+	object = in_object;
+
+	//Initialize temporary object
+	object_copy = 0;
+
+	//Delete thread when work is finished
+	connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));	
+	doStopWork = false;
+	needObject = false; 
+	objectCompleted = true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+TemporaryObject ObjectInitializer::getObject(Object* object) {
+	while (!objectCompleted) msleep(1); //Wait until object initialization is completed
+
+	readingLock.lock();
+	EVDS_OBJECT* found_object = 0;
+	EVDS_SYSTEM* system;
+	EVDS_Object_GetSystem(object_copy,&system);
+	if (EVDS_System_GetObjectByUID(system,object->getEditorUID(),object_copy,&found_object) != EVDS_OK) {
+		qFatal("ObjectInitializer::getObject: could not find object");
+	}
+	return TemporaryObject(found_object,&readingLock);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Get a temporary copy of the object
+///
+/// Must be called before the first call of getObject!
+////////////////////////////////////////////////////////////////////////////////
+void ObjectInitializer::updateObject() {
+	qDebug("ObjectInitializer::updateObject: requested update");
+	needObject = true;
+	if (this->isRunning()) {
+		readingLock.lock();
+			//Destroy old copy of initialized object
+			if (object_copy) EVDS_Object_Destroy(object_copy);
+			//Create new one
+			EVDS_Object_Copy(object->getEVDSObject(),0,&object_copy);
+			//Object not completed
+			objectCompleted = false;
+		readingLock.unlock();
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void FWE_ObjectInitializer_FixUIDs(EVDS_OBJECT* object) {
+	//Get userdata
+	void* userdata;
+	EVDS_Object_GetUserdata(object,&userdata);
+	Object* editor_object = static_cast<Object*>(userdata);
+
+	//Set UID
+	EVDS_Object_SetUID(object,editor_object->getEditorUID());
+
+	//Get list of children
+	SIMC_LIST* list;
+	SIMC_LIST_ENTRY* entry;
+	EVDS_Object_GetAllChildren(object,&list);
+
+	//Do same for every child
+	entry = SIMC_List_GetFirst(list);
+	while (entry) {
+		FWE_ObjectInitializer_FixUIDs((EVDS_OBJECT*)SIMC_List_GetData(list,entry));
+		entry = SIMC_List_GetNext(list,entry);
+	}
+}
+
+void ObjectInitializer::run() {
+	msleep(2000); //Give enough time for the rest of application to initialize
+	while (!object_copy) msleep(100); //Wait until there's an object to initialize
+	while (!doStopWork) {
+		if (needObject) {
+			readingLock.lock();
+				//Start making the mesh
+				needObject = false;
+
+				//Transfer and initialize object
+				qDebug("ObjectInitializer::run: initializing...");
+				EVDS_Object_TransferInitialization(object_copy); //Get rights to work with variables
+				FWE_ObjectInitializer_FixUIDs(object_copy); //Fix UID's for the objects
+				EVDS_Object_Initialize(object_copy,1);
+				qDebug("ObjectInitializer::run: done!");
+
+				//Finish working
+				objectCompleted = true;
+			readingLock.unlock();
+
+			//If new mesh is needed, do not return generated one - return actually needed one instead
+			if (!needObject) {
+				emit signalObjectReady();
+			}
+		}
+		msleep(50);
+	}
+
+	//Finish thread work and destroy HQ mesh
+	//if (mesh) EVDS_Mesh_Destroy(mesh);
 }
