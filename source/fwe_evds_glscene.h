@@ -41,12 +41,13 @@
 
 namespace EVDS {
 	class Object;
+	class Editor;
 	class GLScene : public QGraphicsScene
 	{
 		Q_OBJECT
 
 	public:
-		GLScene(GLScene* in_parent_scene, QWidget *parent = 0);
+		GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent = 0);
 		~GLScene();
 
 		QSize minimumSizeHint() const { return QSize(50, 50); }
@@ -85,6 +86,7 @@ namespace EVDS {
 
 		//Parent scene from which GLC stuff is taken
 		GLScene* parent_scene;
+		Editor* editor;
 
 		//UI elements
 		QWidget* panel_control;
@@ -100,6 +102,7 @@ namespace EVDS {
 		GLC_World* world;
 		GLC_Viewport* viewport;
 		GLC_MoverController controller;
+		GLC_3DViewInstance* indicator_cm;
 
 		//Is scene initialized OpenGL-wise
 		bool sceneOrthographic;

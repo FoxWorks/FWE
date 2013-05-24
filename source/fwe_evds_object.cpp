@@ -543,6 +543,23 @@ void Object::update(bool visually) {
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void Object::recursiveUpdateInformation(ObjectInitializer* initializer) {
+	{ //Update information about the current object
+		TemporaryObject temporary_object = initializer->getObject(this);
+		info_cm = temporary_object.getVector("cm");
+		info_total_cm = temporary_object.getVector("total_cm");
+	}
+
+	//Update information for all children
+	for (int i = 0; i < getChildrenCount(); i++) {
+		getChild(i)->recursiveUpdateInformation(initializer);
+	}
+}
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -635,11 +652,11 @@ void ObjectInitializer::run() {
 				needObject = false;
 
 				//Transfer and initialize object
-				qDebug("ObjectInitializer::run: initializing...");
+				//qDebug("ObjectInitializer::run: initializing...");
 				EVDS_Object_TransferInitialization(object_copy); //Get rights to work with variables
 				FWE_ObjectInitializer_FixUIDs(object_copy); //Fix UID's for the objects
 				EVDS_Object_Initialize(object_copy,1);
-				qDebug("ObjectInitializer::run: done!");
+				//qDebug("ObjectInitializer::run: done!");
 
 				//Finish working
 				objectCompleted = true;

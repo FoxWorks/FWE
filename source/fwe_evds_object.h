@@ -44,6 +44,7 @@ class FWEPropertySheet;
 namespace EVDS {
 	class Editor;
 	class ObjectRenderer;
+	class ObjectInitializer;
 	class CrossSectionEditor;
 	class Object : public QObject {
 		Q_OBJECT
@@ -86,6 +87,11 @@ namespace EVDS {
 		void update(bool visually);
 		//void draw(bool objectSelected);
 
+		//Information
+		void recursiveUpdateInformation(ObjectInitializer* initializer);
+		QVector3D information_cm() { return info_cm; }
+		QVector3D information_total_cm() { return info_total_cm; }
+
 	private slots:
 		void doubleChanged(const QString& name, double value);
 		void enumChanged(const QString& name, const QString& value);
@@ -94,6 +100,8 @@ namespace EVDS {
 
 	private:
 		int editor_uid;
+		QVector3D info_cm;
+		QVector3D info_total_cm;
 
 		EVDS_OBJECT* object;
 		EVDS::Editor* editor;

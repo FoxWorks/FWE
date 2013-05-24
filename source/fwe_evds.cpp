@@ -110,7 +110,7 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 	createCSectionDock();
 
 	//Create working area/main 3D widget
-	glscene = new GLScene(0,this);
+	glscene = new GLScene(0,this,this);
 	glview = new GLView(this);
 	glview->setScene(glscene);
 	setCentralWidget(glview);
@@ -309,7 +309,7 @@ void Editor::setModified() {
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::updateInformation(bool ready) {
 	qDebug("Editor::updateInformation: is ready: %s",(ready ? "true" : "false"));
-	if (selected && ready) {
+	/*if (selected && ready) {
 		TemporaryObject temp_object = initializer->getObject(selected);
 		QVector3D cm = temp_object.getVector("cm");
 		QString test = tr("(%1; %2; %3) m")
@@ -318,7 +318,10 @@ void Editor::updateInformation(bool ready) {
 			.arg(cm.z(),0,'F',3);
 
 		qDebug("Editor::updateInformation: selected: %s",test.toAscii().data());
-
+	}*/
+	if (ready) {
+		root_obj->recursiveUpdateInformation(initializer);
+		update();
 	}
 }
 

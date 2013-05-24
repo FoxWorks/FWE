@@ -40,6 +40,7 @@
 #include <math.h>
 #include "fwe_evds.h"
 #include "fwe_evds_object.h"
+#include "fwe_evds_object_renderer.h"
 #include "fwe_evds_glscene.h"
 
 using namespace EVDS;
@@ -55,8 +56,9 @@ using namespace EVDS;
 ///		view->setViewport(glwidget);
 ///
 ////////////////////////////////////////////////////////////////////////////////
-GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(parent) {
+GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent) : QGraphicsScene(parent) {
 	parent_scene = in_parent_scene; //FIXME: support for this
+	editor = in_editor;
 
 	//Have everything be initialized later
 	sceneInitialized = false;
@@ -72,6 +74,11 @@ GLScene::GLScene(GLScene* in_parent_scene, QWidget *parent) : QGraphicsScene(par
 	//GLC scene cannot be empty, either it crashes
 	GLC_3DViewInstance instance(GLC_Factory::instance()->createCircle(0.0));
 	world->collection()->add(instance);
+
+	//Add center of mass indicator
+	GLC_PointSprite* sprite = new GLC_PointSprite(32.0f,new GLC_Material(new GLC_Texture(":/icon/glview/cm.png")));
+	indicator_cm = new GLC_3DViewInstance(sprite);
+	indicator_cm->translate(3.0,0,0);
 
 	//Create lights
 	light[0] = new GLC_Light();
@@ -544,7 +551,6 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 		if (!sceneWireframe) {
 			world->render(0, glc::ShadingFlag);
 		}
-		//world->render(0, glc::WireRenderFlag);
 	if ((!inSelectionMode) && fbo_fxaa) fbo_fxaa->release();
 
 
@@ -568,7 +574,17 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	//Draw controller UI
 	if (!inSelectionMode) {
 		if (fbo_fxaa) fbo_fxaa->bind();
+			//Draw CM indicator
 			glClear(GL_DEPTH_BUFFER_BIT);
+			if (editor->getSelected()) {
+				QVector3D position = editor->getSelected()->information_cm();
+				indicator_cm->resetMatrix();
+				indicator_cm->translate(position.x(),position.y(),position.z());
+				indicator_cm->multMatrix(editor->getSelected()->getRenderer()->getInstance()->matrix());
+				indicator_cm->render();
+			}
+
+			//glClear(GL_DEPTH_BUFFER_BIT);
 			controller.drawActiveMoverRep();
 		if (fbo_fxaa) fbo_fxaa->release();
 	}

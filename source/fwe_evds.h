@@ -79,8 +79,7 @@ namespace EVDS {
 
 		GLScene* getGLScene() { return glscene; }
 		Object* getEditRoot() { return root_obj; }
-		//Object* getInitializedRoot() { return r
-		//Object* getSelected() { return selected; }
+		Object* getSelected() { return selected; }
 
 		void updateInformation(bool ready);
 		void updateObject(Object* object);
