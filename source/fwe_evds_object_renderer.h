@@ -73,13 +73,12 @@ namespace EVDS {
 		GLfloatVector verticesVector;
 		GLfloatVector normalsVector;
 		QList<IndexList> indicesLists;
-		QList<GLC_Material*> materialsList;
 		QList<EVDS_MESH*> meshList;
 		QList<int> lodList;
 
 		void clear();
 		void appendMesh(EVDS_MESH* mesh, int lod);
-		void setGLCMesh(GLC_Mesh* glcMesh);
+		void setGLCMesh(GLC_Mesh* glcMesh, Object* object);
 	};
 
 
@@ -101,6 +100,9 @@ namespace EVDS {
 		//Get number of lods
 		int getNumLODs() { return numLods; }
 
+	public slots:
+		void doUpdateMesh();
+
 	signals:
 		void signalLODsReady();
 
@@ -110,9 +112,9 @@ namespace EVDS {
 	private:
 		float getLODResolution(int lod); //Get resolution for LOD level
 
+		QTimer updateCallTimer;
 		bool doStopWork; //Stop threads work
 		bool needMesh; //Is new mesh required
-		bool meshCompleted; //Is mesh ready to be read
 
 		Object* object; //Object for which mesh is generated
 		EVDS_OBJECT* object_copy; //Copy of the object for this thread

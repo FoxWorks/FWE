@@ -492,6 +492,15 @@ QVector3D Object::getVector(const QString &name) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+bool Object::isVariableDefined(const QString &name) {
+	EVDS_VARIABLE* variable;
+	return EVDS_Object_GetVariable(object,name.toUtf8().data(),&variable) == EVDS_OK;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 bool Object::isOxidizerTank() {
 	QString fuel_type = getString("fuel_type");
 	if (fuel_type != "") {
@@ -550,14 +559,34 @@ void Object::update(bool visually) {
 void Object::recursiveUpdateInformation(ObjectInitializer* initializer) {
 	{ //Update information about the current object
 		TemporaryObject temporary_object = initializer->getObject(this);
-		info_cm = temporary_object.getVector("cm");
-		info_total_cm = temporary_object.getVector("total_cm");
+
+		info_vectors["cm"] = temporary_object.getVector("cm");
+		info_vectors["total_cm"] = temporary_object.getVector("total_cm");
+
+		//FIXME: loop this from info_vectors, info_variables:
+		info_defined["cm"] = temporary_object.isVariableDefined("cm");
+		info_defined["total_cm"] = temporary_object.isVariableDefined("total_cm");
 	}
 
 	//Update information for all children
 	for (int i = 0; i < getChildrenCount(); i++) {
 		getChild(i)->recursiveUpdateInformation(initializer);
 	}
+}
+
+double Object::getInformationVariable(const QString &name) {
+	if (!info_variables.contains(name)) return 0.0;
+	return info_variables[name];
+}
+
+QVector3D Object::getInformationVector(const QString &name) {
+	if (!info_vectors.contains(name)) return QVector3D();
+	return info_vectors[name];
+}
+
+bool Object::isInformationDefined(const QString &name) {
+	if (!info_defined.contains(name)) return false;
+	return info_defined[name];
 }
 
 
@@ -574,6 +603,7 @@ ObjectInitializer::ObjectInitializer(Object* in_object) {
 
 	//Delete thread when work is finished
 	connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));	
+	connect(&updateCallTimer, SIGNAL(timeout()), this, SLOT(doUpdateObject()));
 	doStopWork = false;
 	needObject = false; 
 	objectCompleted = true;
@@ -602,8 +632,9 @@ TemporaryObject ObjectInitializer::getObject(Object* object) {
 ///
 /// Must be called before the first call of getObject!
 ////////////////////////////////////////////////////////////////////////////////
-void ObjectInitializer::updateObject() {
-	qDebug("ObjectInitializer::updateObject: requested update");
+void ObjectInitializer::doUpdateObject() {
+	updateCallTimer.stop();
+	//qDebug("ObjectInitializer::doUpdateObject: fire!");
 	needObject = true;
 	if (this->isRunning()) {
 		readingLock.lock();
@@ -615,6 +646,13 @@ void ObjectInitializer::updateObject() {
 			objectCompleted = false;
 		readingLock.unlock();
 	}
+}
+
+void ObjectInitializer::updateObject() {
+	//qDebug("ObjectInitializer::updateObject: start timer");
+	updateCallTimer.start(500);
+	//qDebug("ObjectInitializer::updateObject: requested update");
+	
 }
 
 
@@ -657,6 +695,7 @@ void ObjectInitializer::run() {
 				EVDS_Object_TransferInitialization(object_copy); //Get rights to work with variables
 				FWE_ObjectInitializer_FixUIDs(object_copy); //Fix UID's for the objects
 				EVDS_Object_Initialize(object_copy,1);
+				EVDS_Object_Solve(object_copy,0.0);
 				//qDebug("ObjectInitializer::run: done!");
 
 				//Finish working
@@ -668,7 +707,7 @@ void ObjectInitializer::run() {
 				emit signalObjectReady();
 			}
 		}
-		msleep(100);
+		msleep(50);
 	}
 
 	//Finish thread work and destroy HQ mesh

@@ -34,6 +34,8 @@
 #include <QVector3D>
 #include <QThread>
 #include <QMutex>
+#include <QHash>
+#include <QTimer>
 #include "evds.h"
 
 QT_BEGIN_NAMESPACE
@@ -58,6 +60,7 @@ namespace EVDS {
 		double getVariable(const QString &name);
 		QString getString(const QString &name);
 		QVector3D getVector(const QString &name);
+		bool isVariableDefined(const QString &name);
 		QString getName();
 		void setName(const QString &name);
 		QString getType();
@@ -89,8 +92,9 @@ namespace EVDS {
 
 		//Information
 		void recursiveUpdateInformation(ObjectInitializer* initializer);
-		QVector3D information_cm() { return info_cm; }
-		QVector3D information_total_cm() { return info_total_cm; }
+		double getInformationVariable(const QString &name);
+		QVector3D getInformationVector(const QString &name);
+		bool isInformationDefined(const QString &name);
 
 	private slots:
 		void doubleChanged(const QString& name, double value);
@@ -100,8 +104,9 @@ namespace EVDS {
 
 	private:
 		int editor_uid;
-		QVector3D info_cm;
-		QVector3D info_total_cm;
+		QHash<QString,QVector3D> info_vectors;
+		QHash<QString,double> info_variables;
+		QHash<QString,bool> info_defined;
 
 		EVDS_OBJECT* object;
 		EVDS::Editor* editor;
@@ -147,6 +152,9 @@ namespace EVDS {
 		//Get temporary object for a real object (by unique identifier)
 		TemporaryObject getObject(Object* object);
 
+	public slots:
+		void doUpdateObject();
+
 	signals:
 		void signalObjectReady();
 
@@ -154,6 +162,7 @@ namespace EVDS {
 		void run();
 	
 	private:
+		QTimer updateCallTimer;
 		bool doStopWork; //Stop threads work
 		bool needObject; //Is new object required
 		bool objectCompleted; //Is object ready to be read

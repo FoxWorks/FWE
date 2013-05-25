@@ -308,7 +308,7 @@ void Editor::setModified() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::updateInformation(bool ready) {
-	qDebug("Editor::updateInformation: is ready: %s",(ready ? "true" : "false"));
+	//qDebug("Editor::updateInformation: is ready: %s",(ready ? "true" : "false"));
 	/*if (selected && ready) {
 		TemporaryObject temp_object = initializer->getObject(selected);
 		QVector3D cm = temp_object.getVector("cm");

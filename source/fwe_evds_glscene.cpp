@@ -611,11 +611,21 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 			//Draw CM indicator
 			glClear(GL_DEPTH_BUFFER_BIT);
 			if (editor->getSelected()) {
-				QVector3D position = editor->getSelected()->information_cm();
-				indicator_cm->resetMatrix();
-				indicator_cm->translate(position.x(),position.y(),position.z());
-				indicator_cm->multMatrix(editor->getSelected()->getRenderer()->getInstance()->matrix());
-				indicator_cm->render();
+				bool cm1 = editor->getSelected()->isInformationDefined("total_cm");
+				bool cm2 = editor->getSelected()->isInformationDefined("cm");
+				if (cm1 || cm2) {
+					QVector3D position = QVector3D();
+					if (cm1) {
+						position = editor->getSelected()->getInformationVector("total_cm");
+					} else {
+						position = editor->getSelected()->getInformationVector("cm");
+					}
+
+					indicator_cm->resetMatrix();
+					indicator_cm->translate(position.x(),position.y(),position.z());
+					indicator_cm->multMatrix(editor->getSelected()->getRenderer()->getInstance()->matrix());
+					indicator_cm->render();
+				}
 			}
 
 			//glClear(GL_DEPTH_BUFFER_BIT);

@@ -138,7 +138,7 @@ void ObjectRenderer::meshChanged() {
 		EVDS_Mesh_Generate(temp_object,&mesh,32.0f,EVDS_MESH_USE_DIVISIONS);
 		result.appendMesh(mesh,0);
 		EVDS_Mesh_Destroy(mesh);
-	result.setGLCMesh(glcMesh);
+	result.setGLCMesh(glcMesh,object);
 
 	glcMesh->finish();
 	glcInstance->setMatrix(glcInstance->matrix()); //This causes bounding box to be updated
@@ -153,18 +153,12 @@ void ObjectRenderer::lodMeshesGenerated() {
 	//qDebug("ObjectRenderer: LOD ready %p",this);
 	
 	lodMeshGenerator->readingLock.lock();
+		glcMesh->clear();
+		lodMeshGenerator->getResult()->setGLCMesh(glcMesh,object);
+		glcMesh->finish();
 
-	glcMesh->clear();
-	//for (int i = 0; i < lodMeshGenerator->getNumLODs(); i++) {
-		//addLODMesh(lodMeshGenerator->getMesh(i),i);
-		//lodMeshGenerator->destroyMesh(i);
-	//}
-	lodMeshGenerator->getResult()->setGLCMesh(glcMesh);
-	//glcMesh->reverseNormals();
-	glcMesh->finish();
-	glcInstance->setMatrix(glcInstance->matrix()); //This causes bounding box to be updated
-	object->getEVDSEditor()->updateObject(NULL); //Force into repaint
-
+		glcInstance->setMatrix(glcInstance->matrix()); //This causes bounding box to be updated
+		object->getEVDSEditor()->updateObject(NULL); //Force into repaint
 	lodMeshGenerator->readingLock.unlock();
 }
 
@@ -182,7 +176,6 @@ void ObjectLODGeneratorResult::appendMesh(EVDS_MESH* mesh, int lod) {
 		verticesVector << 0 << 0 << 0;
 		normalsVector << 0 << 0 << 0;
 		indicesLists.append(IndexList() << 0 << 0 << 0);
-		materialsList.append(new GLC_Material());
 		lodList.append(lod);
 	} else {
 		//Must have at least one smoothing group
@@ -194,19 +187,8 @@ void ObjectLODGeneratorResult::appendMesh(EVDS_MESH* mesh, int lod) {
 
 		//Prepare indices and materials lists for every group
 		for (int i = 0; i < mesh->num_smoothing_groups; i++) {
-			GLC_Material* glcMaterial = new GLC_Material();
-			materialsList.append(glcMaterial);
 			indicesLists.append(IndexList());
 			lodList.append(lod);
-
-			//Special color logic
-			/*if (object->getType() == "fuel_tank") {
-				if (object->isOxidizerTank()) {
-					glcMaterial->setDiffuseColor(QColor(0,0,255));
-				} else {
-					glcMaterial->setDiffuseColor(QColor(255,255,0));
-				}
-			}*/
 		}
 
 		//Add all data
@@ -231,12 +213,24 @@ void ObjectLODGeneratorResult::appendMesh(EVDS_MESH* mesh, int lod) {
 		//FIXME prevent empty lists
 	}
 }
-void ObjectLODGeneratorResult::setGLCMesh(GLC_Mesh* glcMesh) {
+void ObjectLODGeneratorResult::setGLCMesh(GLC_Mesh* glcMesh, Object* object) {
 	glcMesh->addVertice(verticesVector);
 	glcMesh->addNormals(normalsVector);
 	for (int i = 0; i < indicesLists.count(); i++) {
 		if (!indicesLists[i].isEmpty()) {
-			glcMesh->addTriangles(materialsList[i], indicesLists[i], lodList[i]);
+			GLC_Material* glcMaterial = new GLC_Material();
+			
+			//Special color logic
+			if (object->getType() == "fuel_tank") {
+				if (object->isOxidizerTank()) {
+					glcMaterial->setDiffuseColor(QColor(0,0,255));
+				} else {
+					glcMaterial->setDiffuseColor(QColor(255,255,0));
+				}
+			}
+
+			//Add smoothing group
+			glcMesh->addTriangles(glcMaterial, indicesLists[i], lodList[i]);
 		}
 	}
 }
@@ -246,7 +240,6 @@ void ObjectLODGeneratorResult::clear() {
 	normalsVector.clear();
 	indicesLists.clear();
 	lodList.clear();
-	materialsList.clear(); //FIXME: apply materials elsewhere to avoid leak
 }
 
 
@@ -270,15 +263,12 @@ ObjectLODGenerator::ObjectLODGenerator(Object* in_object, int in_lods) {
 
 	//Initialize temporary object
 	object_copy = 0;
-	//for (int i = 0; i < numLods; i++) {mesh.append(ObjectLODGeneratorResult());
-	//mesh = (EVDS_MESH**)malloc(numLods*sizeof(EVDS_MESH*));
-	//for (int i = 0; i < numLods; i++) mesh[i] = 0;
 
 	//Delete thread when work is finished
 	connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));	
+	connect(&updateCallTimer, SIGNAL(timeout()), this, SLOT(doUpdateMesh()));
 	doStopWork = false;
 	needMesh = false; 
-	meshCompleted = true;
 }
 
 
@@ -286,24 +276,26 @@ ObjectLODGenerator::ObjectLODGenerator(Object* in_object, int in_lods) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 ObjectLODGeneratorResult* ObjectLODGenerator::getResult() { 
-	if ((!needMesh) && meshCompleted && this->isRunning()) { 
-		return &result;
-	} else {
-		return 0;
-	} 
+	return &result;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Get a temporary copy of the rendered object
 ////////////////////////////////////////////////////////////////////////////////
+void ObjectLODGenerator::doUpdateMesh() {
+	updateCallTimer.stop();
+	readingLock.lock();
+		needMesh = true;
+		if (this->isRunning()) {
+			EVDS_Object_CopySingle(object->getEVDSObject(),0,&object_copy);
+		}
+	readingLock.unlock();
+}
+
 void ObjectLODGenerator::updateMesh() {
-	needMesh = true;
-	if (this->isRunning()) {
-		readingLock.lock();
-		EVDS_Object_CopySingle(object->getEVDSObject(),0,&object_copy);
-		readingLock.unlock();
-	}
+	//qDebug("ObjectLODGenerator::updateMesh: start timer");
+	updateCallTimer.start(500);
 }
 
 
@@ -313,12 +305,10 @@ void ObjectLODGenerator::updateMesh() {
 void ObjectLODGenerator::run() {
 	msleep(1000 + (qrand() % 5000)); //Give enough time for the rest of application to initialize
 	while (!doStopWork) {
+		readingLock.lock();
 		if (needMesh) {
-			readingLock.lock();
-
 			//Start making the mesh
 			needMesh = false;
-			meshCompleted = false;
 
 			//Transfer and initialize work object
 			EVDS_OBJECT* work_object = object_copy; //Fetch the pointer
@@ -328,15 +318,6 @@ void ObjectLODGenerator::run() {
 
 			result.clear();
 			for (int lod = 0; lod < numLods; lod++) {
-				//printf("Generating mesh %p for level %d\n",object,lod);
-			
-				//Remove old mesh
-				/*if (mesh[lod]) {
-					EVDS_Mesh_Destroy(mesh[lod]);
-					mesh[lod] = 0;
-				}*/
-				//resu
-
 				//Check if job must be aborted
 				if (needMesh) {
 					qDebug("ObjectLODGenerator: aborted job early");
@@ -346,7 +327,6 @@ void ObjectLODGenerator::run() {
 				//Create new one
 				EVDS_MESH* mesh;
 				EVDS_Mesh_Generate(work_object,&mesh,getLODResolution(numLods-lod-1),EVDS_MESH_USE_DIVISIONS);
-				//result.meshList.append(mesh);
 				result.appendMesh(mesh,lod);
 				EVDS_Mesh_Destroy(mesh);
 				//printf("Done mesh %p %p for level %d\n",object,mesh,lod);
@@ -356,17 +336,14 @@ void ObjectLODGenerator::run() {
 			if (work_object) {
 				EVDS_Object_Destroy(work_object);
 			}
-			readingLock.unlock();
-
-			//Finish working
-			meshCompleted = true;
 
 			//If new mesh is needed, do not return generated one - return actually needed one instead
 			if (!needMesh) {
 				emit signalLODsReady();
 			}
 		}
-		msleep(100);
+		readingLock.unlock();
+		msleep(50);
 	}
 
 	//Finish thread work and destroy HQ mesh
