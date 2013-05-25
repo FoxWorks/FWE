@@ -133,20 +133,13 @@ void ObjectRenderer::meshChanged() {
 
 	//Do the quick hack job anyway
 	glcMesh->clear();
-	//for (int i = 0; i < 4; i++) {
-		//EVDS_Mesh_Generate(temp_object,&mesh,getLODResolution(3-i),EVDS_MESH_USE_DIVISIONS);
-		//addLODMesh(mesh,i);
-		//EVDS_Mesh_Destroy(mesh);
-	//}
 
-	EVDS_Mesh_Generate(temp_object,&mesh,32.0f,EVDS_MESH_USE_DIVISIONS);
-	addLODMesh(mesh,0);
-	EVDS_Mesh_Destroy(mesh);
-	//EVDS_Mesh_Generate(temp_object,&mesh,24.0f,EVDS_MESH_USE_DIVISIONS);
-	//addLODMesh(mesh,1);
-	//EVDS_Mesh_Destroy(mesh);
+	ObjectLODGeneratorResult result;
+		EVDS_Mesh_Generate(temp_object,&mesh,32.0f,EVDS_MESH_USE_DIVISIONS);
+		result.appendMesh(mesh,0);
+		EVDS_Mesh_Destroy(mesh);
+	result.setGLCMesh(glcMesh);
 
-	//glcMesh->reverseNormals();
 	glcMesh->finish();
 	glcInstance->setMatrix(glcInstance->matrix()); //This causes bounding box to be updated
 	EVDS_Object_Destroy(temp_object);
@@ -157,73 +150,66 @@ void ObjectRenderer::meshChanged() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectRenderer::lodMeshesGenerated() {
-	qDebug("ObjectRenderer: LOD ready %p",this);
+	//qDebug("ObjectRenderer: LOD ready %p",this);
 	
-	QApplication::setOverrideCursor(Qt::WaitCursor);
+	lodMeshGenerator->readingLock.lock();
 
 	glcMesh->clear();
-	for (int i = 0; i < lodMeshGenerator->getNumLODs(); i++) {
-		addLODMesh(lodMeshGenerator->getMesh(i),i);
+	//for (int i = 0; i < lodMeshGenerator->getNumLODs(); i++) {
+		//addLODMesh(lodMeshGenerator->getMesh(i),i);
 		//lodMeshGenerator->destroyMesh(i);
-	}
+	//}
+	lodMeshGenerator->getResult()->setGLCMesh(glcMesh);
 	//glcMesh->reverseNormals();
 	glcMesh->finish();
 	glcInstance->setMatrix(glcInstance->matrix()); //This causes bounding box to be updated
 	object->getEVDSEditor()->updateObject(NULL); //Force into repaint
 
-	QApplication::restoreOverrideCursor();
+	lodMeshGenerator->readingLock.unlock();
 }
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void ObjectRenderer::addLODMesh(EVDS_MESH* mesh, int lod) {
+void ObjectLODGeneratorResult::appendMesh(EVDS_MESH* mesh, int lod) {
 	if (!mesh) return;
 
 	//Add empty mesh?
 	if (mesh->num_triangles == 0) {
-		GLfloatVector verticesVector;
-		GLfloatVector normalsVector;
-		IndexList indicesList;
-
 		verticesVector << 0 << 0 << 0;
 		normalsVector << 0 << 0 << 0;
-		indicesList << 0 << 0 << 0;
-
-		glcMesh->addVertice(verticesVector);
-		glcMesh->addNormals(normalsVector);
-		glcMesh->addTriangles(new GLC_Material(), indicesList, lod);
+		indicesLists.append(IndexList() << 0 << 0 << 0);
+		materialsList.append(new GLC_Material());
+		lodList.append(lod);
 	} else {
-		GLfloatVector verticesVector;
-		GLfloatVector normalsVector;
-		QList<GLC_Material*> glcGroupMaterials;
-		QList<IndexList> indicesLists;
-
 		//Must have at least one smoothing group
 		if (mesh->num_smoothing_groups == 0) mesh->num_smoothing_groups = 1;
+
+		//Get first indices to append
+		int firstVertexIndex = (verticesVector.count())/3;
+		int firstSmoothingGroupIndex = indicesLists.count();
 
 		//Prepare indices and materials lists for every group
 		for (int i = 0; i < mesh->num_smoothing_groups; i++) {
 			GLC_Material* glcMaterial = new GLC_Material();
-			glcGroupMaterials.append(glcMaterial);
+			materialsList.append(glcMaterial);
 			indicesLists.append(IndexList());
-		}
+			lodList.append(lod);
 
-		if (object->getType() == "fuel_tank") {
-			if (object->isOxidizerTank()) {
-				for (int i = 0; i < mesh->num_smoothing_groups; i++) {
-					glcGroupMaterials[i]->setDiffuseColor(QColor(0,0,255));
+			//Special color logic
+			/*if (object->getType() == "fuel_tank") {
+				if (object->isOxidizerTank()) {
+					glcMaterial->setDiffuseColor(QColor(0,0,255));
+				} else {
+					glcMaterial->setDiffuseColor(QColor(255,255,0));
 				}
-			} else {
-				for (int i = 0; i < mesh->num_smoothing_groups; i++) {
-					glcGroupMaterials[i]->setDiffuseColor(QColor(255,255,0));
-				}
-			}
+			}*/
 		}
 
 		//Add all data
-		int firstVertexIndex = glcMesh->VertexCount();	
 		for (int i = 0; i < mesh->num_vertices; i++) {
 			verticesVector << mesh->vertices[i].x;
 			verticesVector << mesh->vertices[i].y;
@@ -233,31 +219,34 @@ void ObjectRenderer::addLODMesh(EVDS_MESH* mesh, int lod) {
 			normalsVector << mesh->normals[i].z;
 		}
 		for (int i = 0; i < mesh->num_triangles; i++) {
-			indicesLists[mesh->triangles[i].smoothing_group] << mesh->triangles[i].indices[0] + firstVertexIndex;
-			indicesLists[mesh->triangles[i].smoothing_group] << mesh->triangles[i].indices[1] + firstVertexIndex;
-			indicesLists[mesh->triangles[i].smoothing_group] << mesh->triangles[i].indices[2] + firstVertexIndex;
+			//if ((lod > 0) && (i > 50)) return;
+			indicesLists[firstSmoothingGroupIndex + mesh->triangles[i].smoothing_group] << 
+				mesh->triangles[i].indices[0] + firstVertexIndex;
+			indicesLists[firstSmoothingGroupIndex + mesh->triangles[i].smoothing_group] << 
+				mesh->triangles[i].indices[1] + firstVertexIndex;
+			indicesLists[firstSmoothingGroupIndex + mesh->triangles[i].smoothing_group] << 
+				mesh->triangles[i].indices[2] + firstVertexIndex;
 		}
-		indicesLists[0] << 0 << 0 << 0; //Prevent empty lists
-
-		glcMesh->addVertice(verticesVector);
-		glcMesh->addNormals(normalsVector);
-		for (int i = 0; i < mesh->num_smoothing_groups; i++) {
-			if (!indicesLists[i].isEmpty()) {
-				glcMesh->addTriangles(glcGroupMaterials[i], indicesLists[i], lod); //coarse_mesh->resolution);
-			}
-		}
-
-		/*for (int i = 0; i < mesh->num_triangles; i++) {
-			GLfloatVector floatVector;
-			floatVector << mesh->triangles[i].center.x;
-			floatVector << mesh->triangles[i].center.y;
-			floatVector << mesh->triangles[i].center.z;
-			floatVector << mesh->triangles[i].center.x + mesh->triangles[i].triangle_normal.x*0.2;
-			floatVector << mesh->triangles[i].center.y + mesh->triangles[i].triangle_normal.y*0.2;
-			floatVector << mesh->triangles[i].center.z + mesh->triangles[i].triangle_normal.z*0.2;
-			glcMesh->addVerticeGroup(floatVector);
-		}*/
+		
+		//FIXME prevent empty lists
 	}
+}
+void ObjectLODGeneratorResult::setGLCMesh(GLC_Mesh* glcMesh) {
+	glcMesh->addVertice(verticesVector);
+	glcMesh->addNormals(normalsVector);
+	for (int i = 0; i < indicesLists.count(); i++) {
+		if (!indicesLists[i].isEmpty()) {
+			glcMesh->addTriangles(materialsList[i], indicesLists[i], lodList[i]);
+		}
+	}
+}
+
+void ObjectLODGeneratorResult::clear() {
+	verticesVector.clear();
+	normalsVector.clear();
+	indicesLists.clear();
+	lodList.clear();
+	materialsList.clear(); //FIXME: apply materials elsewhere to avoid leak
 }
 
 
@@ -275,25 +264,15 @@ float ObjectLODGenerator::getLODResolution(int lod) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void ObjectLODGenerator::destroyMesh(int lod) {
-	if (mesh[lod]) {
-		EVDS_Mesh_Destroy(mesh[lod]);
-		mesh[lod] = 0;
-	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
 ObjectLODGenerator::ObjectLODGenerator(Object* in_object, int in_lods) {
 	object = in_object;
 	numLods = in_lods;
 
 	//Initialize temporary object
 	object_copy = 0;
-	mesh = (EVDS_MESH**)malloc(numLods*sizeof(EVDS_MESH*));
-	for (int i = 0; i < numLods; i++) mesh[i] = 0;
+	//for (int i = 0; i < numLods; i++) {mesh.append(ObjectLODGeneratorResult());
+	//mesh = (EVDS_MESH**)malloc(numLods*sizeof(EVDS_MESH*));
+	//for (int i = 0; i < numLods; i++) mesh[i] = 0;
 
 	//Delete thread when work is finished
 	connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));	
@@ -306,9 +285,9 @@ ObjectLODGenerator::ObjectLODGenerator(Object* in_object, int in_lods) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-EVDS_MESH* ObjectLODGenerator::getMesh(int lod) { 
-	if ((!needMesh) && mesh && meshCompleted && this->isRunning()) { 
-		return mesh[lod];
+ObjectLODGeneratorResult* ObjectLODGenerator::getResult() { 
+	if ((!needMesh) && meshCompleted && this->isRunning()) { 
+		return &result;
 	} else {
 		return 0;
 	} 
@@ -332,7 +311,7 @@ void ObjectLODGenerator::updateMesh() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectLODGenerator::run() {
-	msleep(1000 + (qrand() % 4000)); //Give enough time for the rest of application to initialize
+	msleep(1000 + (qrand() % 5000)); //Give enough time for the rest of application to initialize
 	while (!doStopWork) {
 		if (needMesh) {
 			readingLock.lock();
@@ -347,14 +326,16 @@ void ObjectLODGenerator::run() {
 			EVDS_Object_Initialize(work_object,1);
 			object_copy = 0;
 
+			result.clear();
 			for (int lod = 0; lod < numLods; lod++) {
 				//printf("Generating mesh %p for level %d\n",object,lod);
 			
 				//Remove old mesh
-				if (mesh[lod]) {
+				/*if (mesh[lod]) {
 					EVDS_Mesh_Destroy(mesh[lod]);
 					mesh[lod] = 0;
-				}
+				}*/
+				//resu
 
 				//Check if job must be aborted
 				if (needMesh) {
@@ -363,7 +344,11 @@ void ObjectLODGenerator::run() {
 				}
 
 				//Create new one
-				EVDS_Mesh_Generate(work_object,&mesh[lod],getLODResolution(numLods-lod-1),EVDS_MESH_USE_DIVISIONS);
+				EVDS_MESH* mesh;
+				EVDS_Mesh_Generate(work_object,&mesh,getLODResolution(numLods-lod-1),EVDS_MESH_USE_DIVISIONS);
+				//result.meshList.append(mesh);
+				result.appendMesh(mesh,lod);
+				EVDS_Mesh_Destroy(mesh);
 				//printf("Done mesh %p %p for level %d\n",object,mesh,lod);
 			}
 
@@ -381,7 +366,7 @@ void ObjectLODGenerator::run() {
 				emit signalLODsReady();
 			}
 		}
-		msleep(50);
+		msleep(100);
 	}
 
 	//Finish thread work and destroy HQ mesh

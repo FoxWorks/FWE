@@ -80,6 +80,7 @@ namespace EVDS {
 		GLScene* getGLScene() { return glscene; }
 		Object* getEditRoot() { return root_obj; }
 		Object* getSelected() { return selected; }
+		void clearSelection() { selected = NULL; }
 
 		void updateInformation(bool ready);
 		void updateObject(Object* object);

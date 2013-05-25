@@ -77,7 +77,7 @@ GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent) :
 	world->collection()->add(instance);
 
 	//Add center of mass indicator
-	GLC_PointSprite* sprite = new GLC_PointSprite(32.0f,new GLC_Material(new GLC_Texture(":/icon/glview/cm.png")));
+	GLC_PointSprite* sprite = new GLC_PointSprite(16.0f,new GLC_Material(new GLC_Texture(":/icon/glview/cm.png")));
 	indicator_cm = new GLC_3DViewInstance(sprite);
 	indicator_cm->translate(3.0,0,0);
 
@@ -95,6 +95,7 @@ GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent) :
 	viewport->cameraHandle()->setIsoView();
 	world->collection()->setLodUsage(true,viewport);
 	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("render.min_pixel_culling",4).toInt());
+	GLC_SelectionMaterial::setUseSelectionMaterial(false);
 
 	//Add clipping plane
 	//GLC_Plane* m_pClipPlane = new GLC_Plane(GLC_Vector3d(0,1,0), GLC_Point3d(0,0,0));

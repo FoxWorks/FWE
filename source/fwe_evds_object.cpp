@@ -88,6 +88,7 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 Object::~Object() {
+	if (editor && (editor->getSelected() == this)) editor->clearSelection();
 	for (int i = 0; i < children.count(); i++) {
 		delete children[i];
 	}
@@ -667,7 +668,7 @@ void ObjectInitializer::run() {
 				emit signalObjectReady();
 			}
 		}
-		msleep(50);
+		msleep(100);
 	}
 
 	//Finish thread work and destroy HQ mesh

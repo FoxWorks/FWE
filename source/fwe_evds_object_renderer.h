@@ -59,9 +59,6 @@ namespace EVDS {
 		void lodMeshesGenerated();
 
 	private:
-		//Add mesh for LOD level
-		void addLODMesh(EVDS_MESH* mesh, int lod);
-
 		//GLC mesh for this object
 		GLC_Mesh* glcMesh;
 		GLC_3DViewInstance* glcInstance;
@@ -72,6 +69,20 @@ namespace EVDS {
 	};
 
 
+	struct ObjectLODGeneratorResult {
+		GLfloatVector verticesVector;
+		GLfloatVector normalsVector;
+		QList<IndexList> indicesLists;
+		QList<GLC_Material*> materialsList;
+		QList<EVDS_MESH*> meshList;
+		QList<int> lodList;
+
+		void clear();
+		void appendMesh(EVDS_MESH* mesh, int lod);
+		void setGLCMesh(GLC_Mesh* glcMesh);
+	};
+
+
 	class ObjectLODGenerator : public QThread {
 		Q_OBJECT
 
@@ -79,9 +90,7 @@ namespace EVDS {
 		ObjectLODGenerator(Object* in_object, int in_lods);
 
 		//Get mesh (returns 0 if mesh was not generated yet)
-		EVDS_MESH* getMesh(int lod);
-		//Destroy mesh to conserve memory when it is no longer needed
-		void destroyMesh(int lod);
+		ObjectLODGeneratorResult* getResult();
 		//Update mesh for the given object
 		void updateMesh();
 		//Abort thread work
@@ -109,7 +118,7 @@ namespace EVDS {
 		EVDS_OBJECT* object_copy; //Copy of the object for this thread
 
 		int numLods; //Total number of LODs
-		EVDS_MESH** mesh; //Generated meshes
+		ObjectLODGeneratorResult result; //Generated meshes
 	};
 }
 
