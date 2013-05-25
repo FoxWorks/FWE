@@ -100,8 +100,8 @@ QtProperty* FWEPropertySheet::setProperty(const QMap<QString,QString> &data) {
 	QStringList values = data["values"].split("\n",QString::SkipEmptyParts);
 
 	if (propertyByName.contains(var_name)) {
-		qFatal("Property already exists");
-		return 0;
+		qCritical("Property already exists");
+		//return 0;
 	}
 
 	//Add to property sheet

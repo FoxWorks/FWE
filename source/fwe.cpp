@@ -60,9 +60,9 @@ void fw_editor_message(QtMsgType type, const char *msg) {
 			break;
 		case QtCriticalMsg:
 			fprintf(stderr, "Critical: %s\n", msg);
-#ifdef _DEBUG
-			_asm { int 3 };
-#endif
+//#ifdef _DEBUG
+//			_asm { int 3 };
+//#endif
 			break;
 		case QtFatalMsg:
 			fprintf(stderr, "Fatal: %s\n", msg);

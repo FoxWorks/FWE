@@ -48,12 +48,14 @@ CrossSectionEditor::CrossSectionEditor(Object* in_object) {
 	//Create cross-section editor
 	layout = new QVBoxLayout;
 	setLayout(layout);
+	layout->setSpacing(0);
+	layout->setMargin(0);
 
 	//Create section selection bar
 	tab = new QTabBar(this);
 	tab->setTabsClosable(true);
 	tab->setMovable(true);
-	tab->setShape(QTabBar::RoundedNorth);
+	//tab->setShape(QTabBar::RoundedNorth);
 	layout->addWidget(tab);
 
 	//Setup tab signals
@@ -87,12 +89,12 @@ CrossSectionEditor::CrossSectionEditor(Object* in_object) {
 		csectionWidgetByIndex[index] = csection_widget;
 		indexByCSectionWidget[csection_widget] = index;
 		sections->addWidget(csection_widget);
-		tab->addTab(tr("%1").arg(index));
+		tab->addTab(tr("%1").arg(index+1));
 
 		index++;
 		entry = SIMC_List_GetNext(csections_list,entry);
 	}
-	tab->addTab("<..new..>");
+	tab->addTab("");
 	//object->update(true);
 }
 
@@ -128,8 +130,8 @@ void CrossSectionEditor::sectionSelected(int index) {
 		csectionWidgetByIndex[index] = csection_widget;
 		indexByCSectionWidget[csection_widget] = index;
 		sections->addWidget(csection_widget);
-		tab->setTabText(index,tr("%1").arg(index));
-		tab->addTab("<..new..>");
+		tab->setTabText(index,tr("%1").arg(index+1));
+		tab->addTab("");
 
 		//Update geometry
 		object->update(true);
@@ -152,6 +154,8 @@ void CrossSectionEditor::sectionDeleted(int index) {
 	for (int i = index; i < sections->count()-1; i++) {
 		csectionWidgetByIndex[i] = csectionWidgetByIndex[i+1];
 		indexByCSectionWidget[csectionWidgetByIndex[i]] = i;
+
+		tab->setTabText(i,tr("%1").arg(i+1));
 	}
 
 	EVDS_VARIABLE* csection = csection_widget->getEVDSCrossSection();
@@ -198,8 +202,8 @@ void CrossSectionEditor::sectionMoved(int from, int to) {
 		EVDS_Variable_MoveInList(csection_from,csection_to);
 	}
 
-	tab->setTabText(from,tr("%1").arg(from));
-	tab->setTabText(to,tr("%1").arg(to));
+	tab->setTabText(from,tr("%1").arg(from+1));
+	tab->setTabText(to,tr("%1").arg(to+1));
 
 	//Update geometry
 	object->update(true);

@@ -50,8 +50,6 @@ namespace EVDS {
 		GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent = 0);
 		~GLScene();
 
-		QSize minimumSizeHint() const { return QSize(50, 50); }
-		QSize sizeHint() const { return QSize(400, 400); }
 		GLC_3DViewCollection* getCollection() { return world->collection(); }
 
 		QGLShaderProgram* compileShader(const QString& name);
@@ -129,6 +127,9 @@ namespace EVDS {
 		Q_OBJECT
 
 	public:
+		QSize minimumSizeHint() const { return QSize(200, 100); }
+		QSize sizeHint() const { return QSize(200, 200); }
+
 		GLView(QWidget* parent) : QGraphicsView(parent) {
 			QGLContext* context = new GLC_Context(QGLFormat(QGL::SampleBuffers));
 			QGLWidget* opengl = new QGLWidget(context,this);

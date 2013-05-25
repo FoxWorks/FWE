@@ -1,0 +1,610 @@
+<evds_config>
+	<object_vars name="">
+		<var>
+			<type>enum</type>
+			<variable>@7</variable>
+			<name>Type</name>
+			<description>Objects type</description>
+			<values>
+static_body
+Static body
+rigid_body
+Rigid body
+vessel
+Vessel
+fuel_tank
+Fuel tank
+rocket_engine
+Rocket engine
+antenna
+Antenna
+gimbal
+Gimbal
+modifier
+Modifier
+			</values>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>@8</variable>
+			<name>UID</name>
+			<step>1.0</step>
+			<digits>0</digits>
+			<description>Unique identifier of the object</description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>@1</variable>
+			<group>Position/Orientation</group>
+			<name>X</name>
+			<step>0.1</step>
+			<digits>3</digits>
+			<units>m</units>
+			<description>Position of object in coordinates of parent</description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>@2</variable>
+			<group>Position/Orientation</group>
+			<name>Y</name>
+			<step>0.1</step>
+			<digits>3</digits>
+			<units>m</units>
+			<description>Position of object in coordinates of parent</description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>@3</variable>
+			<group>Position/Orientation</group>
+			<name>Z</name>
+			<step>0.1</step>
+			<digits>3</digits>
+			<units>m</units>
+			<description>Position of object in coordinates of parent</description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>@4</variable>
+			<group>Position/Orientation</group>
+			<name>Pitch</name>
+			<units>deg</units>
+			<description>Euler angles for objects attitude (Y axis)</description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>@5</variable>
+			<group>Position/Orientation</group>
+			<name>Yaw</name>
+			<units>deg</units>
+			<description>Euler angles for objects attitude (Z axis)</description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>@6</variable>
+			<group>Position/Orientation</group>
+			<name>Roll</name>
+			<units>deg</units>
+			<description>Euler angles for objects attitude (X axis)</description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>mass</variable>
+			<name>Mass</name>
+			<step>10</step>
+			<units>kg</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>jxx</variable>
+			<group>mass</group>
+			<name>Jxx</name>
+			<units>m²</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>jyy</variable>
+			<group>mass</group>
+			<name>Jyy</name>
+			<units>m²</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>jzz</variable>
+			<group>mass</group>
+			<name>Jzz</name>
+			<units>m²</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>ixx</variable>
+			<group>mass</group>
+			<name>Ixx</name>
+			<units>kg m²</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>iyy</variable>
+			<group>mass</group>
+			<name>Iyy</name>
+			<units>kg m²</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>izz</variable>
+			<group>mass</group>
+			<name>Izz</name>
+			<units>kg m²</units>
+			<description></description>
+		</var>
+	</object_vars>
+	<object_vars name="rocket_engine">
+		<var>
+			<type>double</type>
+			<variable>exit_radius</variable>
+			<name>Exit radius</name>
+			<step>0.10</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>chamber_radius</variable>
+			<name>Chamber radius</name>
+			<step>0.10</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>chamber_length</variable>
+			<name>Chamber length</name>
+			<step>0.02</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>area_ratio</variable>
+			<name>Throat area ratio</name>
+			<step>0.10</step>
+			<units></units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>nozzle_length</variable>
+			<name>Nozzle length</name>
+			<step>0.10</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>divergence_angle</variable>
+			<name>Divergence angle</name>
+			<step>1.0</step>
+			<units>deg</units>
+			<description></description>
+		</var>
+	</object_vars>
+	<object_vars name="fuel_tank">
+		<var>
+			<type>enum</type>
+			<variable>fuel_type</variable>
+			<name>Fuel</name>
+			<values>
+@materials.oxidizer
+@materials.fuel
+			</values>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>fuel_mass</variable>
+			<name>Fuel mass</name>
+			<step>1</step>
+			<units>kg</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>fuel_volume</variable>
+			<name>Fuel volume</name>
+			<step>1</step>
+			<units>m³</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>load_ratio_percent</variable>
+			<name>Fuel load</name>
+			<step>1</step>
+			<units>%</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>upper_radius</variable>
+			<name>Upper cap radius</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>lower_radius</variable>
+			<name>Lower cap radius</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>middle_length</variable>
+			<name>Middle section length</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>outer_radius</variable>
+			<name>Outer radius</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>inner_radius</variable>
+			<name>Inner radius</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+	</object_vars>
+	<object_vars name="antenna">
+		<var>
+			<type>enum</type>
+			<variable>antenna_type</variable>
+			<name>Antenna type</name>
+			<values>
+dipole
+Dipole
+parabolic
+Parabolic
+ideal_isentropic
+Ideal isentropic
+			</values>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>size</variable>
+			<name>Antenna size</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>design_frequency</variable>
+			<name>Design frequency</name>
+			<step>1</step>
+			<units>MHz</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>frequency</variable>
+			<name>Rx/Tx frequency</name>
+			<step>1</step>
+			<units>MHz</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>bandwidth</variable>
+			<name>Bandwidth</name>
+			<step>0.1</step>
+			<units>MHz</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>data_rate</variable>
+			<name>Data rate</name>
+			<step>1</step>
+			<units>bps</units>
+			<description></description>
+		</var>
+		<var>
+			<type>enum</type>
+			<variable>modulation_type</variable>
+			<name>Modulation type</name>
+			<values>
+bpsk
+BPSK
+qpsk
+QPSK
+8psk
+8PSK
+qam4
+QAM4
+qam16
+QAM16
+qam64
+QAM64
+qam256
+QAM256
+			</values>
+			<description></description>
+		</var>
+		<var>
+			<type>bool</type>
+			<variable>tx</variable>
+			<name>Can send (Tx)</name>
+			<description></description>
+		</var>
+		<var>
+			<type>bool</type>
+			<variable>rx</variable>
+			<name>Can receive (Rx)</name>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>efficiency</variable>
+			<name>Antenna efficiency</name>
+			<step>1</step>
+			<units>%</units>
+			<description></description>
+		</var>
+	</object_vars>		
+	<object_vars name="gimbal">
+		<var>
+			<type>double</type>
+			<variable>pitch_min</variable>
+			<name>Pitch min</name>
+			<step>0.1</step>
+			<units>deg</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>pitch_max</variable>
+			<name>Pitch max</name>
+			<step>0.1</step>
+			<units>deg</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>pitch_rate</variable>
+			<name>Pitch max rate</name>
+			<step>0.1</step>
+			<units>deg/sec</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>pitch_bits</variable>
+			<name>Pitch command width</name>
+			<digits>0</digits>
+			<step>1</step>
+			<units>bits</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>yaw_min</variable>
+			<name>Yaw min</name>
+			<step>0.1</step>
+			<units>deg</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>yaw_max</variable>
+			<name>Yaw max</name>
+			<step>0.1</step>
+			<units>deg</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>yaw_rate</variable>
+			<name>Yaw max rate</name>
+			<step>0.1</step>
+			<units>deg/sec</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>yaw_bits</variable>
+			<name>Yaw command width</name>
+			<digits>0</digits>
+			<step>1</step>
+			<units>bits</units>
+			<description></description>
+		</var>
+	</object_vars>		
+	<csection_vars name="">
+		<var>
+			<type>enum</type>
+			<variable>@3</variable>
+			<name>Type</name>
+			<description>Cross section type</description>
+			<values>
+ellipse
+Ellipse
+rectangle
+Rectangle
+ngon
+N-gon
+			</values>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>offset</variable>
+			<name>Offset</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>offset.x</variable>
+			<group>offset</group>
+			<name>X offset</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>offset.y</variable>
+			<group>offset</group>
+			<name>Y offset</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>bool</type>
+			<variable>absolute</variable>
+			<name>Absolute offset</name>
+			<description></description>
+		</var>
+		<var>
+			<type>bool</type>
+			<variable>continuous</variable>
+			<name>Continuous</name>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>thickness</variable>
+			<name>Thickness</name>
+			<step>0.01</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>tangent.offset.pos</variable>
+			<group>Tangent (offset)</group>
+			<name>Positive (+)</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>tangent.offset.neg</variable>
+			<group>Tangent (offset)</group>
+			<name>Negative (-)</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>tangent.radial.pos</variable>
+			<group>Tangent (radial)</group>
+			<name>Positive (+)</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>tangent.radial.neg</variable>
+			<group>Tangent (radial)</group>
+			<name>Negative (-)</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+	</csection_vars>
+	<csection_vars name="ellipse">
+		<var>
+			<type>double</type>
+			<variable>rx</variable>
+			<name>Radius (X)</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description>Ellipse radius X</description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>ry</variable>
+			<name>Radius (Y)</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description>Ellipse radius Y</description>
+		</var>
+	</csection_vars>
+	<csection_vars name="rectangle">
+		<var>
+			<type>double</type>
+			<variable>rx</variable>
+			<name>Width</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description>Rectangle width</description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>ry</variable>
+			<name>Height</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description>Rectangle height</description>
+		</var>
+	</csection_vars>
+	<csection_vars name="ngon">
+		<var>
+			<type>double</type>
+			<variable>rx</variable>
+			<name>Radius</name>
+			<step>0.1</step>
+			<units>m</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>n</variable>
+			<name>Sides</name>
+			<digits>0</digits>
+			<units></units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>phi</variable>
+			<name>Angle offset</name>
+			<step>10</step>
+			<units>deg</units>
+			<description></description>
+		</var>
+	</csection_vars>
+</evds_config>

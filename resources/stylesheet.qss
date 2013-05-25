@@ -1,6 +1,7 @@
-*[outputValueBox="true"] {
+*#EVDS_BodyInformation {
 	background-color: beige;
 	border-style: dotted;
-	border-width: 1px;
+	border-width: 2px;
 	border-color: black;
+	font: "Courier New";
 }

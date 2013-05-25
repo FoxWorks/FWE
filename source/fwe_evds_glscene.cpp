@@ -72,9 +72,13 @@ GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent) :
 	controller = GLC_Factory::instance()->createDefaultMoverController(QColor(255,30,30), viewport);
 	world = new GLC_World();
 
-	//GLC scene cannot be empty, either it crashes
-	GLC_3DViewInstance instance(GLC_Factory::instance()->createCircle(0.0));
-	world->collection()->add(instance);
+	//GLC scene cannot be empty, either it crashes. Also ensure minimum size of bounding box
+	GLC_3DViewInstance instance1(GLC_Factory::instance()->createCircle(0.0));
+	instance1.translate(-1,-1,-1);
+	world->collection()->add(instance1);
+	GLC_3DViewInstance instance2(GLC_Factory::instance()->createCircle(0.0));
+	instance2.translate(1,1,1);
+	world->collection()->add(instance2);
 
 	//Add center of mass indicator
 	GLC_PointSprite* sprite = new GLC_PointSprite(16.0f,new GLC_Material(new GLC_Texture(":/icon/glview/cm.png")));

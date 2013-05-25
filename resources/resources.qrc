@@ -1,6 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
     <file>stylesheet.qss</file>
+    <file>evds.xml</file>
     
     <file>icon/mdi.png</file>
     <file>icon/copy.png</file>

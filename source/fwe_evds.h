@@ -50,6 +50,7 @@ class QLabel;
 class QModelIndex;
 class QSlider;
 class QCheckBox;
+class QTextEdit;
 QT_END_NAMESPACE
 
 
@@ -103,6 +104,11 @@ namespace EVDS {
 		void cleanupTimer();
 		void rootInitialized();
 
+		void showProperties();
+		void showCrossSections();
+		void showHierarchy();
+		void showInformation();
+
 	private:
 		QString currentFile;
 
@@ -111,7 +117,7 @@ namespace EVDS {
 		void createPropertiesDock();
 		void createCSectionDock();
 		//void createCutsectionDock();
-		//void createBodyInfoDock();
+		void createInformationDock();
 
 		//Object types
 		void loadObjectData();
@@ -136,6 +142,10 @@ namespace EVDS {
 		QWidget*			csection;
 		QStackedLayout*		csection_layout;
 		QLabel*				csection_none;
+
+		//Rigid body information
+		QDockWidget*		bodyinfo_dock;
+		QTextEdit*			bodyinfo;
 
 		//Main workspace
 		GLScene*			glscene;

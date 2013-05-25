@@ -562,6 +562,16 @@ void Object::recursiveUpdateInformation(ObjectInitializer* initializer) {
 
 		info_vectors["cm"] = temporary_object.getVector("cm");
 		info_vectors["total_cm"] = temporary_object.getVector("total_cm");
+		info_vectors["jx"] = temporary_object.getVector("jx");
+		info_vectors["jy"] = temporary_object.getVector("jy");
+		info_vectors["jz"] = temporary_object.getVector("jz");
+		info_vectors["total_ix"] = temporary_object.getVector("total_ix");
+		info_vectors["total_iy"] = temporary_object.getVector("total_iy");
+		info_vectors["total_iz"] = temporary_object.getVector("total_iz");
+		info_variables["mass"] = temporary_object.getVariable("mass");
+		info_variables["total_mass"] = temporary_object.getVariable("total_mass");
+		info_variables["fuel_mass"] = temporary_object.getVariable("fuel_mass");
+		info_variables["fuel_volume"] = temporary_object.getVariable("fuel_volume");
 
 		//FIXME: loop this from info_vectors, info_variables:
 		info_defined["cm"] = temporary_object.isVariableDefined("cm");
@@ -650,7 +660,7 @@ void ObjectInitializer::doUpdateObject() {
 
 void ObjectInitializer::updateObject() {
 	//qDebug("ObjectInitializer::updateObject: start timer");
-	updateCallTimer.start(500);
+	updateCallTimer.start(200);
 	//qDebug("ObjectInitializer::updateObject: requested update");
 	
 }

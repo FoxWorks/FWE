@@ -45,6 +45,7 @@
 #include <QMenu>
 #include <QSlider>
 #include <QCheckBox>
+#include <QTextEdit>
 #include <QStack>
 #include <QXmlStreamReader>
 
@@ -117,7 +118,7 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 
 	//Create informational docks
 	//createCutsectionDock();
-	//createBodyInfoDock();
+	createInformationDock();
 
 	//Setup initial layout
 	list_dock->raise();
@@ -134,7 +135,7 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 ////////////////////////////////////////////////////////////////////////////////
 Editor::~Editor() {
 	delete root_obj;
-	EVDS_System_Destroy(system);
+	EVDS_System_Destroy(system); //FIXME: must be done after all threads shut down, otherwise potential crash
 	EVDS_System_Destroy(initialized_system);
 }
 
@@ -143,44 +144,46 @@ Editor::~Editor() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::createMenuToolbar() {
-		//View menu structure
+	//View menu structure
 	QAction* action;
-	action = new QAction(QIcon(":/icon/evds/hierarchy.png"), tr("Object &Hierarchy"), this);
-	//connect(action, SIGNAL(triggered()), this, SLOT(showHierarchy()));
+	action = new QAction(QIcon(":/icon/evds/hierarchy.png"), tr("Objects &Hierarchy"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(showHierarchy()));
 	actions.append(action);
 	window->getMainWindow()->getViewMenu()->addAction(action);
 
-	action = new QAction(tr("Object &Properties"), this); //QIcon(":/icon/evds/properties.png"),
-	//connect(action, SIGNAL(triggered()), this, SLOT(showProperties()));
+	action = new QAction(QIcon(":/icon/evds/properties.png"), tr("Object &Properties"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(showProperties()));
 	actions.append(action);
 	window->getMainWindow()->getViewMenu()->addAction(action);
 
-	action = new QAction(tr("Edit &Cross Sections"), this); //QIcon(":/icon/evds/csections.png"), 
-	//connect(action, SIGNAL(triggered()), this, SLOT(showCrossSections()));
+	action = new QAction(QIcon(":/icon/evds/csections.png"), tr("&Cross Sections Editor"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(showCrossSections()));
+	actions.append(action);
+	window->getMainWindow()->getViewMenu()->addAction(action);
+
+	action = new QAction(tr("Body &Information"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(showInformation()));
 	actions.append(action);
 	window->getMainWindow()->getViewMenu()->addAction(action);
 
 	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
 
-	action = new QAction(tr("Show Cut&section..."), this);
+	//action = new QAction(tr("Show Cut&section..."), this);
 	//connect(action, SIGNAL(triggered()), this, SLOT(showCutsection()));
-	actions.append(action);
-	window->getMainWindow()->getViewMenu()->addAction(action);
+	//actions.append(action);
+	//window->getMainWindow()->getViewMenu()->addAction(action);
 
-	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
+	//actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
 
-	action = new QAction(tr("&Rigid Body Information..."), this);
-	actions.append(action);
-	window->getMainWindow()->getViewMenu()->addAction(action);
+	//action = new QAction(tr("&Rocket Engine Designer..."), this);
+	//actions.append(action);
+	//window->getMainWindow()->getViewMenu()->addAction(action);
 
-	action = new QAction(tr("&Rocket Engine Designer..."), this);
-	actions.append(action);
-	window->getMainWindow()->getViewMenu()->addAction(action);
-
-	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
+	//actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
 
 	action = new QAction(QIcon(":/icon/evds/materials.png"), tr("&Materials Database..."), this);
 	//connect(action, SIGNAL(triggered()), this, SLOT(showCrossSections()));
+	action->setEnabled(false);
 	actions.append(action);
 	window->getMainWindow()->getViewMenu()->addAction(action);
 }
@@ -195,7 +198,7 @@ void Editor::createListDock() {
 	list->setMinimumHeight(80);
 
 	//Create object hierarchy window and dock
-	list_dock = new QDockWidget(tr("Hierarchy"), this);
+	list_dock = new QDockWidget(tr("Objects Hierarchy"), this);
 	list_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
 	list_dock->setAllowedAreas(Qt::AllDockWidgetAreas);
 	list_dock->setWidget(list);
@@ -239,7 +242,7 @@ void Editor::createPropertiesDock() {
 	properties->setMinimumHeight(80);
 
 	//Create properties interface
-	properties_dock = new QDockWidget(tr("Properties"), this);
+	properties_dock = new QDockWidget(tr("Object Properties"), this);
 	properties_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
 	properties_dock->setAllowedAreas(Qt::AllDockWidgetAreas);
 	properties_dock->setWidget(properties);
@@ -264,7 +267,7 @@ void Editor::createCSectionDock() {
 	csection->setMinimumHeight(80);
 
 	//Create cross-sections editor interface
-	csection_dock = new QDockWidget(tr("Cross sections"), this);
+	csection_dock = new QDockWidget(tr("Cross Sections Editor"), this);
 	csection_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
 	csection_dock->setAllowedAreas(Qt::AllDockWidgetAreas);	
 	csection_dock->setWidget(csection);
@@ -280,9 +283,41 @@ void Editor::createCSectionDock() {
 	csection_none->setAlignment(Qt::AlignCenter);
 
 	//Create layout
+	csection->setLayout(new QVBoxLayout);
+	csection->layout()->setSpacing(0);
+	csection->layout()->setMargin(0);
+
+	//QLabel* geometry_editor_test = new QLabel(csection);
+	//geometry_editor_test->setText("Cross-section geometry editor here");
+
+	QWidget* csection_properties = new QWidget(csection);
+	csection->layout()->addWidget(csection_properties);
+	//csection->layout()->addWidget(geometry_editor_test);
+
 	csection_layout = new QStackedLayout;
+	csection_layout->setSpacing(0);
+	csection_layout->setMargin(0);
 	csection_layout->addWidget(csection_none);
-	csection->setLayout(csection_layout);
+	csection_properties->setLayout(csection_layout);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief 
+////////////////////////////////////////////////////////////////////////////////
+void Editor::createInformationDock() {
+	bodyinfo = new QTextEdit();
+	//bodyinfo->setMinimumWidth(250);
+	//bodyinfo->setMinimumHeight(80);
+	bodyinfo->setReadOnly(true);
+	bodyinfo->setObjectName("EVDS_BodyInformation");
+
+	bodyinfo_dock = new QDockWidget(tr("Object Information"), this);
+	bodyinfo_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+	bodyinfo_dock->setAllowedAreas(Qt::AllDockWidgetAreas);
+	bodyinfo_dock->setWidget(bodyinfo);
+	//tabifyDockWidget(properties_dock,bodyinfo_dock);
+	addDockWidget(Qt::RightDockWidgetArea,bodyinfo_dock);
 }
 
 
@@ -290,7 +325,9 @@ void Editor::createCSectionDock() {
 /// @brief Callback when root object was initialized
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::rootInitialized() {
+	root_obj->recursiveUpdateInformation(initializer);
 	updateInformation(true);
+	update();
 }
 
 
@@ -308,7 +345,8 @@ void Editor::setModified() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::updateInformation(bool ready) {
-	//qDebug("Editor::updateInformation: is ready: %s",(ready ? "true" : "false"));
+	qDebug("Editor::updateInformation: is ready: %s",(ready ? "true" : "false"));
+
 	/*if (selected && ready) {
 		TemporaryObject temp_object = initializer->getObject(selected);
 		QVector3D cm = temp_object.getVector("cm");
@@ -319,9 +357,65 @@ void Editor::updateInformation(bool ready) {
 
 		qDebug("Editor::updateInformation: selected: %s",test.toAscii().data());
 	}*/
+
 	if (ready) {
-		root_obj->recursiveUpdateInformation(initializer);
-		update();
+		if (selected) {
+			QString information = "";
+			QVector3D cm = selected->getInformationVector("total_cm");
+			if (!selected->isInformationDefined("total_cm")) cm = selected->getInformationVector("cm");
+			information = information + tr("CoM: (%1; %2; %3) m\n")
+				.arg(cm.x(),0,'F',3)
+				.arg(cm.y(),0,'F',3)
+				.arg(cm.z(),0,'F',3);
+
+			information = information + tr("Mass: %2 kg (part: %1 kg)\n")
+				.arg(selected->getInformationVariable("mass"))
+				.arg(selected->getInformationVariable("total_mass"));
+
+			if (selected->getType() == "fuel_tank") {
+				information = information + tr("\nFuel mass: %1 kg\n")
+				.arg(selected->getInformationVariable("fuel_mass"));
+				information = information + tr("Fuel volume: %1 m\xB3\n")
+				.arg(selected->getInformationVariable("fuel_volume"));
+			}
+
+			QVector3D ix = selected->getInformationVector("total_ix");
+			QVector3D iy = selected->getInformationVector("total_iy");
+			QVector3D iz = selected->getInformationVector("total_iz");
+			information = information + tr(
+				"\nInertia tensor:\n"
+				"(%1; %2; %3) kg m\xB2\n"
+				"(%4; %5; %6) kg m\xB2\n"
+				"(%7; %8; %9) kg m\xB2\n")
+				.arg(ix.x(),0,'G',3).arg(ix.y(),0,'G',3).arg(ix.z(),0,'G',3)
+				.arg(iy.x(),0,'G',3).arg(iy.y(),0,'G',3).arg(iy.z(),0,'G',3)
+				.arg(iz.x(),0,'G',3).arg(iz.y(),0,'G',3).arg(iz.z(),0,'G',3);
+
+			QVector3D jx = selected->getInformationVector("jx");
+			QVector3D jy = selected->getInformationVector("jy");
+			QVector3D jz = selected->getInformationVector("jz");
+			information = information + tr(
+				"\nRadius of gyration squared:\n"
+				"(%1; %2; %3) m\xB2\n"
+				"(%4; %5; %6) m\xB2\n"
+				"(%7; %8; %9) m\xB2\n")
+				.arg(jx.x(),0,'F',3).arg(jx.y(),0,'F',3).arg(jx.z(),0,'F',3)
+				.arg(jy.x(),0,'F',3).arg(jy.y(),0,'F',3).arg(jy.z(),0,'F',3)
+				.arg(jz.x(),0,'F',3).arg(jz.y(),0,'F',3).arg(jz.z(),0,'F',3);
+
+			/*bodyinfo_f1->setText(tr("%1 kg").arg(iobject->getVariable("fuel_mass")));
+			bodyinfo_f2->setText(tr("%1 m\xB3").arg(iobject->getVariable("fuel_volume")));*/
+
+			bodyinfo->setText(
+				tr("Object: %1\n\n%2")
+				.arg(selected->getName())
+				.arg(information)
+			);
+		} else {
+			bodyinfo->setText("Object: (none)");
+		}
+	} else {
+		bodyinfo->setText("Hold on...");
 	}
 }
 
@@ -383,6 +477,9 @@ void Editor::selectObject(const QModelIndex& index) {
 	} else {
 		csection_layout->setCurrentWidget(csection_none);
 	}
+
+	//Update information
+	updateInformation(true);
 
 	//Redraw
 	updateObject(NULL);
@@ -458,7 +555,7 @@ void Editor::loadObjectData() {
 	}
 
 	//Load information about editable objects and properties
-	QFile xml_file("./evds.xml");
+	QFile xml_file(":/evds.xml");
 	if (!xml_file.open(QIODevice::ReadOnly)) {
 		return;
 	}
@@ -537,7 +634,7 @@ void Editor::cleanupTimer() {
 void Editor::newFile() {
 	EVDS_OBJECT_LOADEX info = { 0 };
 	//EVDS_Object_LoadEx(root,"RV-505.evds",&info);
-	EVDS_Object_LoadEx(root,"TRAIN_TEST.evds",&info);
+	EVDS_Object_LoadEx(root,"RV-505_fixed.evds",&info);
 	root_obj->invalidateChildren();
 	initializer->updateObject();
 	updateInformation(false);
@@ -642,7 +739,8 @@ bool Editor::saveFile(const QString &fileName) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::dropEvent(QDropEvent *event) {
-	qDebug("Contents: %s", event->mimeData()->text().toLatin1().data());
+	list_model->dropMimeData(event->mimeData(),Qt::CopyAction,-1,-1,QModelIndex());
+	//qDebug("Contents: %s", event->mimeData()->text().toLatin1().data());
 }
 
 void Editor::dragMoveEvent(QDragMoveEvent *event) {
@@ -667,27 +765,23 @@ void Editor::updateInterface(bool isInFront) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-/*void Editor::showProperties() {
+void Editor::showProperties() {
 	properties_dock->show();
-	properties_dock->show();
+	properties_dock->raise();
 }
-
 void Editor::showCrossSections() {
 	csection_dock->show();
 	csection_dock->raise();
 }
-
 void Editor::showHierarchy() {
 	list_dock->show();
 	list_dock->raise();
 }
-
-void Editor::showCutsection() {
+/*void Editor::showCutsection() {
 	cutsection_dock->show();
 	cutsection_dock->raise();
-}
-
-void Editor::showBodyInformation() {
+}*/
+void Editor::showInformation() {
 	bodyinfo_dock->show();
 	bodyinfo_dock->raise();
-}*/
+}
