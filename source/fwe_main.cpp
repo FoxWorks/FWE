@@ -27,6 +27,7 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ////////////////////////////////////////////////////////////////////////////////
 #include <QtGui>
+#include <QIcon>
 
 #include "fwe_main.h"
 #include "fwe_evds.h"
@@ -53,6 +54,15 @@ MainWindow::MainWindow() {
 	updateInterface();
 
 	//Set default title and size
+	QIcon foxworks_icon = QIcon();
+	foxworks_icon.addFile(":/icon/foxworks.png");
+	foxworks_icon.addFile(":/icon/foxworks256.png",QSize(32,32));
+	foxworks_icon.addFile(":/icon/foxworks256.png",QSize(64,64));
+	foxworks_icon.addFile(":/icon/foxworks256.png",QSize(128,128));
+	foxworks_icon.addFile(":/icon/foxworks256.png",QSize(256,256));
+	foxworks_icon.addFile(":/icon/foxworks1024.png");
+
+	setWindowIcon(foxworks_icon);
 	setWindowTitle(tr("FoxWorks Editor"));
 	setUnifiedTitleAndToolBarOnMac(true);
 	resize(1024,640);

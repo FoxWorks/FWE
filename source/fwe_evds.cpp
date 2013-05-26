@@ -194,8 +194,8 @@ void Editor::createMenuToolbar() {
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::createListDock() {
 	list = new QWidget();
-	list->setMinimumWidth(200);
-	list->setMinimumHeight(80);
+	list->setMinimumWidth(250);
+	list->setMinimumHeight(100);
 
 	//Create object hierarchy window and dock
 	list_dock = new QDockWidget(tr("Objects Hierarchy"), this);
@@ -238,7 +238,7 @@ void Editor::createListDock() {
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::createPropertiesDock() {
 	properties = new QWidget();
-	properties->setMinimumWidth(200);
+	properties->setMinimumWidth(250);
 	properties->setMinimumHeight(80);
 
 	//Create properties interface

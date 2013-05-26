@@ -65,9 +65,28 @@ int ObjectTreeModel::columnCount(const QModelIndex &parent) const {
 ////////////////////////////////////////////////////////////////////////////////
 QVariant ObjectTreeModel::data(const QModelIndex &index, int role) const {
 	if (!index.isValid()) return QVariant();
-	if (role != Qt::DisplayRole && role != Qt::EditRole) return QVariant();
 
+	//Return icon
 	Object* object = (Object*)(index.internalPointer());
+	if ((role == Qt::DecorationRole) && (index.column() == 0)) {
+		QString type = object->getType();
+		if ((type == "static_body") || (type == "rigid_body")) {
+			return QIcon(":/icon/evds/object_common.png");
+		} else if (type == "vessel") {
+			return QIcon(":/icon/evds/object_vessel.png");
+		} else if (type == "fuel_tank") {
+			if (object->isOxidizerTank()) {
+				return QIcon(":/icon/evds/object_fueltank_oxy.png");
+			} else {
+				return QIcon(":/icon/evds/object_fueltank_fuel.png");
+			}
+		} else {
+			return QIcon(":/icon/evds/object_uncommon.png");
+		}
+	}
+
+	//Return text
+	if (role != Qt::DisplayRole && role != Qt::EditRole) return QVariant();
 	if (index.column() == 0) {
 		return QVariant(object->getName());
 	} else {

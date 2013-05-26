@@ -2,7 +2,10 @@
 <qresource>
     <file>stylesheet.qss</file>
     <file>evds.xml</file>
-    
+
+    <file>icon/foxworks.png</file>
+    <file>icon/foxworks256.png</file>
+    <file>icon/foxworks1024.png</file>
     <file>icon/mdi.png</file>
     <file>icon/copy.png</file>
     <file>icon/cut.png</file>
@@ -20,10 +23,17 @@
     <file>icon/add.png</file>
     <file>icon/remove.png</file>
 
-    <file>icon/evds/csections.png</file>
+    <file>icon/evds/cutsection.png</file>
     <file>icon/evds/hierarchy.png</file>
     <file>icon/evds/properties.png</file>
     <file>icon/evds/materials.png</file>
+
+    <file>icon/evds/object_vessel.png</file>
+    <file>icon/evds/object_common.png</file>
+    <file>icon/evds/object_uncommon.png</file>
+    <file>icon/evds/object_fueltank.png</file>
+    <file>icon/evds/object_fueltank_oxy.png</file>
+    <file>icon/evds/object_fueltank_fuel.png</file>
 
     <file>icon/glview/cm.png</file>
     <file>icon/glview/center.png</file>
