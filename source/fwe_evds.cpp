@@ -161,19 +161,19 @@ void Editor::createMenuToolbar() {
 	actions.append(action);
 	window->getMainWindow()->getViewMenu()->addAction(action);
 
-	action = new QAction(tr("Body &Information"), this);
+	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
+
+	action = new QAction(tr("Object &Information"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(showInformation()));
 	actions.append(action);
 	window->getMainWindow()->getViewMenu()->addAction(action);
 
-	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
-
-	//action = new QAction(tr("Show Cut&section..."), this);
+	action = new QAction(QIcon(":/icon/evds/cutsection.png"), tr("Show Cut&section"), this);
 	//connect(action, SIGNAL(triggered()), this, SLOT(showCutsection()));
-	//actions.append(action);
-	//window->getMainWindow()->getViewMenu()->addAction(action);
+	actions.append(action);
+	window->getMainWindow()->getViewMenu()->addAction(action);
 
-	//actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
+	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
 
 	//action = new QAction(tr("&Rocket Engine Designer..."), this);
 	//actions.append(action);
@@ -345,7 +345,7 @@ void Editor::setModified() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::updateInformation(bool ready) {
-	qDebug("Editor::updateInformation: is ready: %s",(ready ? "true" : "false"));
+	//qDebug("Editor::updateInformation: is ready: %s",(ready ? "true" : "false"));
 
 	/*if (selected && ready) {
 		TemporaryObject temp_object = initializer->getObject(selected);

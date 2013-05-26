@@ -611,6 +611,9 @@ ObjectInitializer::ObjectInitializer(Object* in_object) {
 	//Initialize temporary object
 	object_copy = 0;
 
+	//Temporary hack to check in_object for validity
+	in_object->getType(); //Will crash when in_object is invalid
+
 	//Delete thread when work is finished
 	connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));	
 	connect(&updateCallTimer, SIGNAL(timeout()), this, SLOT(doUpdateObject()));

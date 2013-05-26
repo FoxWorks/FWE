@@ -46,6 +46,7 @@ extern QSettings* fw_editor_settings; //See fwe.cpp
 
 
 ////////////////////////////////////////////////////////////////////////////////
+#define FWE_EDITOR_MAX_RECENT_FILES	5
 class ChildWindow;
 class MainWindow : public QMainWindow
 {
@@ -55,21 +56,22 @@ public:
 	MainWindow();
 
 protected:
-    void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent *event);
 
 private slots:
-    void newFile();
-    void open();
-    void save();
-    void saveAs();
-    void cut();
-    void copy();
-    void paste();
-    void about();
-    void updateInterface();
-    void updateWindowMenu();
-    ChildWindow *createMdiChild();
-    void setActiveSubWindow(QWidget *window);
+	void newFile();
+	void open();
+	void openRecent();
+	void save();
+	void saveAs();
+	void cut();
+	void copy();
+	void paste();
+	void about();
+	void updateInterface();
+	void updateWindowMenu();
+	ChildWindow *createMdiChild();
+	void setActiveSubWindow(QWidget *window);
 
 public:
 	QMenu* getFileMenu() { return fileMenu; }
@@ -78,40 +80,45 @@ public:
 	QMenu* getHelpMenu() { return helpMenu; }
 
 private:
-    void createActions();
-    void createMenus();
-    void createToolBars();
-    void createStatusBar();
-    ChildWindow *activeMdiChild();
-    QMdiSubWindow *findMdiChild(const QString &fileName);
+	void createActions();
+	void createMenus();
+	void createToolBars();
+	void createStatusBar();
+	void updateRecentFiles();
+	void addRecentFile(const QString &fileName);
+	ChildWindow *activeMdiChild();
+	QMdiSubWindow *findMdiChild(const QString &fileName);
 
-    QMdiArea *mdiArea;
-    QSignalMapper *windowMapper;
+	QMdiArea *mdiArea;
+	QSignalMapper *windowMapper;
 
-    QMenu *fileMenu;
-    QMenu *editMenu;
+	QMenu *fileMenu;
+	QMenu *editMenu;
 	QMenu *viewMenu;
-    QMenu *windowMenu;
-    QMenu *helpMenu;
-    QToolBar *fileToolBar;
-    QToolBar *editToolBar;
+	QMenu *windowMenu;
+	QMenu *helpMenu;
+	QToolBar *fileToolBar;
+	QToolBar *editToolBar;
 
-    QAction *newAct;
-    QAction *openAct;
-    QAction *saveAct;
-    QAction *saveAsAct;
-    QAction *exitAct;
-    QAction *cutAct;
-    QAction *copyAct;
-    QAction *pasteAct;
-    QAction *closeAct;
-    QAction *closeAllAct;
-    QAction *tileAct;
-    QAction *cascadeAct;
-    QAction *nextAct;
-    QAction *previousAct;
-    QAction *separatorAct;
-    QAction *aboutAct;
+	QAction *newAct;
+	QAction *openAct;
+	QAction *saveAct;
+	QAction *saveAsAct;
+	QAction *exitAct;
+	QAction *cutAct;
+	QAction *copyAct;
+	QAction *pasteAct;
+	QAction *closeAct;
+	QAction *closeAllAct;
+	QAction *tileAct;
+	QAction *cascadeAct;
+	QAction *nextAct;
+	QAction *previousAct;
+	QAction *windowSeparatorAct;
+	QAction *fileSeparatorAct;
+	QAction *aboutAct;
+
+	QAction *recentFiles[FWE_EDITOR_MAX_RECENT_FILES];
 };
 
 
@@ -122,7 +129,7 @@ namespace EVDS {
 
 class ChildWindow : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
 	ChildWindow(MainWindow* window);

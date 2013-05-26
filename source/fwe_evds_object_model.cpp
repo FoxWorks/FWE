@@ -56,7 +56,7 @@ ObjectTreeModel::~ObjectTreeModel() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 int ObjectTreeModel::columnCount(const QModelIndex &parent) const {
-	return 2; //Name, type
+	return 1; //Name, type
 }
 
 
@@ -70,18 +70,19 @@ QVariant ObjectTreeModel::data(const QModelIndex &index, int role) const {
 	Object* object = (Object*)(index.internalPointer());
 	if ((role == Qt::DecorationRole) && (index.column() == 0)) {
 		QString type = object->getType();
-		if ((type == "static_body") || (type == "rigid_body")) {
-			return QIcon(":/icon/evds/object_common.png");
-		} else if (type == "vessel") {
-			return QIcon(":/icon/evds/object_vessel.png");
-		} else if (type == "fuel_tank") {
+
+		if (type == "fuel_tank") {
 			if (object->isOxidizerTank()) {
-				return QIcon(":/icon/evds/object_fueltank_oxy.png");
+				return QIcon(":/icon/evds_type/fuel_tank_oxy.png");
 			} else {
-				return QIcon(":/icon/evds/object_fueltank_fuel.png");
+				return QIcon(":/icon/evds_type/fuel_tank_fuel.png");
 			}
 		} else {
-			return QIcon(":/icon/evds/object_uncommon.png");
+			if (QFile::exists(":/icon/evds_type/" + type + ".png")) {
+				return QIcon(":/icon/evds_type/" + type + ".png");
+			} else {
+				return QIcon(":/icon/evds_type/_uncommon_.png");
+			}
 		}
 	}
 

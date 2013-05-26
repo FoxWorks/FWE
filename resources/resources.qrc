@@ -24,16 +24,21 @@
     <file>icon/remove.png</file>
 
     <file>icon/evds/cutsection.png</file>
+    <file>icon/evds/csections.png</file>
     <file>icon/evds/hierarchy.png</file>
     <file>icon/evds/properties.png</file>
     <file>icon/evds/materials.png</file>
 
-    <file>icon/evds/object_vessel.png</file>
-    <file>icon/evds/object_common.png</file>
-    <file>icon/evds/object_uncommon.png</file>
-    <file>icon/evds/object_fueltank.png</file>
-    <file>icon/evds/object_fueltank_oxy.png</file>
-    <file>icon/evds/object_fueltank_fuel.png</file>
+    <file>icon/evds_type/_uncommon_.png</file>
+    <file>icon/evds_type/vessel.png</file>
+    <file>icon/evds_type/static_body.png</file>
+    <file>icon/evds_type/rigid_body.png</file>
+    <file>icon/evds_type/fuel_tank.png</file>
+    <file>icon/evds_type/fuel_tank_oxy.png</file>
+    <file>icon/evds_type/fuel_tank_fuel.png</file>
+    <file>icon/evds_type/rocket_engine.png</file>
+    <file>icon/evds_type/gimbal.png</file>
+    <file>icon/evds_type/antenna.png</file>
 
     <file>icon/glview/cm.png</file>
     <file>icon/glview/center.png</file>

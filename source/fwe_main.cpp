@@ -52,6 +52,7 @@ MainWindow::MainWindow() {
 	//createToolBars();
 	createStatusBar();
 	updateInterface();
+	updateRecentFiles();
 
 	//Set default title and size
 	QIcon foxworks_icon = QIcon();
@@ -115,6 +116,8 @@ void MainWindow::open() {
 		"All files (*.*)");
 
 	if (!fileName.isEmpty()) {
+		addRecentFile(fileName);
+
 		QMdiSubWindow *existing = findMdiChild(fileName);
 		if (existing) {
 			mdiArea->setActiveSubWindow(existing);
@@ -135,9 +138,36 @@ void MainWindow::open() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+void MainWindow::openRecent() {
+	QAction *action = qobject_cast<QAction *>(sender());
+	if (action) {
+		addRecentFile(action->data().toString());
+
+		QMdiSubWindow *existing = findMdiChild(action->data().toString());
+		if (existing) {
+			mdiArea->setActiveSubWindow(existing);
+			return;
+		}
+
+		ChildWindow *child = createMdiChild();
+		if (child->loadFile(action->data().toString())) {
+			statusBar()->showMessage(tr("File loaded"), 2000);
+			child->show();
+		} else {
+			child->close();
+		}
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 void MainWindow::save() {
-	if (activeMdiChild() && activeMdiChild()->save())
+	if (activeMdiChild() && activeMdiChild()->save()) {
+		addRecentFile(activeMdiChild()->getCurrentFile());
 		statusBar()->showMessage(tr("File saved"), 2000);
+	}
 }
 
 
@@ -145,8 +175,10 @@ void MainWindow::save() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::saveAs() {
-	if (activeMdiChild() && activeMdiChild()->saveAs())
+	if (activeMdiChild() && activeMdiChild()->saveAs()) {
+		addRecentFile(activeMdiChild()->getCurrentFile());
 		statusBar()->showMessage(tr("File saved"), 2000);
+	}
 }
 
 
@@ -215,7 +247,7 @@ void MainWindow::updateInterface() {
 	cascadeAct->setEnabled(hasMdiChild);
 	nextAct->setEnabled(hasMdiChild);
 	previousAct->setEnabled(hasMdiChild);
-	separatorAct->setVisible(hasMdiChild);
+	windowSeparatorAct->setVisible(hasMdiChild);
 
 	//Update menu items for all windows
 	QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
@@ -241,10 +273,10 @@ void MainWindow::updateWindowMenu() {
 	windowMenu->addSeparator();
 	windowMenu->addAction(nextAct);
 	windowMenu->addAction(previousAct);
-	windowMenu->addAction(separatorAct);
+	windowMenu->addAction(windowSeparatorAct);
 
 	QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
-	separatorAct->setVisible(!windows.isEmpty());
+	windowSeparatorAct->setVisible(!windows.isEmpty());
 
 	for (int i = 0; i < windows.size(); ++i) {
 		ChildWindow *child = qobject_cast<ChildWindow *>(windows.at(i)->widget());
@@ -264,6 +296,44 @@ void MainWindow::updateWindowMenu() {
 		connect(action, SIGNAL(triggered()), windowMapper, SLOT(map()));
 		windowMapper->setMapping(action, windows.at(i));
 	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void MainWindow::updateRecentFiles() {
+	QStringList files = fw_editor_settings->value("ui.recent_files").toStringList();
+	int numRecentFiles = qMin(files.size(), (int)FWE_EDITOR_MAX_RECENT_FILES);
+
+	for (int i = 0; i < numRecentFiles; ++i) {
+		QString text = tr("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
+		recentFiles[i]->setText(text);
+		recentFiles[i]->setData(files[i]);
+		recentFiles[i]->setVisible(true);
+	}
+	for (int j = numRecentFiles; j < FWE_EDITOR_MAX_RECENT_FILES; ++j) {
+		recentFiles[j]->setVisible(false);
+	}
+
+	fileSeparatorAct->setVisible(numRecentFiles > 0);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void MainWindow::addRecentFile(const QString &fileName) {
+	QStringList files = fw_editor_settings->value("ui.recent_files").toStringList();
+	files.removeAll(fileName);
+	files.prepend(fileName);
+
+	while (files.size() > FWE_EDITOR_MAX_RECENT_FILES) {
+		files.removeLast();
+	}
+
+	fw_editor_settings->setValue("ui.recent_files", files);
+	updateRecentFiles();
 }
 
 
@@ -308,6 +378,15 @@ void MainWindow::createActions() {
 	exitAct->setShortcuts(QKeySequence::Quit);
 	exitAct->setStatusTip(tr("Exit the application"));
 	connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
+
+	fileSeparatorAct = new QAction(this);
+	fileSeparatorAct->setSeparator(true);
+
+	for (int i = 0; i < FWE_EDITOR_MAX_RECENT_FILES; ++i) {
+		recentFiles[i] = new QAction(this);
+		recentFiles[i]->setVisible(false);
+		connect(recentFiles[i], SIGNAL(triggered()), this, SLOT(openRecent()));
+	}
 
 	cutAct = new QAction(QIcon(":/icon/cut.png"), tr("Cu&t"), this);
 	cutAct->setShortcuts(QKeySequence::Cut);
@@ -357,8 +436,8 @@ void MainWindow::createActions() {
 	connect(previousAct, SIGNAL(triggered()),
 			mdiArea, SLOT(activatePreviousSubWindow()));
 
-	separatorAct = new QAction(this);
-	separatorAct->setSeparator(true);
+	windowSeparatorAct = new QAction(this);
+	windowSeparatorAct->setSeparator(true);
 
 	aboutAct = new QAction(QIcon(":/icon/about.png"), tr("&About"), this);
 	aboutAct->setStatusTip(tr("Show the About box"));
@@ -375,6 +454,12 @@ void MainWindow::createMenus() {
 	fileMenu->addAction(openAct);
 	fileMenu->addAction(saveAct);
 	fileMenu->addAction(saveAsAct);
+	fileMenu->addAction(fileSeparatorAct);
+	for (int i = 0; i < FWE_EDITOR_MAX_RECENT_FILES; ++i) {
+		fileMenu->addAction(recentFiles[i]);
+	}
+	fileMenu->addSeparator();
+
 	fileMenu->addSeparator();
 	fileMenu->addAction(exitAct);
 
@@ -482,8 +567,8 @@ ChildWindow::ChildWindow(MainWindow* window) {
 void ChildWindow::newFile() {
 	EVDSEditor->newFile();
 
-	currentFile = "";
 	isModified = false;
+	currentFile = "";
 	updateTitle();
 }
 
@@ -495,6 +580,8 @@ bool ChildWindow::loadFile(const QString &fileName) {
 	if (!EVDSEditor->loadFile(fileName)) return false;
 
 	//Setup window
+	isModified = false;
+	currentFile = fileName;
 	updateTitle();
 	return true;
 }

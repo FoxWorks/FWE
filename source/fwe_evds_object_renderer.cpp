@@ -319,7 +319,7 @@ void ObjectLODGenerator::run() {
 			result.clear();
 			for (int lod = 0; lod < numLods; lod++) {
 				//Check if job must be aborted
-				if (needMesh) {
+				if (needMesh || doStopWork) {
 					qDebug("ObjectLODGenerator: aborted job early");
 					break;
 				}
