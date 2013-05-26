@@ -222,9 +222,16 @@ void MainWindow::about() {
 
 	QMessageBox::about(this, tr("About FoxWorks Editor"),
 			tr("<b>FoxWorks Editor</b> (C) 2012-2013 by Black Phoenix<br>"
-			"<b>External Vessel Dynamics Simulator (EVDS %1)</b> (C) 2012-2013 by Black Phoenix<br>"
-			"<b>Internal Vessel Systems Simulator (IVSS %2)</b> (C) 2011-2013 by Black Phoenix<br>"
-			"<b>Realtime Digital Radio Simulator (RDRS %3)</b> (C) 2013 by Black Phoenix")
+			"<br>"
+			"Contact information:<br>"
+			"<b>Black Phoenix</b> (<i>phoenix@uol.ua</i>, <i>popovych@yanedx.ru</i>)<br>"
+			"<br>"
+			"Additional software:<br>"
+			"<b>GLC_lib</b> (C) 2005-2013 by Laurent Ribon (<i>laumaya@users.sourceforge.net</i>)<br>"
+			"<b>External Vessel Dynamics Simulator (%1)</b> (C) 2012-2013 by Black Phoenix<br>"
+			"<b>Internal Vessel Systems Simulator (%2)</b> (C) 2011-2013 by Black Phoenix<br>"
+			"<b>Realtime Digital Radio Simulator (%3)</b> (C) 2013 by Black Phoenix"
+			)
 			.arg(evds_version)
 			.arg(ivss_version)
 			.arg(rdrs_version));
