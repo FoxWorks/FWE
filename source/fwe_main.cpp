@@ -460,13 +460,14 @@ void MainWindow::createMenus() {
 	fileMenu = menuBar()->addMenu(tr("&File"));
 	fileMenu->addAction(newAct);
 	fileMenu->addAction(openAct);
+	recentMenu = fileMenu->addMenu(tr("&Open Recent"));
+	for (int i = 0; i < FWE_EDITOR_MAX_RECENT_FILES; ++i) {
+		recentMenu->addAction(recentFiles[i]);
+	}
 	fileMenu->addAction(saveAct);
 	fileMenu->addAction(saveAsAct);
-	fileMenu->addAction(fileSeparatorAct);
-	for (int i = 0; i < FWE_EDITOR_MAX_RECENT_FILES; ++i) {
-		fileMenu->addAction(recentFiles[i]);
-	}
-	fileMenu->addSeparator();
+
+	//fileMenu->addSeparator();
 
 	fileMenu->addSeparator();
 	fileMenu->addAction(exitAct);

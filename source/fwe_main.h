@@ -93,6 +93,7 @@ private:
 	QSignalMapper *windowMapper;
 
 	QMenu *fileMenu;
+	QMenu *recentMenu;
 	QMenu *editMenu;
 	QMenu *viewMenu;
 	QMenu *windowMenu;
