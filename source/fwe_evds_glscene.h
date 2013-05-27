@@ -37,6 +37,7 @@
 #include <GLC_Light>
 #include <GLC_Viewport>
 #include <GLC_3DViewCollection>
+#include <GLC_3DWidgetManager>
 #include <GLC_MoverController>
 
 namespace EVDS {
@@ -56,6 +57,8 @@ namespace EVDS {
 		void loadShaders();
 		void drawScreenQuad();
 		//void selectByCoordinates(int x, int y, bool multi, QMouseEvent* pMouseEvent);
+
+		void setCutsectionPlane(int plane, bool active);
 
 	protected:
 		void geometryChanged(const QRectF &rect);
@@ -77,6 +80,8 @@ namespace EVDS {
 		void setBackView();
 		void setTopView();
 		void setBottomView();
+
+		void cutsectionUpdated();
 
 	private:
 		//Create panels and interface
@@ -103,12 +108,16 @@ namespace EVDS {
 		GLC_Viewport* viewport;
 		GLC_MoverController controller;
 		GLC_3DViewInstance* indicator_cm;
+		GLC_3DWidgetManager* widget_manager;
+		GLC_Plane* cutsectionPlane[3];
+		int cutsectionPlaneWidget[3];
 
 		//Is scene initialized OpenGL-wise
 		bool sceneOrthographic;
 		bool sceneShadowed;
 		bool sceneWireframe;
 		bool sceneInitialized;
+		bool makingScreenshot;
 		int previousWidth,previousHeight;
 
 		//Shaders and framebuffers

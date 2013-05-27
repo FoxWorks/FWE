@@ -73,6 +73,7 @@ ObjectRenderer::~ObjectRenderer() {
 	}
 
 	delete glcInstance;
+	lodMeshGenerator->stopWork();
 }
 
 
@@ -232,6 +233,7 @@ void ObjectLODGeneratorResult::setGLCMesh(GLC_Mesh* glcMesh, Object* object) {
 			//Add smoothing group
 			glcMesh->addTriangles(glcMaterial, indicesLists[i], lodList[i]);
 		}
+		//QApplication::processEvents();
 	}
 }
 
@@ -265,7 +267,7 @@ ObjectLODGenerator::ObjectLODGenerator(Object* in_object, int in_lods) {
 	object_copy = 0;
 
 	//Delete thread when work is finished
-	connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));	
+	connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 	connect(&updateCallTimer, SIGNAL(timeout()), this, SLOT(doUpdateMesh()));
 	doStopWork = false;
 	needMesh = false; 
@@ -296,6 +298,14 @@ void ObjectLODGenerator::doUpdateMesh() {
 void ObjectLODGenerator::updateMesh() {
 	//qDebug("ObjectLODGenerator::updateMesh: start timer");
 	updateCallTimer.start(500);
+}
+
+void ObjectLODGenerator::stopWork() {
+	doStopWork = true;
+	while (isRunning()) {
+		msleep(10);
+		//QApplication::processEvents();
+	}
 }
 
 
@@ -347,5 +357,6 @@ void ObjectLODGenerator::run() {
 	}
 
 	//Finish thread work and destroy HQ mesh
+	//qDebug("ObjectLODGenerator::run: stopped");
 	//if (mesh) EVDS_Mesh_Destroy(mesh);
 }

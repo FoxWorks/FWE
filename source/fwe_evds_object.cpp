@@ -678,6 +678,11 @@ void FWE_ObjectInitializer_FixUIDs(EVDS_OBJECT* object) {
 	EVDS_Object_GetUserdata(object,&userdata);
 	Object* editor_object = static_cast<Object*>(userdata);
 
+	if (!editor_object) {
+		qDebug("FWE_ObjectInitializer_FixUIDs: for some reason no UID");
+		return;
+	}
+
 	//Set UID
 	EVDS_Object_SetUID(object,editor_object->getEditorUID());
 
@@ -691,6 +696,14 @@ void FWE_ObjectInitializer_FixUIDs(EVDS_OBJECT* object) {
 	while (entry) {
 		FWE_ObjectInitializer_FixUIDs((EVDS_OBJECT*)SIMC_List_GetData(list,entry));
 		entry = SIMC_List_GetNext(list,entry);
+	}
+}
+
+void ObjectInitializer::stopWork() {
+	doStopWork = true;
+	while (isRunning()) {
+		msleep(10);
+		//QApplication::processEvents();
 	}
 }
 
@@ -723,6 +736,7 @@ void ObjectInitializer::run() {
 		msleep(50);
 	}
 
-	//Finish thread work and destroy HQ mesh
-	//if (mesh) EVDS_Mesh_Destroy(mesh);
+	//Remove object
+	//qDebug("ObjectInitializer::run: stopped");
+	//if (object_copy) EVDS_Object_Destroy(object_copy);
 }

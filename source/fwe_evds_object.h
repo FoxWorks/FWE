@@ -145,7 +145,7 @@ namespace EVDS {
 		//Re-initialize object
 		void updateObject();
 		//Abort thread work
-		void stopWork() { doStopWork = true; }
+		void stopWork();
 		//Locked when object is still inconsistent or when it's being read
 		QMutex readingLock;
 

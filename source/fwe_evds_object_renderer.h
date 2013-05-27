@@ -93,7 +93,7 @@ namespace EVDS {
 		//Update mesh for the given object
 		void updateMesh();
 		//Abort thread work
-		void stopWork() { doStopWork = true; }
+		void stopWork();
 		//Locked when mesh is being generated
 		QMutex readingLock;
 

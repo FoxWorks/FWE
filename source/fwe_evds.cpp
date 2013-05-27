@@ -94,6 +94,7 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 
 	//Create empty root object
 	EVDS_Object_Create(system,0,&root);
+	EVDS_Object_SetType(root,"rigid_body"); //Allows finding out parameters for the entire file
 	//EVDS_Object_Initialize(root,1);
 	root_obj = new Object(root,0,this);
 
@@ -117,15 +118,13 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 	setCentralWidget(glview);
 
 	//Create informational docks
-	//createCutsectionDock();
 	createInformationDock();
 
 	//Setup initial layout
 	list_dock->raise();
 
 
-	//Set MDI style, enable drag and drop
-	setAttribute(Qt::WA_DeleteOnClose);
+	//Enable drag and drop
 	setAcceptDrops(true);
 }
 
@@ -134,9 +133,15 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 Editor::~Editor() {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+	initializer->stopWork();
+	delete initializer;
+
+	qDebug("Editor::~Editor: cleaning up EVDS objects");
 	delete root_obj;
-	EVDS_System_Destroy(system); //FIXME: must be done after all threads shut down, otherwise potential crash
+	EVDS_System_Destroy(system);
 	EVDS_System_Destroy(initialized_system);
+	QApplication::restoreOverrideCursor();
 }
 
 
@@ -147,16 +152,19 @@ void Editor::createMenuToolbar() {
 	//View menu structure
 	QAction* action;
 	action = new QAction(QIcon(":/icon/evds/hierarchy.png"), tr("Objects &Hierarchy"), this);
+	action->setStatusTip("Show hierarchy of objects in the EVDS file");
 	connect(action, SIGNAL(triggered()), this, SLOT(showHierarchy()));
 	actions.append(action);
 	window->getMainWindow()->getViewMenu()->addAction(action);
 
 	action = new QAction(QIcon(":/icon/evds/properties.png"), tr("Object &Properties"), this);
+	action->setStatusTip("Show properties sheet of the object or current EVDS file");
 	connect(action, SIGNAL(triggered()), this, SLOT(showProperties()));
 	actions.append(action);
 	window->getMainWindow()->getViewMenu()->addAction(action);
 
 	action = new QAction(QIcon(":/icon/evds/csections.png"), tr("&Cross Sections Editor"), this);
+	action->setStatusTip("Show cross sections editor");
 	connect(action, SIGNAL(triggered()), this, SLOT(showCrossSections()));
 	actions.append(action);
 	window->getMainWindow()->getViewMenu()->addAction(action);
@@ -164,24 +172,47 @@ void Editor::createMenuToolbar() {
 	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
 
 	action = new QAction(tr("Object &Information"), this);
+	action->setStatusTip("Show information about selected object or the current EVDS file");
 	connect(action, SIGNAL(triggered()), this, SLOT(showInformation()));
 	actions.append(action);
 	window->getMainWindow()->getViewMenu()->addAction(action);
 
-	action = new QAction(QIcon(":/icon/evds/cutsection.png"), tr("Show Cut&section"), this);
-	//connect(action, SIGNAL(triggered()), this, SLOT(showCutsection()));
-	actions.append(action);
-	window->getMainWindow()->getViewMenu()->addAction(action);
+	//action = new QAction(QIcon(":/icon/evds/cutsection.png"), tr("Show Cut&section"), this);
+	//action->setStatusTip("Show cutsection by an primary plane");
+	//actions.append(action);
+	//window->getMainWindow()->getViewMenu()->addAction(action);
+
+	cutsection_x = new QAction(QIcon(":/icon/glview/view_left.png"),  tr("Plane &X"), this);
+	cutsection_y = new QAction(QIcon(":/icon/glview/view_front.png"), tr("Plane &Y"), this);
+	cutsection_z = new QAction(QIcon(":/icon/glview/view_top.png"),   tr("Plane &Z"), this);
+	cutsection_x->setProperty("index",0);
+	cutsection_y->setProperty("index",1);
+	cutsection_z->setProperty("index",2);
+	cutsection_x->setCheckable(true);
+	cutsection_y->setCheckable(true);
+	cutsection_z->setCheckable(true);
+	connect(cutsection_x, SIGNAL(triggered()), this, SLOT(showCutsection()));
+	connect(cutsection_y, SIGNAL(triggered()), this, SLOT(showCutsection()));
+	connect(cutsection_z, SIGNAL(triggered()), this, SLOT(showCutsection()));
+
+	cutsection_menu = window->getMainWindow()->getViewMenu()->
+		addMenu(QIcon(":/icon/evds/cutsection.png"), tr("Show Cut&section"));
+	cutsection_menu->setStatusTip("Show cutsection by an primary plane");
+	cutsection_menu->addAction(cutsection_x);
+	cutsection_menu->addAction(cutsection_y);
+	cutsection_menu->addAction(cutsection_z);
 
 	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
 
 	//action = new QAction(tr("&Rocket Engine Designer..."), this);
+	//action->setStatusTip("Define rocket engine using graphical UI dialog");
 	//actions.append(action);
 	//window->getMainWindow()->getViewMenu()->addAction(action);
 
 	//actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
 
 	action = new QAction(QIcon(":/icon/evds/materials.png"), tr("&Materials Database..."), this);
+	action->setStatusTip("Display list of materials and their physical properties");
 	//connect(action, SIGNAL(triggered()), this, SLOT(showCrossSections()));
 	action->setEnabled(false);
 	actions.append(action);
@@ -309,6 +340,7 @@ void Editor::createInformationDock() {
 	bodyinfo = new QTextEdit();
 	//bodyinfo->setMinimumWidth(250);
 	//bodyinfo->setMinimumHeight(80);
+	//bodyinfo->setGeometry(0,0,250,80);
 	bodyinfo->setReadOnly(true);
 	bodyinfo->setObjectName("EVDS_BodyInformation");
 
@@ -318,6 +350,17 @@ void Editor::createInformationDock() {
 	bodyinfo_dock->setWidget(bodyinfo);
 	//tabifyDockWidget(properties_dock,bodyinfo_dock);
 	addDockWidget(Qt::RightDockWidgetArea,bodyinfo_dock);
+
+	bodyinfo->setMaximumHeight(135);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void Editor::showCutsection() {
+	QAction* action = dynamic_cast<QAction*>(sender());
+	glscene->setCutsectionPlane(action->property("index").toInt(),action->isChecked());
 }
 
 
@@ -359,60 +402,63 @@ void Editor::updateInformation(bool ready) {
 	}*/
 
 	if (ready) {
+		Object* object = root_obj;
+		if (selected) object = selected;
+
+		QString information = "";
+		QVector3D cm = object->getInformationVector("total_cm");
+		if (!object->isInformationDefined("total_cm")) cm = object->getInformationVector("cm");
+		information = information + tr("CoM: (%1; %2; %3) m\n")
+			.arg(cm.x(),0,'F',3)
+			.arg(cm.y(),0,'F',3)
+			.arg(cm.z(),0,'F',3);
+
+		information = information + tr("Mass: %2 kg (part: %1 kg)\n")
+			.arg(object->getInformationVariable("mass"))
+			.arg(object->getInformationVariable("total_mass"));
+
+		if (object->getType() == "fuel_tank") {
+			information = information + tr("\nFuel mass: %1 kg\n")
+			.arg(object->getInformationVariable("fuel_mass"));
+			information = information + tr("Fuel volume: %1 m\xB3\n")
+			.arg(object->getInformationVariable("fuel_volume"));
+		}
+
+		QVector3D ix = object->getInformationVector("total_ix");
+		QVector3D iy = object->getInformationVector("total_iy");
+		QVector3D iz = object->getInformationVector("total_iz");
+		/*information = information + tr(
+			"\nInertia tensor:\n"
+			"(%1; %2; %3) kg m\xB2\n"
+			"(%4; %5; %6) kg m\xB2\n"
+			"(%7; %8; %9) kg m\xB2\n")
+			.arg(ix.x(),0,'G',3).arg(ix.y(),0,'G',3).arg(ix.z(),0,'G',3)
+			.arg(iy.x(),0,'G',3).arg(iy.y(),0,'G',3).arg(iy.z(),0,'G',3)
+			.arg(iz.x(),0,'G',3).arg(iz.y(),0,'G',3).arg(iz.z(),0,'G',3);*/
+
+		QVector3D jx = ix / (EVDS_EPS+object->getInformationVariable("total_mass"));
+		QVector3D jy = iy / (EVDS_EPS+object->getInformationVariable("total_mass"));
+		QVector3D jz = iz / (EVDS_EPS+object->getInformationVariable("total_mass"));
+		information = information + tr(
+			"\nRadius of gyration squared:\n"
+			"(%1; %2; %3) m\xB2\n"
+			"(%4; %5; %6) m\xB2\n"
+			"(%7; %8; %9) m\xB2")
+			.arg(jx.x(),0,'F',3).arg(jx.y(),0,'F',3).arg(jx.z(),0,'F',3)
+			.arg(jy.x(),0,'F',3).arg(jy.y(),0,'F',3).arg(jy.z(),0,'F',3)
+			.arg(jz.x(),0,'F',3).arg(jz.y(),0,'F',3).arg(jz.z(),0,'F',3);
+
 		if (selected) {
-			QString information = "";
-			QVector3D cm = selected->getInformationVector("total_cm");
-			if (!selected->isInformationDefined("total_cm")) cm = selected->getInformationVector("cm");
-			information = information + tr("CoM: (%1; %2; %3) m\n")
-				.arg(cm.x(),0,'F',3)
-				.arg(cm.y(),0,'F',3)
-				.arg(cm.z(),0,'F',3);
-
-			information = information + tr("Mass: %2 kg (part: %1 kg)\n")
-				.arg(selected->getInformationVariable("mass"))
-				.arg(selected->getInformationVariable("total_mass"));
-
-			if (selected->getType() == "fuel_tank") {
-				information = information + tr("\nFuel mass: %1 kg\n")
-				.arg(selected->getInformationVariable("fuel_mass"));
-				information = information + tr("Fuel volume: %1 m\xB3\n")
-				.arg(selected->getInformationVariable("fuel_volume"));
-			}
-
-			QVector3D ix = selected->getInformationVector("total_ix");
-			QVector3D iy = selected->getInformationVector("total_iy");
-			QVector3D iz = selected->getInformationVector("total_iz");
-			information = information + tr(
-				"\nInertia tensor:\n"
-				"(%1; %2; %3) kg m\xB2\n"
-				"(%4; %5; %6) kg m\xB2\n"
-				"(%7; %8; %9) kg m\xB2\n")
-				.arg(ix.x(),0,'G',3).arg(ix.y(),0,'G',3).arg(ix.z(),0,'G',3)
-				.arg(iy.x(),0,'G',3).arg(iy.y(),0,'G',3).arg(iy.z(),0,'G',3)
-				.arg(iz.x(),0,'G',3).arg(iz.y(),0,'G',3).arg(iz.z(),0,'G',3);
-
-			QVector3D jx = selected->getInformationVector("jx");
-			QVector3D jy = selected->getInformationVector("jy");
-			QVector3D jz = selected->getInformationVector("jz");
-			information = information + tr(
-				"\nRadius of gyration squared:\n"
-				"(%1; %2; %3) m\xB2\n"
-				"(%4; %5; %6) m\xB2\n"
-				"(%7; %8; %9) m\xB2\n")
-				.arg(jx.x(),0,'F',3).arg(jx.y(),0,'F',3).arg(jx.z(),0,'F',3)
-				.arg(jy.x(),0,'F',3).arg(jy.y(),0,'F',3).arg(jy.z(),0,'F',3)
-				.arg(jz.x(),0,'F',3).arg(jz.y(),0,'F',3).arg(jz.z(),0,'F',3);
-
-			/*bodyinfo_f1->setText(tr("%1 kg").arg(iobject->getVariable("fuel_mass")));
-			bodyinfo_f2->setText(tr("%1 m\xB3").arg(iobject->getVariable("fuel_volume")));*/
-
 			bodyinfo->setText(
 				tr("Object: %1\n\n%2")
-				.arg(selected->getName())
+				.arg(object->getName())
 				.arg(information)
 			);
 		} else {
-			bodyinfo->setText("Object: (none)");
+			bodyinfo->setText(
+				tr("Total summary: \n\n%1")
+				.arg(information)
+			);
 		}
 	} else {
 		bodyinfo->setText("Hold on...");
@@ -447,6 +493,10 @@ void Editor::selectObject(const QModelIndex& index) {
 		properties_layout->setCurrentWidget(properties_document);
 		csection_layout->setCurrentWidget(csection_none);
 		selected = NULL;
+
+		//Update information
+		updateInformation(true);
+		updateObject(NULL);
 		return;
 	}
 
@@ -455,7 +505,6 @@ void Editor::selectObject(const QModelIndex& index) {
 	if (selected == object) {
 		list_tree->setCurrentIndex(QModelIndex());
 		selectObject(QModelIndex());
-		updateObject(NULL);
 		return;
 	}
 	selected = object;
@@ -625,6 +674,9 @@ void Editor::loadObjectData() {
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::cleanupTimer() {
 	EVDS_System_CleanupObjects(system);
+
+	//Small hack for bodyinfo dock
+	bodyinfo->setMaximumHeight(csection->maximumHeight());
 }
 
 
@@ -634,7 +686,7 @@ void Editor::cleanupTimer() {
 void Editor::newFile() {
 	EVDS_OBJECT_LOADEX info = { 0 };
 	//EVDS_Object_LoadEx(root,"RV-505.evds",&info);
-	EVDS_Object_LoadEx(root,"RV-505_fixed.evds",&info);
+	EVDS_Object_LoadEx(root,"RV-505_proper.evds",&info);
 	root_obj->invalidateChildren();
 	initializer->updateObject();
 	updateInformation(false);
@@ -759,6 +811,7 @@ void Editor::updateInterface(bool isInFront) {
 	for (int i = 0; i < actions.count(); i++) {
 		actions[i]->setVisible(isInFront);
 	}
+	cutsection_menu->setVisible(isInFront);
 }
 
 

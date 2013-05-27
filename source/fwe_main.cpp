@@ -213,12 +213,12 @@ void MainWindow::paste() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::about() {
-	//char evds_version_str[64];
-	//EVDS_Version(0,evds_version_str);
-	//QString evds_version(evds_version_str);
-	QString evds_version = "r1a";
 	QString ivss_version = "r1a";
 	QString rdrs_version = "r1a";
+
+	char evds_version_str[64];
+	EVDS_Version(0,evds_version_str);
+	QString evds_version = "r" + QString(evds_version_str);
 
 	QMessageBox::about(this, tr("About FoxWorks Editor"),
 			tr("<b>FoxWorks Editor</b> (C) 2012-2013 by Black Phoenix<br>"
@@ -317,6 +317,7 @@ void MainWindow::updateRecentFiles() {
 		QString text = tr("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
 		recentFiles[i]->setText(text);
 		recentFiles[i]->setData(files[i]);
+		recentFiles[i]->setStatusTip(files[i]);
 		recentFiles[i]->setVisible(true);
 	}
 	for (int j = numRecentFiles; j < FWE_EDITOR_MAX_RECENT_FILES; ++j) {
@@ -526,7 +527,7 @@ ChildWindow *MainWindow::activeMdiChild() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName) {
-	QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+	QString canonicalFilePath = fileName; //FIXME //QFileInfo(fileName).canonicalFilePath();
 
 	foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
 		ChildWindow *mdiChild = qobject_cast<ChildWindow *>(window->widget());
@@ -565,6 +566,9 @@ ChildWindow::ChildWindow(MainWindow* window) {
 
 	EVDSEditor = new EVDS::Editor(this);
 	editorsLayout->addWidget(EVDSEditor);
+
+	//Delete child on close
+	setAttribute(Qt::WA_DeleteOnClose);
 }
 
 
@@ -584,12 +588,13 @@ void ChildWindow::newFile() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 bool ChildWindow::loadFile(const QString &fileName) {
-	if (!EVDSEditor->loadFile(fileName)) return false;
-
 	//Setup window
 	isModified = false;
 	currentFile = fileName;
 	updateTitle();
+
+	//Load file data
+	if (!EVDSEditor->loadFile(fileName)) return false;
 	return true;
 }
 

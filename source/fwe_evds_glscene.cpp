@@ -36,6 +36,7 @@
 #include <GLC_UserInput>
 #include <GLC_Exception>
 #include <GLC_Context>
+#include <GLC_CuttingPlane>
 
 #include <math.h>
 #include "fwe_evds.h"
@@ -67,10 +68,15 @@ GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent) :
 	fbo_shadow = 0;
 	fbo_fxaa = 0;
 
+	cutsectionPlaneWidget[0] = 0;
+	cutsectionPlaneWidget[1] = 0;
+	cutsectionPlaneWidget[2] = 0;
+
 	//Create GLC objects
 	viewport = new GLC_Viewport();
 	controller = GLC_Factory::instance()->createDefaultMoverController(QColor(255,30,30), viewport);
 	world = new GLC_World();
+	widget_manager = new GLC_3DWidgetManager(viewport);
 
 	//GLC scene cannot be empty, either it crashes. Also ensure minimum size of bounding box
 	GLC_3DViewInstance instance1(GLC_Factory::instance()->createCircle(0.0));
@@ -98,6 +104,7 @@ GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent) :
 	viewport->cameraHandle()->setDefaultUpVector(glc::Z_AXIS);
 	viewport->cameraHandle()->setIsoView();
 	world->collection()->setLodUsage(true,viewport);
+	world->collection()->setVboUsage(true);
 	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("render.min_pixel_culling",4).toInt());
 	GLC_SelectionMaterial::setUseSelectionMaterial(false);
 
@@ -109,6 +116,7 @@ GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent) :
 	sceneOrthographic = true;
 	sceneShadowed = false;
 	sceneWireframe = false;
+	makingScreenshot = false;
 
 	//Create interface and enable drag and drop
 	createInterface();
@@ -266,7 +274,9 @@ void GLScene::saveScreenshot() {
 		setSceneRect(QRectF(0,0,width,height));
 		panel_control->hide();
 		panel_view->hide();
+			makingScreenshot = true;
 			render(&fboPainter);
+			makingScreenshot = false;
 		setSceneRect(oldRect);
 		panel_control->show();
 		panel_view->show();
@@ -302,6 +312,49 @@ void GLScene::setTopView() {
 }
 void GLScene::setBottomView() {
 	viewport->cameraHandle()->setBottomView();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void GLScene::cutsectionUpdated() {
+	/*GLC_CuttingPlane* widget = dynamic_cast<GLC_CuttingPlane*>(sender());
+	int plane = widget->property("plane").toInt();
+	
+	if (NULL != widget) {
+		cutsectionPlane[plane]->setPlane(widget->normal(), widget->center());
+	}*/
+}
+
+void GLScene::setCutsectionPlane(int plane, bool active) {
+	if (active) {
+		GLC_Point3d center = world->collection()->boundingBox().center();
+		GLC_Vector3d normal(0,1,0);
+		//const double d1 = 1.00 * world->collection()->boundingBox().xLength();
+		//const double d2 = 1.00 * world->collection()->boundingBox().yLength();
+		switch (plane) {
+			case 0: normal = GLC_Vector3d(0,1,0); break;
+			case 1: normal = GLC_Vector3d(1,0,0); break;
+			case 2: normal = GLC_Vector3d(0,0,-1); break;
+		};
+
+		//GLC_CuttingPlane* widget = new GLC_CuttingPlane(center, normal, d1, d2);
+		//connect(widget, SIGNAL(asChanged()), this, SLOT(cutsectionUpdated()));
+		//cutsectionPlaneWidget[plane] = widget->id();
+
+		//widget->setOpacity(0.0);
+		//widget->setProperty("plane",plane);
+	
+		//widget_manager->add3DWidget(widget);
+		cutsectionPlaneWidget[plane] = 1;
+		cutsectionPlane[plane] = new GLC_Plane(normal, center);
+		viewport->addClipPlane(GL_CLIP_PLANE0 + plane, cutsectionPlane[plane]);
+	} else if (cutsectionPlaneWidget[plane] != 0) {
+		//widget_manager->remove3DWidget(cutsectionPlaneWidget[plane]);
+		cutsectionPlaneWidget[plane] = 0;
+		viewport->removeClipPlane(GL_CLIP_PLANE0 + plane);
+	}
 }
 
 
@@ -587,6 +640,11 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 			//glClear(GL_DEPTH_BUFFER_BIT);
 			world->render(1, glc::ShadingFlag);
 		}
+		if (!makingScreenshot) {
+			viewport->useClipPlane(false);
+			widget_manager->render();
+			viewport->useClipPlane(true);
+		}
 	if ((!inSelectionMode) && fbo_fxaa) fbo_fxaa->release();
 
 
@@ -632,7 +690,6 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 				}
 			}
 
-			//glClear(GL_DEPTH_BUFFER_BIT);
 			controller.drawActiveMoverRep();
 		if (fbo_fxaa) fbo_fxaa->release();
 	}
@@ -658,6 +715,10 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void GLScene::mousePressEvent(QGraphicsSceneMouseEvent* e) {
+	QMouseEvent mouseEvent(QEvent::MouseButtonPress,
+				QPoint(e->scenePos().x(),e->scenePos().y()),
+				e->button(),e->buttons(),e->modifiers());
+
 	QGraphicsScene::mousePressEvent(e);
 	if (e->isAccepted()) return;
 	if (controller.hasActiveMover()) return;
@@ -671,6 +732,11 @@ void GLScene::mousePressEvent(QGraphicsSceneMouseEvent* e) {
 			update();
 			break;
 		case (Qt::LeftButton):
+			if (widget_manager->mousePressEvent(&mouseEvent) == glc::BlockedEvent) {
+				update();
+				break;
+			}
+
 			controller.setActiveMover(GLC_MoverController::Pan, GLC_UserInput(x,y));
 			//{ GLC_uint selectedID = viewport->renderAndSelect(x,y);
 			//qDebug("Id: %d\n",selectedID);}
@@ -753,8 +819,18 @@ void GLScene::mousePressEvent(QGraphicsSceneMouseEvent* e) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void GLScene::mouseMoveEvent(QGraphicsSceneMouseEvent* e) {
+	QMouseEvent mouseEvent(QEvent::MouseButtonPress,
+				QPoint(e->scenePos().x(),e->scenePos().y()),
+				e->button(),e->buttons(),e->modifiers());
+
 	QGraphicsScene::mouseMoveEvent(e);
 	if (e->isAccepted()) return;
+
+	//Process 3D widgets
+	if (widget_manager->mouseMoveEvent(&mouseEvent) == glc::BlockedEvent) {
+		update();
+		return;
+	}
 
 	//Keep moving the view
 	int x = e->scenePos().x();
@@ -771,8 +847,18 @@ void GLScene::mouseMoveEvent(QGraphicsSceneMouseEvent* e) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void GLScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* e) {
+	QMouseEvent mouseEvent(QEvent::MouseButtonPress,
+				QPoint(e->scenePos().x(),e->scenePos().y()),
+				e->button(),e->buttons(),e->modifiers());
+
 	QGraphicsScene::mouseReleaseEvent(e);
 	if (e->isAccepted()) return;
+
+	//Process 3D widgets
+	if (widget_manager->mouseReleaseEvent(&mouseEvent) == glc::BlockedEvent) {
+		update();
+		return;
+	}
 
 	//Stop moving the view
 	if (controller.hasActiveMover()) {

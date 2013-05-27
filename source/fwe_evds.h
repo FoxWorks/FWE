@@ -108,6 +108,7 @@ namespace EVDS {
 		void showCrossSections();
 		void showHierarchy();
 		void showInformation();
+		void showCutsection();
 
 	private:
 		QString currentFile;
@@ -116,7 +117,6 @@ namespace EVDS {
 		void createListDock();
 		void createPropertiesDock();
 		void createCSectionDock();
-		//void createCutsectionDock();
 		void createInformationDock();
 
 		//Object types
@@ -153,6 +153,10 @@ namespace EVDS {
 
 		//Menus and actions
 		QList<QAction*>		actions;
+		QMenu*				cutsection_menu;
+		QAction*			cutsection_x;
+		QAction*			cutsection_y;
+		QAction*			cutsection_z;
 
 		//Parent window
 		ChildWindow*		window;
