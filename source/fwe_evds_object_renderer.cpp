@@ -165,7 +165,12 @@ void ObjectRenderer::meshChanged() {
 	glcMesh->clear();
 
 	ObjectLODGeneratorResult result;
-		EVDS_Mesh_Generate(temp_object,&mesh,32.0f,EVDS_MESH_USE_DIVISIONS);
+		EVDS_MESH_GENERATEEX info = { 0 };
+		info.resolution = 32.0f;
+		info.min_resolution = fw_editor_settings->value("rendering.min_resolution",0.01f).toFloat();
+		info.flags = EVDS_MESH_USE_DIVISIONS;
+
+		EVDS_Mesh_GenerateEx(temp_object,&mesh,&info);
 		result.appendMesh(mesh,0);
 		EVDS_Mesh_Destroy(mesh);
 	result.setGLCMesh(glcMesh,object);
@@ -534,7 +539,12 @@ void ObjectLODGenerator::run() {
 
 				//Create new one
 				EVDS_MESH* mesh;
-				EVDS_Mesh_Generate(work_object,&mesh,getLODResolution(numLods-lod-1),EVDS_MESH_USE_DIVISIONS);
+				EVDS_MESH_GENERATEEX info = { 0 };
+				info.resolution = getLODResolution(numLods-lod-1);
+				info.min_resolution = fw_editor_settings->value("rendering.min_resolution",0.01f).toFloat();
+				info.flags = EVDS_MESH_USE_DIVISIONS;
+
+				EVDS_Mesh_GenerateEx(work_object,&mesh,&info);
 				result.appendMesh(mesh,lod);
 				EVDS_Mesh_Destroy(mesh);
 				//printf("Done mesh %p %p for level %d\n",object,mesh,lod);

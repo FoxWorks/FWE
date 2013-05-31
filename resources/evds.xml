@@ -459,6 +459,27 @@ Point-defined
 		</var>
 		<var>
 			<type>double</type>
+			<variable>vector1.count</variable>
+			<name>Count 1 (radial)</name>
+			<digits>0</digits>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>vector2.count</variable>
+			<name>Count 2 (concentric)</name>
+			<digits>0</digits>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>vector3.count</variable>
+			<name>Count 3 (normal)</name>
+			<digits>0</digits>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
 			<variable>circular.step</variable>
 			<name>Step</name>
 			<units>deg</units>
@@ -500,28 +521,8 @@ Point-defined
 		<var>
 			<type>bool</type>
 			<variable>circular.rotate</variable>
-			<name>Rotation</name>
-			<description></description>
-		</var>
-		<var>
-			<type>double</type>
-			<variable>vector1.count</variable>
-			<name>Count 1 (radial)</name>
-			<digits>0</digits>
-			<description></description>
-		</var>
-		<var>
-			<type>double</type>
-			<variable>vector2.count</variable>
-			<name>Count 2 (concentric)</name>
-			<digits>0</digits>
-			<description></description>
-		</var>
-		<var>
-			<type>double</type>
-			<variable>vector3.count</variable>
-			<name>Count 3 (normal)</name>
-			<digits>0</digits>
+			<name>Relative rotation</name>
+			<group>Circular pattern parameters</group>
 			<description></description>
 		</var>
 		<var>
