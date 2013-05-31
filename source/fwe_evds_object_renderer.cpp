@@ -43,7 +43,8 @@ ObjectRenderer::ObjectRenderer(Object* in_object) {
 
 	//Create meshes
 	glcMesh = new GLC_Mesh();
-	glcInstance = new GLC_3DViewInstance(glcMesh);
+	glcMeshRep = new GLC_3DRep(glcMesh);
+	glcInstance = new GLC_3DViewInstance(*glcMeshRep);
 
 	//Read LOD count and make sure it's sane
 	int lod_count = fw_editor_settings->value("rendering.lod_count",6).toInt();
@@ -56,10 +57,6 @@ ObjectRenderer::ObjectRenderer(Object* in_object) {
 	if (fw_editor_settings->value("rendering.no_lods",false) == false) {
 		lodMeshGenerator->start();
 	}
-
-	//Create initial data
-	meshChanged();
-	positionChanged();
 }
 
 
@@ -69,7 +66,7 @@ ObjectRenderer::ObjectRenderer(Object* in_object) {
 ObjectRenderer::~ObjectRenderer() {
 	GLScene* glview = object->getEVDSEditor()->getGLScene();
 	if (glview->getCollection()->contains(glcInstance->id())) {
-		glview->getCollection()->remove(glcInstance->id());			
+		glview->getCollection()->remove(glcInstance->id());
 	}
 
 	delete glcInstance;
@@ -80,10 +77,12 @@ ObjectRenderer::~ObjectRenderer() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void ObjectRenderer::positionChanged() {
+void ObjectRenderer::positionChanged(bool travel_up) {
+	GLScene* glview = object->getEVDSEditor()->getGLScene();
+
 	//Offset GLC instance relative to objects parent
 	Object* parent = object->getParent();
-	if (parent) {
+	if (parent) { //FIXME: this is not needed when travel_up = true and object isn't a modifier
 		//Get state vector
 		EVDS_OBJECT* obj = object->getEVDSObject();
 		EVDS_STATE_VECTOR vector;
@@ -104,16 +103,46 @@ void ObjectRenderer::positionChanged() {
 		}
 		
 		//Add/replace in GL widget to update position
-		GLScene* glview = object->getEVDSEditor()->getGLScene();
 		if (glview->getCollection()->contains(glcInstance->id())) {
-			glview->getCollection()->remove(glcInstance->id());			
+			glview->getCollection()->remove(glcInstance->id());
 		}
 		glview->getCollection()->add(*(glcInstance));
 	}
 
 	//Update position of all children
-	for (int i = 0; i < object->getChildrenCount(); i++) {
-		object->getChild(i)->getRenderer()->positionChanged();
+	if (!travel_up) {
+		for (int i = 0; i < object->getChildrenCount(); i++) {
+			object->getChild(i)->getRenderer()->positionChanged();
+		}
+	}
+
+	//Travel up and update the modifiers (FIXME: adds unneccessary lag!)
+	if (parent && parent->getRenderer()) {
+		parent->getRenderer()->positionChanged(true);
+	}
+
+	//Update position of all modifier instances
+	for (int i = 0; i < modifierInstances.count(); i++) {
+		//Move instance as requested by modifier
+					//GLC_Matrix4x4 old_matrix = base_instance->matrix();
+					//modifier_inst.instance->setMatrix(modifier_inst.base_instance->matrix());
+					//modifier_inst.instance->resetMatrix();
+					//modifier_inst.instance->translate(offset.x(),offset.y(),offset.z());
+					//modifier_inst.instance->multMatrix(old_matrix);
+
+		//Move instance as requested by modifier
+		GLC_Matrix4x4 old_matrix = modifierInstances[i].base_instance->matrix();
+		modifierInstances[i].instance->resetMatrix();
+		modifierInstances[i].instance->multMatrix(old_matrix);
+		modifierInstances[i].instance->multMatrix(glcInstance->matrix().inverted());
+		modifierInstances[i].instance->multMatrix(modifierInstances[i].transformation);
+		modifierInstances[i].instance->multMatrix(glcInstance->matrix());
+
+		//Add/replace to update position
+		if (glview->getCollection()->contains(modifierInstances[i].instance->id())) {
+			glview->getCollection()->remove(modifierInstances[i].instance->id());
+		}
+		glview->getCollection()->add(*modifierInstances[i].instance);
 	}
 }
 
@@ -144,6 +173,115 @@ void ObjectRenderer::meshChanged() {
 	glcMesh->finish();
 	glcInstance->setMatrix(glcInstance->matrix()); //This causes bounding box to be updated
 	EVDS_Object_Destroy(temp_object);
+
+	//Add modifier instances
+	if (object->getType() == "modifier") {
+		//Remove copies of children instances
+		GLScene* glview = object->getEVDSEditor()->getGLScene();
+		for (int i = 0; i < modifierInstances.count(); i++) {
+			if (glview->getCollection()->contains(modifierInstances[i].instance->id())) {
+				glview->getCollection()->remove(modifierInstances[i].instance->id());
+			}
+			delete modifierInstances[i].instance;
+		}
+		modifierInstances.clear();
+
+		//Add copies for every child
+		addModifierInstances(object);
+
+		//Update positions (for the new modifier instances)
+		positionChanged();
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ObjectRenderer::addModifierInstances(Object* child) {
+	if (!child->getRenderer()) return; //Can happen when modifier is just being created
+
+	//Get modifier information
+	int axis1_count = object->getVariable("axis1.count");
+	int axis2_count = object->getVariable("axis2.count");
+	int axis3_count = object->getVariable("axis3.count");
+	QVector3D axis1 = QVector3D(
+		object->getVariable("axis1.x"),
+		object->getVariable("axis1.y"),
+		object->getVariable("axis1.z"));
+	QVector3D axis2 = QVector3D(
+		object->getVariable("axis2.x"),
+		object->getVariable("axis2.y"),
+		object->getVariable("axis2.z"));
+	QVector3D axis3 = QVector3D(
+		object->getVariable("axis3.x"),
+		object->getVariable("axis3.y"),
+		object->getVariable("axis3.z"));
+
+	//Make sure master copy remains
+	if (axis1_count < 1) axis1_count = 1;
+	if (axis2_count < 1) axis2_count = 1;
+	if (axis3_count < 1) axis3_count = 1;
+
+	//Add instances as moved by modifier
+	for (int i = 0; i < axis1_count; i++) {
+		for (int j = 0; j < axis2_count; j++) {
+			for (int k = 0; k < axis3_count; k++) {
+				if ((i != 0) || (j != 0) || (k != 0)) {
+					QVector3D offset = axis1*i + axis2*j + axis3*k;
+
+					//Create copy of the child itself
+					ObjectRendererModifierInstance modifier_inst;
+					modifier_inst.base_instance = child->getRenderer()->getInstance();
+					modifier_inst.representation = child->getRenderer()->getRepresentation();
+					modifier_inst.instance = new GLC_3DViewInstance(*modifier_inst.representation);
+
+					//Create transformation
+					modifier_inst.transformation.setMatTranslate(offset.x(),offset.y(),offset.z());
+
+					//Add instance to scene
+					GLScene* glview = object->getEVDSEditor()->getGLScene();
+					glview->getCollection()->add(*modifier_inst.instance);
+
+					//Remember instance
+					modifierInstances.append(modifier_inst);
+
+
+					//Copy modifiers instances to this modifier
+					if ((child->getType() == "modifier") && (child != object)) {
+						ObjectRenderer* childRenderer = child->getRenderer();
+						for (int j = 0; j < childRenderer->modifierInstances.count(); j++) {
+							ObjectRendererModifierInstance modifier_inst;
+							modifier_inst.base_instance = childRenderer->modifierInstances[j].base_instance;
+							modifier_inst.representation = childRenderer->modifierInstances[j].representation;
+							modifier_inst.instance = new GLC_3DViewInstance(*modifier_inst.representation);
+
+							//Create transformation
+							GLC_Matrix4x4 translation;
+							translation.setMatTranslate(offset.x(),offset.y(),offset.z());
+							modifier_inst.transformation = childRenderer->modifierInstances[j].transformation;
+							modifier_inst.transformation = modifier_inst.transformation * translation;
+
+							//Add instance to scene
+							GLScene* glview = object->getEVDSEditor()->getGLScene();
+							glview->getCollection()->add(*modifier_inst.instance);
+
+							//Remember instance
+							modifierInstances.append(modifier_inst);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//Add same for every child
+	for (int i = 0; i < child->getChildrenCount(); i++) {
+		if (child->getChild(i)->getType() == "modifier") { //Recursively update modifiers
+			child->getChild(i)->getRenderer()->meshChanged();
+		}
+		addModifierInstances(child->getChild(i));
+	}
 }
 
 
@@ -152,6 +290,7 @@ void ObjectRenderer::meshChanged() {
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectRenderer::lodMeshesGenerated() {
 	//qDebug("ObjectRenderer: LOD ready %p",this);
+	QTime time; time.start();
 	
 	lodMeshGenerator->readingLock.lock();
 		glcMesh->clear();
@@ -161,6 +300,15 @@ void ObjectRenderer::lodMeshesGenerated() {
 		glcInstance->setMatrix(glcInstance->matrix()); //This causes bounding box to be updated
 		object->getEVDSEditor()->updateObject(NULL); //Force into repaint
 	lodMeshGenerator->readingLock.unlock();
+
+	object->getEVDSEditor()->getWindow()->getMainWindow()->statusBar()->showMessage("Generating LODs...",1000);
+
+	int elapsed = time.elapsed();
+	if (elapsed > 50) {
+		qDebug("ObjectRenderer: setGLCMesh(%s): %d msec (%d verts)",
+			object->getName().toAscii().data(),
+			elapsed, glcMesh->VertexCount());
+	}
 }
 
 

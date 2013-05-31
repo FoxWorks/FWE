@@ -39,6 +39,9 @@
     <file>icon/evds_type/rocket_engine.png</file>
     <file>icon/evds_type/gimbal.png</file>
     <file>icon/evds_type/antenna.png</file>
+    <file>icon/evds_type/modifier_linear.png</file>
+    <file>icon/evds_type/modifier_circular.png</file>
+    <file>icon/evds_type/modifier_copy.png</file>
 
     <file>icon/glview/cm.png</file>
     <file>icon/glview/center.png</file>

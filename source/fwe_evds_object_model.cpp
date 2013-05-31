@@ -77,6 +77,14 @@ QVariant ObjectTreeModel::data(const QModelIndex &index, int role) const {
 			} else {
 				return QIcon(":/icon/evds_type/fuel_tank_fuel.png");
 			}
+		} else if (type == "modifier") {
+			if (object->getString("pattern") == "copy") {
+				return QIcon(":/icon/evds_type/modifier_copy.png");
+			} else if (object->getString("pattern") == "circular") {
+				return QIcon(":/icon/evds_type/modifier_circular.png");
+			} else {
+				return QIcon(":/icon/evds_type/modifier_linear.png");
+			}
 		} else {
 			if (QFile::exists(":/icon/evds_type/" + type + ".png")) {
 				return QIcon(":/icon/evds_type/" + type + ".png");

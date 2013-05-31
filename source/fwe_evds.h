@@ -78,6 +78,7 @@ namespace EVDS {
 		void updateInterface(bool isInFront);
 		void setModified();
 
+		ChildWindow* getWindow() { return window; }
 		GLScene* getGLScene() { return glscene; }
 		Object* getEditRoot() { return root_obj; }
 		Object* getSelected() { return selected; }

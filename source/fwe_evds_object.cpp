@@ -81,6 +81,12 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 	//Create editor-wide unique identifier
 	static int editor_uid_counter = 0;
 	editor_uid = editor_uid_counter++;
+
+	//Create initial renderer data
+	if (renderer) {
+		renderer->meshChanged();
+		renderer->positionChanged();
+	}
 }
 
 

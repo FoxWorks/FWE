@@ -442,6 +442,122 @@ QAM256
 			<description></description>
 		</var>
 	</object_vars>		
+	<object_vars name="modifier">
+		<var>
+			<type>enum</type>
+			<variable>pattern</variable>
+			<name>Pattern type</name>
+			<description></description>
+			<values>
+linear
+Linear
+circular
+Circular
+copy
+Point-defined
+			</values>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>circular.step</variable>
+			<name>Circular step</name>
+			<units>deg</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axis1.count</variable>
+			<name>Count 1 (total)</name>
+			<digits>0</digits>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axis2.count</variable>
+			<name>Count 2</name>
+			<digits>0</digits>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axis3.count</variable>
+			<name>Count 3</name>
+			<digits>0</digits>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axis1.x</variable>
+			<name>X</name>
+			<units>m</units>
+			<group>Vector 1 (centerpoint)</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axis1.y</variable>
+			<name>Y</name>
+			<units>m</units>
+			<group>Vector 1 (centerpoint)</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axis1.z</variable>
+			<name>Z</name>
+			<units>m</units>
+			<group>Vector 1 (centerpoint)</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axis2.x</variable>
+			<name>X</name>
+			<units>m</units>
+			<group>Vector 2 (start point)</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axis2.y</variable>
+			<name>Y</name>
+			<units>m</units>
+			<group>Vector 2 (start point)</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axis2.z</variable>
+			<name>Z</name>
+			<units>m</units>
+			<group>Vector 2 (start point)</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axis3.x</variable>
+			<name>X</name>
+			<units>m</units>
+			<group>Vector 3 (normal)</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axis3.y</variable>
+			<name>Y</name>
+			<units>m</units>
+			<group>Vector 3 (normal)</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axis3.z</variable>
+			<name>Z</name>
+			<units>m</units>
+			<group>Vector 3 (normal)</group>
+			<description></description>
+		</var>
+	</object_vars>		
 	<csection_vars name="">
 		<var>
 			<type>enum</type>
