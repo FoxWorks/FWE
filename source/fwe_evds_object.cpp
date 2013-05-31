@@ -546,6 +546,17 @@ QWidget* Object::getCrossSectionsEditor() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+void Object::deleteCrossSectionsEditor() {
+	if (csection_editor) {
+		csection_editor->deleteLater();
+		csection_editor = 0;
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 void Object::update(bool visually) {
 	if (renderer) {
 		if (visually) {
@@ -640,7 +651,8 @@ TemporaryObject ObjectInitializer::getObject(Object* object) {
 	EVDS_SYSTEM* system;
 	EVDS_Object_GetSystem(object_copy,&system);
 	if (EVDS_System_GetObjectByUID(system,object->getEditorUID(),object_copy,&found_object) != EVDS_OK) {
-		qFatal("ObjectInitializer::getObject: could not find object");
+		qWarning("ObjectInitializer::getObject: could not find object");
+		TemporaryObject(object_copy,0);
 	}
 	return TemporaryObject(found_object,&readingLock);
 }

@@ -213,7 +213,7 @@ void ObjectRenderer::meshChanged() {
 	result.setGLCMesh(glcMesh,object);
 
 	glcMesh->finish();
-	glcInstance->setMatrix(glcInstance->matrix()); //This causes bounding box to be updated
+	glcMesh->clearBoundingBox(); //Clear bounding box to update it
 	EVDS_Object_Destroy(temp_object);
 
 	//Add modifier instances
@@ -281,7 +281,6 @@ void ObjectRenderer::addModifierInstances(Object* child) {
 	for (int i = 0; i < vector1_count; i++) {
 		for (int j = 0; j < vector2_count; j++) {
 			for (int k = 0; k < vector3_count; k++) {
-			
 				//Create transformation
 				GLC_Matrix4x4 transformation;
 				if (object->getString("pattern") == "circular") {

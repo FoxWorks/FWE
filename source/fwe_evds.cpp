@@ -740,10 +740,12 @@ bool Editor::loadFile(const QString &fileName) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void FWE_SaveFile_RemoveRedundantVariables(EVDS_OBJECT* object) {
+void FWE_SaveFile_RemoveRedundantVariables(Object* object) {
+	EVDS_OBJECT* evds_object = object->getEVDSObject();
+
 	//Search for geometry
 	EVDS_VARIABLE* variable;
-	if (EVDS_Object_GetVariable(object,"geometry.cross_sections",&variable) == EVDS_OK) {
+	if (EVDS_Object_GetVariable(evds_object,"geometry.cross_sections",&variable) == EVDS_OK) {
 		SIMC_LIST* list;
 		SIMC_LIST_ENTRY* entry;
 		EVDS_Variable_GetList(variable,&list);
@@ -759,25 +761,19 @@ void FWE_SaveFile_RemoveRedundantVariables(EVDS_OBJECT* object) {
 		//Remove if only one cross-section present
 		if (count <= 1) {
 			EVDS_Variable_Destroy(variable);
+			object->deleteCrossSectionsEditor();
 		}
 	}
 
-	//Get list of children
-	SIMC_LIST* list;
-	SIMC_LIST_ENTRY* entry;
-	EVDS_Object_GetAllChildren(object,&list);
-
-	//Do same for every child
-	entry = SIMC_List_GetFirst(list);
-	while (entry) {
-		FWE_SaveFile_RemoveRedundantVariables((EVDS_OBJECT*)SIMC_List_GetData(list,entry));
-		entry = SIMC_List_GetNext(list,entry);
+	//Call for every child
+	for (int i = 0; i < object->getChildrenCount(); i++) {
+		FWE_SaveFile_RemoveRedundantVariables(object->getChild(i));
 	}
 }
 
 bool Editor::saveFile(const QString &fileName) {
 	//Filter out redundant variables
-	FWE_SaveFile_RemoveRedundantVariables(root);
+	FWE_SaveFile_RemoveRedundantVariables(root_obj);
 
 	//Save the file itself
 	EVDS_OBJECT_SAVEEX info = { 0 };

@@ -82,6 +82,7 @@ namespace EVDS {
 		EVDS::Editor* getEVDSEditor() { return editor; }
 		EVDS_OBJECT* getEVDSObject() { return object; }
 		int getSelectedCrossSection();
+		void deleteCrossSectionsEditor();
 
 		Object* getInitializedObject(); //Part of the entirely initialized copy of the vessel
 		ObjectRenderer* getRenderer() { return renderer; }
