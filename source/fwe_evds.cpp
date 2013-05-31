@@ -76,12 +76,12 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 	//Create EVDS system. Use flag that lists all children, even uninitialized ones to make sure
 	// tree controls list all objects while they are messed around with.
 	EVDS_System_Create(&system);
-	EVDS_System_Create(&initialized_system);
+	//EVDS_System_Create(&initialized_system);
 	EVDS_Common_Register(system);
-	EVDS_Common_Register(initialized_system);
+	//EVDS_Common_Register(initialized_system);
 	EVDS_Common_LoadDatabase(system);
-	EVDS_Common_LoadDatabase(initialized_system);
-	//EVDS_Antenna_Register(system);
+	//EVDS_Common_LoadDatabase(initialized_system);
+	EVDS_Antenna_Register(system);
 	//EVDS_Antenna_Register(initialized_system);
 
 	//Load object types
@@ -140,7 +140,7 @@ Editor::~Editor() {
 	qDebug("Editor::~Editor: cleaning up EVDS objects");
 	delete root_obj;
 	EVDS_System_Destroy(system);
-	EVDS_System_Destroy(initialized_system);
+	//EVDS_System_Destroy(initialized_system);
 	QApplication::restoreOverrideCursor();
 }
 
@@ -684,9 +684,9 @@ void Editor::cleanupTimer() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::newFile() {
-	EVDS_OBJECT_LOADEX info = { 0 };
+	//EVDS_OBJECT_LOADEX info = { 0 };
 	//EVDS_Object_LoadEx(root,"RV-505.evds",&info);
-	EVDS_Object_LoadEx(root,"RV-505_proper.evds",&info);
+	//EVDS_Object_LoadEx(root,"RV-505_proper.evds",&info);
 	root_obj->invalidateChildren();
 	initializer->updateObject();
 	updateInformation(false);

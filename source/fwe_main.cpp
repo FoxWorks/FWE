@@ -141,11 +141,10 @@ void MainWindow::open() {
 void MainWindow::openRecent() {
 	QAction *action = qobject_cast<QAction *>(sender());
 	if (action) {
-		addRecentFile(action->data().toString());
-
 		QMdiSubWindow *existing = findMdiChild(action->data().toString());
 		if (existing) {
 			mdiArea->setActiveSubWindow(existing);
+			addRecentFile(action->data().toString());
 			return;
 		}
 
@@ -156,6 +155,7 @@ void MainWindow::openRecent() {
 		} else {
 			child->close();
 		}
+		addRecentFile(action->data().toString());
 	}
 }
 

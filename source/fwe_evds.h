@@ -34,7 +34,7 @@
 #include <QMap>
 #include <QList>
 #include "evds.h"
-//#include "evds_antenna.h"
+#include "evds_antenna.h"
 
 #include "fwe_main.h"
 

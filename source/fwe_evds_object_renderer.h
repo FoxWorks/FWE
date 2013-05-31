@@ -71,6 +71,8 @@ namespace EVDS {
 	private:
 		//Recursively add modifier instances
 		void addModifierInstances(Object* child);
+		//Upwards recursion through objects tree that removes instances of this object from modifiers
+		void removeFromModifiers(Object* parent);
 
 		//GLC mesh for this object
 		GLC_Mesh* glcMesh;

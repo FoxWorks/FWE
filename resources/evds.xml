@@ -499,6 +499,7 @@ Point-defined
 			<variable>circular.radius</variable>
 			<name>Radius</name>
 			<units>m</units>
+			<step>0.1</step>
 			<group>Circular pattern parameters</group>
 			<description></description>
 		</var>
@@ -507,6 +508,7 @@ Point-defined
 			<variable>circular.radial_step</variable>
 			<name>Concentric (radial) step</name>
 			<units>m</units>
+			<step>0.1</step>
 			<group>Circular pattern parameters</group>
 			<description></description>
 		</var>
@@ -515,6 +517,7 @@ Point-defined
 			<variable>circular.normal_step</variable>
 			<name>Normal step</name>
 			<units>m</units>
+			<step>0.1</step>
 			<group>Circular pattern parameters</group>
 			<description></description>
 		</var>
@@ -530,6 +533,7 @@ Point-defined
 			<variable>vector1.x</variable>
 			<name>X</name>
 			<units>m</units>
+			<step>0.1</step>
 			<group>Vector 1 (normal)</group>
 			<description></description>
 		</var>
@@ -538,6 +542,7 @@ Point-defined
 			<variable>vector1.y</variable>
 			<name>Y</name>
 			<units>m</units>
+			<step>0.1</step>
 			<group>Vector 1 (normal)</group>
 			<description></description>
 		</var>
@@ -546,6 +551,7 @@ Point-defined
 			<variable>vector1.z</variable>
 			<name>Z</name>
 			<units>m</units>
+			<step>0.1</step>
 			<group>Vector 1 (normal)</group>
 			<description></description>
 		</var>
@@ -554,6 +560,7 @@ Point-defined
 			<variable>vector2.x</variable>
 			<name>X</name>
 			<units>m</units>
+			<step>0.1</step>
 			<group>Vector 2 (direction)</group>
 			<description></description>
 		</var>
@@ -562,6 +569,7 @@ Point-defined
 			<variable>vector2.y</variable>
 			<name>Y</name>
 			<units>m</units>
+			<step>0.1</step>
 			<group>Vector 2 (direction)</group>
 			<description></description>
 		</var>
@@ -570,6 +578,7 @@ Point-defined
 			<variable>vector2.z</variable>
 			<name>Z</name>
 			<units>m</units>
+			<step>0.1</step>
 			<group>Vector 2 (direction)</group>
 			<description></description>
 		</var>
@@ -578,6 +587,7 @@ Point-defined
 			<variable>vector3.x</variable>
 			<name>X</name>
 			<units>m</units>
+			<step>0.1</step>
 			<group>Vector 3</group>
 			<description></description>
 		</var>
@@ -586,6 +596,7 @@ Point-defined
 			<variable>vector3.y</variable>
 			<name>Y</name>
 			<units>m</units>
+			<step>0.1</step>
 			<group>Vector 3</group>
 			<description></description>
 		</var>
@@ -594,6 +605,7 @@ Point-defined
 			<variable>vector3.z</variable>
 			<name>Z</name>
 			<units>m</units>
+			<step>0.1</step>
 			<group>Vector 3</group>
 			<description></description>
 		</var>

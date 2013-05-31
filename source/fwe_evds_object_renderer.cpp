@@ -64,13 +64,50 @@ ObjectRenderer::ObjectRenderer(Object* in_object) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 ObjectRenderer::~ObjectRenderer() {
+	//Remove instances from modifiers
+	removeFromModifiers(object);
+
+	//Remove instances from glview
 	GLScene* glview = object->getEVDSEditor()->getGLScene();
 	if (glview->getCollection()->contains(glcInstance->id())) {
 		glview->getCollection()->remove(glcInstance->id());
 	}
+	for (int i = 0; i < modifierInstances.count(); i++) {
+		if (glview->getCollection()->contains(modifierInstances[i].instance->id())) {
+			glview->getCollection()->remove(modifierInstances[i].instance->id());
+		}
+		delete modifierInstances[i].instance;
+	}
 
 	delete glcInstance;
 	lodMeshGenerator->stopWork();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ObjectRenderer::removeFromModifiers(Object* parent) {
+	GLScene* glview = object->getEVDSEditor()->getGLScene();
+
+	//Remove all mentions of the current objects instance
+	ObjectRenderer* parent_renderer = parent->getRenderer();
+	if (parent_renderer) {
+		for (int i = 0; i < parent_renderer->modifierInstances.count(); i++) {
+			if (parent_renderer->modifierInstances[i].base_instance == glcInstance) {
+				if (glview->getCollection()->contains(parent_renderer->modifierInstances[i].instance->id())) {
+					glview->getCollection()->remove(parent_renderer->modifierInstances[i].instance->id());
+				}
+				delete parent_renderer->modifierInstances[i].instance;
+
+				//Remove this from the list. I presume index i the must be checked again, so decrement it
+				parent_renderer->modifierInstances.removeAt(i); i--;
+			}		
+		}
+	}
+
+	//Travel upwards
+	if (parent->getParent()) removeFromModifiers(parent->getParent());
 }
 
 
