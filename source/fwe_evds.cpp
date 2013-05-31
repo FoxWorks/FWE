@@ -142,6 +142,11 @@ Editor::~Editor() {
 	EVDS_System_Destroy(system);
 	//EVDS_System_Destroy(initialized_system);
 	QApplication::restoreOverrideCursor();
+
+	for (int i = 0; i < actions.count(); i++) {
+		actions[i]->deleteLater();
+	}
+	cutsection_menu->deleteLater();//menuAction()->setVisible(isInFront);
 }
 
 
@@ -807,7 +812,7 @@ void Editor::updateInterface(bool isInFront) {
 	for (int i = 0; i < actions.count(); i++) {
 		actions[i]->setVisible(isInFront);
 	}
-	cutsection_menu->setVisible(isInFront);
+	cutsection_menu->menuAction()->setVisible(isInFront);
 }
 
 

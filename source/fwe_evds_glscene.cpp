@@ -383,18 +383,18 @@ QGLShaderProgram* GLScene::compileShader(const QString& name) {
 	QGLShader fragment(QGLShader::Fragment);
 	QGLShader vertex(QGLShader::Vertex);
 
-	if (!fragment.compileSourceFile("../resources/shader/" + name + ".frag")) {
-		return 0;
-	}
-	if (!vertex.compileSourceFile("../resources/shader/" + name + ".vert")) {
-		return 0;
-	}
-	//if (!fragment.compileSourceFile(":/shader/" + name + ".frag")) {
+	//if (!fragment.compileSourceFile("../resources/shader/" + name + ".frag")) {
 		//return 0;
 	//}
-	//if (!vertex.compileSourceFile(":/shader/" + name + ".vert")) {
+	//if (!vertex.compileSourceFile("../resources/shader/" + name + ".vert")) {
 		//return 0;
 	//}
+	if (!fragment.compileSourceFile(":/shader/" + name + ".frag")) {
+		return 0;
+	}
+	if (!vertex.compileSourceFile(":/shader/" + name + ".vert")) {
+		return 0;
+	}
 
 	QGLShaderProgram* shader = new QGLShaderProgram();
 	shader->addShader(&fragment);

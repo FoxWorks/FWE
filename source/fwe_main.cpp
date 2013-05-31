@@ -64,7 +64,7 @@ MainWindow::MainWindow() {
 	foxworks_icon.addFile(":/icon/foxworks1024.png");
 
 	setWindowIcon(foxworks_icon);
-	setWindowTitle(tr("FoxWorks Editor"));
+	setWindowTitle(tr("FoxWorks Editor (Alpha 2)"));
 	setUnifiedTitleAndToolBarOnMac(true);
 	resize(1024,640);
 
@@ -264,6 +264,13 @@ void MainWindow::updateInterface() {
 
 		child->updateInterface(child == activeMdiChild());
 	}
+
+	//Check if view menu has items
+	//bool has_items = false;
+	//for (int i = 0; i < viewMenu->actions().count(); i++) {
+		//if (viewMenu->actions()[i]->isVisible()) has_items = true;
+	//}
+	//viewMenu->menuAction()->setVisible(has_items);
 }
 
 
@@ -472,10 +479,10 @@ void MainWindow::createMenus() {
 	fileMenu->addSeparator();
 	fileMenu->addAction(exitAct);
 
-	editMenu = menuBar()->addMenu(tr("&Edit"));
-	editMenu->addAction(cutAct);
-	editMenu->addAction(copyAct);
-	editMenu->addAction(pasteAct);
+	//editMenu = menuBar()->addMenu(tr("&Edit"));
+	//editMenu->addAction(cutAct);
+	//editMenu->addAction(copyAct);
+	//editMenu->addAction(pasteAct);
 
 	viewMenu = menuBar()->addMenu(tr("&View"));
 
@@ -570,6 +577,11 @@ ChildWindow::ChildWindow(MainWindow* window) {
 
 	//Delete child on close
 	setAttribute(Qt::WA_DeleteOnClose);
+
+	//Enable autosave for this window
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(autoSave()));
+	timer->start(fw_editor_settings->value("ui.autosave",30000).toInt());
 }
 
 
@@ -603,12 +615,14 @@ bool ChildWindow::loadFile(const QString &fileName) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-bool ChildWindow::saveFile(const QString &fileName) {
+bool ChildWindow::saveFile(const QString &fileName, bool autoSave) {
 	if (!EVDSEditor->saveFile(fileName)) return false;
 
-	isModified = false;
-	currentFile = fileName;
-	updateTitle();
+	if (!autoSave) {
+		isModified = false;
+		currentFile = fileName;
+		updateTitle();
+	}
 	return true;
 }
 
@@ -621,6 +635,17 @@ bool ChildWindow::save() {
 		return saveAs();
 	} else {
 		return saveFile(currentFile);
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ChildWindow::autoSave() {
+	if (currentFile != "") {
+		saveFile("_auto_" + QFileInfo(currentFile).fileName(),true);
+		mainWindow->statusBar()->showMessage(tr("Autosaved..."), 2000);
 	}
 }
 
@@ -701,6 +726,7 @@ void ChildWindow::updateTitle() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ChildWindow::updateInterface(bool isInFront) {
+	EVDSEditor->updateInterface(isInFront);
 }
 
 

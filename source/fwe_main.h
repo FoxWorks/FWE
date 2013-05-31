@@ -46,7 +46,7 @@ extern QSettings* fw_editor_settings; //See fwe.cpp
 
 
 ////////////////////////////////////////////////////////////////////////////////
-#define FWE_EDITOR_MAX_RECENT_FILES	5
+#define FWE_EDITOR_MAX_RECENT_FILES	10
 class ChildWindow;
 class MainWindow : public QMainWindow
 {
@@ -139,7 +139,7 @@ public:
 	bool loadFile(const QString &fileName);
 	bool save();
 	bool saveAs();
-	bool saveFile(const QString &fileName);
+	bool saveFile(const QString &fileName, bool autoSave = false);
 
 	void updateInterface(bool isInFront);
 
@@ -157,6 +157,9 @@ private:
 	void updateTitle();
 	QString currentFile;
 	bool isModified;
+
+public slots:
+	void autoSave();
 
 public:
 	QString getCurrentFile() { return currentFile; }

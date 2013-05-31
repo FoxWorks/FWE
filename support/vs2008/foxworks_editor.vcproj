@@ -233,7 +233,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol="mainCRTStartup"
