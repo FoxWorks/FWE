@@ -202,73 +202,123 @@ void ObjectRenderer::addModifierInstances(Object* child) {
 	if (!child->getRenderer()) return; //Can happen when modifier is just being created
 
 	//Get modifier information
-	int axis1_count = object->getVariable("axis1.count");
-	int axis2_count = object->getVariable("axis2.count");
-	int axis3_count = object->getVariable("axis3.count");
-	QVector3D axis1 = QVector3D(
-		object->getVariable("axis1.x"),
-		object->getVariable("axis1.y"),
-		object->getVariable("axis1.z"));
-	QVector3D axis2 = QVector3D(
-		object->getVariable("axis2.x"),
-		object->getVariable("axis2.y"),
-		object->getVariable("axis2.z"));
-	QVector3D axis3 = QVector3D(
-		object->getVariable("axis3.x"),
-		object->getVariable("axis3.y"),
-		object->getVariable("axis3.z"));
+	int vector1_count = object->getVariable("vector1.count");
+	int vector2_count = object->getVariable("vector2.count");
+	int vector3_count = object->getVariable("vector3.count");
+	float circular_step = object->getVariable("circular.step");
+	float circular_radial_step = object->getVariable("circular.radial_step");
+	float circular_normal_step = object->getVariable("circular.normal_step");
+	float circular_arc_length = object->getVariable("circular.arc_length");
+	float circular_radius = object->getVariable("circular.radius");
+	float circular_rotate = object->getVariable("circular.rotate");
+	QVector3D vector1 = QVector3D(
+		object->getVariable("vector1.x"),
+		object->getVariable("vector1.y"),
+		object->getVariable("vector1.z"));
+	QVector3D vector2 = QVector3D(
+		object->getVariable("vector2.x"),
+		object->getVariable("vector2.y"),
+		object->getVariable("vector2.z"));
+	QVector3D vector3 = QVector3D(
+		object->getVariable("vector3.x"),
+		object->getVariable("vector3.y"),
+		object->getVariable("vector3.z"));
 
 	//Make sure master copy remains
-	if (axis1_count < 1) axis1_count = 1;
-	if (axis2_count < 1) axis2_count = 1;
-	if (axis3_count < 1) axis3_count = 1;
+	if (vector1_count < 1) vector1_count = 1;
+	if (vector2_count < 1) vector2_count = 1;
+	if (vector3_count < 1) vector3_count = 1;
+
+	//Fix parameters just like the EVDS does
+	if (circular_step == 0.0) {
+		if (circular_arc_length == 0.0) circular_arc_length = 360.0;
+		circular_step = circular_arc_length / ((double)vector1_count);
+	}
 
 	//Add instances as moved by modifier
-	for (int i = 0; i < axis1_count; i++) {
-		for (int j = 0; j < axis2_count; j++) {
-			for (int k = 0; k < axis3_count; k++) {
-				if ((i != 0) || (j != 0) || (k != 0)) {
-					QVector3D offset = axis1*i + axis2*j + axis3*k;
+	for (int i = 0; i < vector1_count; i++) {
+		for (int j = 0; j < vector2_count; j++) {
+			for (int k = 0; k < vector3_count; k++) {
+			
+				//Create transformation
+				GLC_Matrix4x4 transformation;
+				if (object->getString("pattern") == "circular") {
+					//Get circle parameters
+					QVector3D normal = vector1;
+					QVector3D direction = vector2;
+					if (normal.length() == 0.0) normal.setX(1.0);
+					if (direction.length() == 0.0) direction.setZ(1.0);
+					normal.normalize();
+					direction.normalize();
 
-					//Create copy of the child itself
-					ObjectRendererModifierInstance modifier_inst;
-					modifier_inst.base_instance = child->getRenderer()->getInstance();
-					modifier_inst.representation = child->getRenderer()->getRepresentation();
-					modifier_inst.instance = new GLC_3DViewInstance(*modifier_inst.representation);
+					//Do not generate first ring if radius is zero (only concentric objects)
+					if ((circular_radius == 0.0) && (j == 0)) continue;
+					//Do not generate first object is radius is non-zero
+					if ((circular_radius != 0.0) && (i == 0)) continue;
 
-					//Create transformation
-					modifier_inst.transformation.setMatTranslate(offset.x(),offset.y(),offset.z());
+					//Local coordinate system
+					QVector3D u = -direction;
+					QVector3D v = normal.crossProduct(direction,normal);
 
-					//Add instance to scene
-					GLScene* glview = object->getEVDSEditor()->getGLScene();
-					glview->getCollection()->add(*modifier_inst.instance);
+					//Get point on circle
+					double x = (circular_radius + j*circular_radial_step)*cos(EVDS_RAD(i * circular_step));
+					double y = (circular_radius + j*circular_radial_step)*sin(EVDS_RAD(i * circular_step));
+					QVector3D offset = direction*circular_radius + u*x + v*y + normal*circular_normal_step*k;
 
-					//Remember instance
-					modifierInstances.append(modifier_inst);
+					//Generate transformation
+					if (circular_rotate > 0.5) {
+						transformation = 
+							GLC_Matrix4x4(offset.x(),offset.y(),offset.z()) *
+							GLC_Matrix4x4(GLC_Vector3d(normal.x(),normal.y(),normal.z()), EVDS_RAD(i * circular_step));
+					} else {
+						transformation = 
+							//GLC_Matrix4x4(GLC_Vector3d(normal.x(),normal.y(),normal.z()), EVDS_RAD(i * circular_step)) * 
+							GLC_Matrix4x4(offset.x(),offset.y(),offset.z());
+					}						
+				} else {
+					QVector3D offset = vector1*i + vector2*j + vector3*k;
+					transformation.setMatTranslate(offset.x(),offset.y(),offset.z());
+
+					//Skip the first part of the matrix
+					if ((i == 0) && (j == 0) && (k == 0)) continue;
+				}
+
+				//Create copy of the child itself
+				ObjectRendererModifierInstance modifier_inst;
+				modifier_inst.base_instance = child->getRenderer()->getInstance();
+				modifier_inst.representation = child->getRenderer()->getRepresentation();
+				modifier_inst.instance = new GLC_3DViewInstance(*modifier_inst.representation);
+				modifier_inst.transformation = transformation;					
+
+				//Add instance to scene
+				GLScene* glview = object->getEVDSEditor()->getGLScene();
+				glview->getCollection()->add(*modifier_inst.instance);
+
+				//Remember instance
+				modifierInstances.append(modifier_inst);
 
 
-					//Copy modifiers instances to this modifier
-					if ((child->getType() == "modifier") && (child != object)) {
-						ObjectRenderer* childRenderer = child->getRenderer();
-						for (int j = 0; j < childRenderer->modifierInstances.count(); j++) {
-							ObjectRendererModifierInstance modifier_inst;
-							modifier_inst.base_instance = childRenderer->modifierInstances[j].base_instance;
-							modifier_inst.representation = childRenderer->modifierInstances[j].representation;
-							modifier_inst.instance = new GLC_3DViewInstance(*modifier_inst.representation);
+				//Copy modifiers instances to this modifier
+				if ((child->getType() == "modifier") && (child != object)) {
+					ObjectRenderer* childRenderer = child->getRenderer();
+					for (int j = 0; j < childRenderer->modifierInstances.count(); j++) {
+						ObjectRendererModifierInstance modifier_inst;
+						modifier_inst.base_instance = childRenderer->modifierInstances[j].base_instance;
+						modifier_inst.representation = childRenderer->modifierInstances[j].representation;
+						modifier_inst.instance = new GLC_3DViewInstance(*modifier_inst.representation);
 
-							//Create transformation
-							GLC_Matrix4x4 translation;
-							translation.setMatTranslate(offset.x(),offset.y(),offset.z());
-							modifier_inst.transformation = childRenderer->modifierInstances[j].transformation;
-							modifier_inst.transformation = modifier_inst.transformation * translation;
+						//modifier_inst.transformation = childRenderer->modifierInstances[j].base_instance->matrix().inverted();
+						//modifier_inst.transformation = modifier_inst.transformation * childRenderer->modifierInstances[j].transformation;
+						//modifier_inst.transformation = modifier_inst.transformation * transformation;
+						//modifier_inst.transformation = childRenderer->modifierInstances[j].base_instance->matrix();
+						modifier_inst.transformation = transformation * childRenderer->modifierInstances[j].transformation;
 
-							//Add instance to scene
-							GLScene* glview = object->getEVDSEditor()->getGLScene();
-							glview->getCollection()->add(*modifier_inst.instance);
+						//Add instance to scene
+						GLScene* glview = object->getEVDSEditor()->getGLScene();
+						glview->getCollection()->add(*modifier_inst.instance);
 
-							//Remember instance
-							modifierInstances.append(modifier_inst);
-						}
+						//Remember instance
+						modifierInstances.append(modifier_inst);
 					}
 				}
 			}

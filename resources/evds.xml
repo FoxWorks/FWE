@@ -460,101 +460,140 @@ Point-defined
 		<var>
 			<type>double</type>
 			<variable>circular.step</variable>
-			<name>Circular step</name>
+			<name>Step</name>
 			<units>deg</units>
+			<group>Circular pattern parameters</group>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>axis1.count</variable>
-			<name>Count 1 (total)</name>
+			<variable>circular.arc_length</variable>
+			<name>Total arc length</name>
+			<units>deg</units>
+			<group>Circular pattern parameters</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>circular.radius</variable>
+			<name>Radius</name>
+			<units>m</units>
+			<group>Circular pattern parameters</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>circular.radial_step</variable>
+			<name>Concentric (radial) step</name>
+			<units>m</units>
+			<group>Circular pattern parameters</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>circular.normal_step</variable>
+			<name>Normal step</name>
+			<units>m</units>
+			<group>Circular pattern parameters</group>
+			<description></description>
+		</var>
+		<var>
+			<type>bool</type>
+			<variable>circular.rotate</variable>
+			<name>Rotation</name>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>vector1.count</variable>
+			<name>Count 1 (radial)</name>
 			<digits>0</digits>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>axis2.count</variable>
-			<name>Count 2</name>
+			<variable>vector2.count</variable>
+			<name>Count 2 (concentric)</name>
 			<digits>0</digits>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>axis3.count</variable>
-			<name>Count 3</name>
+			<variable>vector3.count</variable>
+			<name>Count 3 (normal)</name>
 			<digits>0</digits>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>axis1.x</variable>
+			<variable>vector1.x</variable>
 			<name>X</name>
 			<units>m</units>
-			<group>Vector 1 (centerpoint)</group>
+			<group>Vector 1 (normal)</group>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>axis1.y</variable>
+			<variable>vector1.y</variable>
 			<name>Y</name>
 			<units>m</units>
-			<group>Vector 1 (centerpoint)</group>
+			<group>Vector 1 (normal)</group>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>axis1.z</variable>
+			<variable>vector1.z</variable>
 			<name>Z</name>
 			<units>m</units>
-			<group>Vector 1 (centerpoint)</group>
+			<group>Vector 1 (normal)</group>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>axis2.x</variable>
+			<variable>vector2.x</variable>
 			<name>X</name>
 			<units>m</units>
-			<group>Vector 2 (start point)</group>
+			<group>Vector 2 (direction)</group>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>axis2.y</variable>
+			<variable>vector2.y</variable>
 			<name>Y</name>
 			<units>m</units>
-			<group>Vector 2 (start point)</group>
+			<group>Vector 2 (direction)</group>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>axis2.z</variable>
+			<variable>vector2.z</variable>
 			<name>Z</name>
 			<units>m</units>
-			<group>Vector 2 (start point)</group>
+			<group>Vector 2 (direction)</group>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>axis3.x</variable>
+			<variable>vector3.x</variable>
 			<name>X</name>
 			<units>m</units>
-			<group>Vector 3 (normal)</group>
+			<group>Vector 3</group>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>axis3.y</variable>
+			<variable>vector3.y</variable>
 			<name>Y</name>
 			<units>m</units>
-			<group>Vector 3 (normal)</group>
+			<group>Vector 3</group>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>axis3.z</variable>
+			<variable>vector3.z</variable>
 			<name>Z</name>
 			<units>m</units>
-			<group>Vector 3 (normal)</group>
+			<group>Vector 3</group>
 			<description></description>
 		</var>
 	</object_vars>		
