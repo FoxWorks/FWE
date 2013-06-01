@@ -74,7 +74,7 @@ FWEPropertySheet::~FWEPropertySheet() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void FWEPropertySheet::setProperties(const QList<QMap<QString,QString>>& list) {
+void FWEPropertySheet::setProperties(const QList<QMap<QString,QString> >& list) {
 	for (int i = 0; i < list.count(); i++) {
 		setProperty(list[i]);
 	}

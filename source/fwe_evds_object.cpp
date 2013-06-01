@@ -574,26 +574,27 @@ void Object::update(bool visually) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Object::recursiveUpdateInformation(ObjectInitializer* initializer) {
-	{ //Update information about the current object
-		TemporaryObject temporary_object = initializer->getObject(this);
+	//Update information about the current object
+	TemporaryObject* temporary_object = initializer->getObject(this);
 
-		info_vectors["cm"] = temporary_object.getVector("cm");
-		info_vectors["total_cm"] = temporary_object.getVector("total_cm");
-		info_vectors["jx"] = temporary_object.getVector("jx");
-		info_vectors["jy"] = temporary_object.getVector("jy");
-		info_vectors["jz"] = temporary_object.getVector("jz");
-		info_vectors["total_ix"] = temporary_object.getVector("total_ix");
-		info_vectors["total_iy"] = temporary_object.getVector("total_iy");
-		info_vectors["total_iz"] = temporary_object.getVector("total_iz");
-		info_variables["mass"] = temporary_object.getVariable("mass");
-		info_variables["total_mass"] = temporary_object.getVariable("total_mass");
-		info_variables["fuel_mass"] = temporary_object.getVariable("fuel_mass");
-		info_variables["fuel_volume"] = temporary_object.getVariable("fuel_volume");
+	info_vectors["cm"] = temporary_object->getVector("cm");
+	info_vectors["total_cm"] = temporary_object->getVector("total_cm");
+	info_vectors["jx"] = temporary_object->getVector("jx");
+	info_vectors["jy"] = temporary_object->getVector("jy");
+	info_vectors["jz"] = temporary_object->getVector("jz");
+	info_vectors["total_ix"] = temporary_object->getVector("total_ix");
+	info_vectors["total_iy"] = temporary_object->getVector("total_iy");
+	info_vectors["total_iz"] = temporary_object->getVector("total_iz");
+	info_variables["mass"] = temporary_object->getVariable("mass");
+	info_variables["total_mass"] = temporary_object->getVariable("total_mass");
+	info_variables["fuel_mass"] = temporary_object->getVariable("fuel_mass");
+	info_variables["fuel_volume"] = temporary_object->getVariable("fuel_volume");
 
-		//FIXME: loop this from info_vectors, info_variables:
-		info_defined["cm"] = temporary_object.isVariableDefined("cm");
-		info_defined["total_cm"] = temporary_object.isVariableDefined("total_cm");
-	}
+	//FIXME: loop this from info_vectors, info_variables:
+	info_defined["cm"] = temporary_object->isVariableDefined("cm");
+	info_defined["total_cm"] = temporary_object->isVariableDefined("total_cm");
+
+	delete temporary_object;
 
 	//Update information for all children
 	for (int i = 0; i < getChildrenCount(); i++) {
@@ -643,7 +644,7 @@ ObjectInitializer::ObjectInitializer(Object* in_object) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-TemporaryObject ObjectInitializer::getObject(Object* object) {
+TemporaryObject* ObjectInitializer::getObject(Object* object) {
 	while (!objectCompleted) msleep(1); //Wait until object initialization is completed
 
 	readingLock.lock();
@@ -652,9 +653,9 @@ TemporaryObject ObjectInitializer::getObject(Object* object) {
 	EVDS_Object_GetSystem(object_copy,&system);
 	if (EVDS_System_GetObjectByUID(system,object->getEditorUID(),object_copy,&found_object) != EVDS_OK) {
 		qWarning("ObjectInitializer::getObject: could not find object");
-		TemporaryObject(object_copy,0);
+		return new TemporaryObject(object_copy,0);
 	}
-	return TemporaryObject(found_object,&readingLock);
+	return new TemporaryObject(found_object,&readingLock);
 }
 
 

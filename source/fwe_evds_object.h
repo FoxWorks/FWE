@@ -151,7 +151,7 @@ namespace EVDS {
 		QMutex readingLock;
 
 		//Get temporary object for a real object (by unique identifier)
-		TemporaryObject getObject(Object* object);
+		TemporaryObject* getObject(Object* object);
 
 	public slots:
 		void doUpdateObject();

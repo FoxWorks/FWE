@@ -90,8 +90,8 @@ namespace EVDS {
 		void loadError(const QString& error);
 
 	public:
-		QMap<QString,QList<QMap<QString,QString>>> objectVariables;
-		QMap<QString,QList<QMap<QString,QString>>> csectionVariables;
+		QMap<QString,QList<QMap<QString,QString> > > objectVariables;
+		QMap<QString,QList<QMap<QString,QString> > > csectionVariables;
 
 	protected:
 		void dropEvent(QDropEvent *event);

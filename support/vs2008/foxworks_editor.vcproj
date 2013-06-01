@@ -6,7 +6,6 @@
 	ProjectGUID="{C84AD4D2-2D63-1842-871E-30B7C71BEA58}"
 	RootNamespace="foxworks_editor"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -51,8 +50,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -73,6 +72,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
@@ -94,6 +94,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -132,8 +135,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -154,6 +157,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="17"
@@ -175,6 +179,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -211,8 +218,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -233,7 +240,8 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol="mainCRTStartup"
@@ -256,6 +264,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -293,8 +304,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -315,6 +326,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -338,6 +350,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -375,8 +390,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -397,6 +412,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
@@ -418,6 +434,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -456,8 +475,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -478,6 +497,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="17"
@@ -499,6 +519,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -535,8 +558,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -557,6 +580,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -580,6 +604,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -617,8 +644,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -639,6 +666,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -662,6 +690,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -699,8 +730,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -721,6 +752,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
@@ -742,6 +774,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -780,8 +815,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -802,6 +837,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="17"
@@ -823,6 +859,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -859,8 +898,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -881,6 +920,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -904,6 +944,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -941,8 +984,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -963,6 +1006,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -986,6 +1030,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1023,8 +1070,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -1045,6 +1092,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
@@ -1066,6 +1114,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1104,8 +1155,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -1126,6 +1177,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="17"
@@ -1147,6 +1199,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1183,8 +1238,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -1205,6 +1260,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -1228,6 +1284,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1265,8 +1324,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -1287,6 +1346,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.4\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -1312,6 +1372,9 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -1321,6 +1384,7 @@
 	<Files>
 		<Filter
 			Name="addons"
+			Filter=""
 			>
 			<File
 				RelativePath="..\..\external\evds\addons\evds_antenna.c"
@@ -1459,430 +1523,6 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="qt-solutions"
-			>
-			<Filter
-				Name="qtpropertybrowser"
-				>
-				<Filter
-					Name="src"
-					>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtAbstractEditorFactoryBase"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtAbstractPropertyBrowser"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtAbstractPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtBoolPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtBrowserItem"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtButtonPropertyBrowser"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtbuttonpropertybrowser.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtbuttonpropertybrowser.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtCharEditorFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtCharPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtCheckBoxFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtColorEditorFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtColorPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtCursorEditorFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtCursorPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtDateEditFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtDatePropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtDateTimeEditFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtDateTimePropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtDoublePropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtDoubleSpinBoxFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qteditorfactory.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qteditorfactory.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtEnumEditorFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtEnumPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtFlagPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtFontEditorFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtFontPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtGroupBoxPropertyBrowser"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtgroupboxpropertybrowser.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtgroupboxpropertybrowser.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtGroupPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtIntPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtKeySequenceEditorFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtKeySequencePropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtLineEditFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtLocalePropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtPointFPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtPointPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtProperty"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.pri"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.qrc"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowserutils.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowserutils_p.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertymanager.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertymanager.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtRectFPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtRectPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtScrollBarFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtSizeFPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtSizePolicyPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtSizePropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtSliderFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtSpinBoxFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtStringPropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtTimeEditFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtTimePropertyManager"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtTreePropertyBrowser"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qttreepropertybrowser.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qttreepropertybrowser.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtVariantEditorFactory"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtVariantProperty"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtvariantproperty.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtvariantproperty.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtVariantPropertyManager"
-						>
-					</File>
-					<Filter
-						Name="images"
-						>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-arrow.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-busy.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-closedhand.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-cross.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-forbidden.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-hand.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-hsplit.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-ibeam.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-openhand.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-sizeall.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-sizeb.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-sizef.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-sizeh.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-sizev.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-uparrow.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-vsplit.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-wait.png"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-whatsthis.png"
-							>
-						</File>
-					</Filter>
-				</Filter>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="qt-thumbwheel"
-			>
-			<File
-				RelativePath="..\..\external\qt-thumbwheel\qtthumbwheel.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\external\qt-thumbwheel\qtthumbwheel.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="qtmoc"
-			>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds_glscene.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds_object.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds_object_csection.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds_object_model.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_evds_object_renderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_main.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_prop_sheet.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_prop_stringenum.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_fwe_prop_thumbwheel.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_qtpropertybrowserutils_p.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\moc_qtthumbwheel.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\qtmoc\rcc_resources.cpp"
-				>
-			</File>
-		</Filter>
 		<File
 			RelativePath="..\..\source\fwe.cpp"
 			>
@@ -1971,6 +1611,436 @@
 			RelativePath="..\..\source\fwe_prop_thumbwheel.h"
 			>
 		</File>
+		<Filter
+			Name="qt-solutions"
+			Filter=""
+			>
+			<Filter
+				Name="qtpropertybrowser"
+				Filter=""
+				>
+				<Filter
+					Name="src"
+					Filter=""
+					>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtAbstractEditorFactoryBase"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtAbstractPropertyBrowser"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtAbstractPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtBoolPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtBrowserItem"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtButtonPropertyBrowser"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtCharEditorFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtCharPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtCheckBoxFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtColorEditorFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtColorPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtCursorEditorFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtCursorPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtDateEditFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtDatePropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtDateTimeEditFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtDateTimePropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtDoublePropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtDoubleSpinBoxFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtEnumEditorFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtEnumPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtFlagPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtFontEditorFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtFontPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtGroupBoxPropertyBrowser"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtGroupPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtIntPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtKeySequenceEditorFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtKeySequencePropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtLineEditFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtLocalePropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtPointFPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtPointPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtProperty"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtRectFPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtRectPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtScrollBarFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtSizeFPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtSizePolicyPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtSizePropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtSliderFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtSpinBoxFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtStringPropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtTimeEditFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtTimePropertyManager"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtTreePropertyBrowser"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtVariantEditorFactory"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtVariantProperty"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtVariantPropertyManager"
+						>
+					</File>
+					<Filter
+						Name="images"
+						Filter=""
+						>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-arrow.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-busy.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-closedhand.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-cross.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-forbidden.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-hand.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-hsplit.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-ibeam.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-openhand.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-sizeall.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-sizeb.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-sizef.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-sizeh.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-sizev.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-uparrow.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-vsplit.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-wait.png"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-whatsthis.png"
+							>
+						</File>
+					</Filter>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtbuttonpropertybrowser.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtbuttonpropertybrowser.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qteditorfactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qteditorfactory.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtgroupboxpropertybrowser.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtgroupboxpropertybrowser.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.pri"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.qrc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowserutils.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowserutils_p.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertymanager.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertymanager.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qttreepropertybrowser.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qttreepropertybrowser.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtvariantproperty.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtvariantproperty.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="qt-thumbwheel"
+			Filter=""
+			>
+			<File
+				RelativePath="..\..\external\qt-thumbwheel\qtthumbwheel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\external\qt-thumbwheel\qtthumbwheel.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="qtmoc"
+			Filter=""
+			>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_glscene.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_object.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_object_csection.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_object_model.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_object_renderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_main.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_prop_sheet.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_prop_stringenum.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_prop_thumbwheel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_qtpropertybrowserutils_p.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_qtthumbwheel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\rcc_resources.cpp"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

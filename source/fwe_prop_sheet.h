@@ -29,6 +29,7 @@
 #ifndef FWE_PROP_SHEET_H
 #define FWE_PROP_SHEET_H
 
+#include <QList>
 #include "qtpropertymanager.h"
 #include "qteditorfactory.h"
 #include "qttreepropertybrowser.h"
@@ -48,7 +49,7 @@ public:
 
 public:
 	QtProperty* setProperty(const QMap<QString,QString> &data);
-	void setProperties(const QList<QMap<QString,QString>>& list);
+	void setProperties(const QList<QMap<QString,QString> >& list);
 	void setDouble(const QString& name, double value);
 	void setHiddenDouble(const QString& name, double value);
 	void setEnum(const QString& name, const QString& value);
