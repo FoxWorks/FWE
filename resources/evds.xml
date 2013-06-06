@@ -20,6 +20,8 @@ antenna
 Antenna
 gimbal
 Gimbal
+train_wheels
+Train wheels
 modifier
 Modifier
 			</values>
@@ -607,6 +609,98 @@ Point-defined
 			<units>m</units>
 			<step>0.1</step>
 			<group>Vector 3</group>
+			<description></description>
+		</var>
+	</object_vars>		
+	<object_vars name="train_wheels">
+		<var>
+			<type>double</type>
+			<variable>gauge</variable>
+			<name>Track gauge</name>
+			<digits>3</digits>
+			<units>m</units>
+			<step>0.1</step>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>outer_diameter</variable>
+			<name>Outer diameter</name>
+			<digits>3</digits>
+			<units>m</units>
+			<step>0.1</step>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>inner_diameter</variable>
+			<name>Inner diameter</name>
+			<digits>3</digits>
+			<units>m</units>
+			<step>0.1</step>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>axle_diameter</variable>
+			<name>Axle diameter</name>
+			<digits>3</digits>
+			<units>m</units>
+			<step>0.1</step>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>disk_thickness</variable>
+			<name>Disk thickness</name>
+			<digits>3</digits>
+			<units>m</units>
+			<step>0.1</step>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>rim_height</variable>
+			<name>Rim height</name>
+			<digits>3</digits>
+			<units>m</units>
+			<step>0.1</step>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>flange_thickness</variable>
+			<name>Flange thickness</name>
+			<digits>3</digits>
+			<units>m</units>
+			<step>0.1</step>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>flange_height</variable>
+			<name>Flange height</name>
+			<digits>3</digits>
+			<units>m</units>
+			<step>0.1</step>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>hub_diameter</variable>
+			<name>Hub diameter</name>
+			<digits>3</digits>
+			<units>m</units>
+			<step>0.1</step>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>hub_height</variable>
+			<name>Hub height</name>
+			<digits>3</digits>
+			<units>m</units>
+			<step>0.1</step>
 			<description></description>
 		</var>
 	</object_vars>		

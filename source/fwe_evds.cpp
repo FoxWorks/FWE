@@ -83,6 +83,7 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 	//EVDS_Common_LoadDatabase(initialized_system);
 	EVDS_Antenna_Register(system);
 	//EVDS_Antenna_Register(initialized_system);
+	EVDS_Train_WheelsGeometry_Register(system);
 
 	//Load object types
 	loadObjectData();
@@ -422,6 +423,13 @@ void Editor::updateInformation(bool ready) {
 			.arg(object->getInformationVariable("mass"))
 			.arg(object->getInformationVariable("total_mass"));
 
+		if (!selected) {
+			information = information + tr("Dimensions: %1 x %2 x %3 m\n")
+				.arg(glscene->getCollection()->boundingBox().xLength(),0,'G',3)
+				.arg(glscene->getCollection()->boundingBox().yLength(),0,'G',3)
+				.arg(glscene->getCollection()->boundingBox().zLength(),0,'G',3);
+		}
+
 		if (object->getType() == "fuel_tank") {
 			information = information + tr("\nFuel mass: %1 kg\n")
 			.arg(object->getInformationVariable("fuel_mass"));
@@ -690,7 +698,7 @@ void Editor::cleanupTimer() {
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::newFile() {
 	//EVDS_OBJECT_LOADEX info = { 0 };
-	//EVDS_Object_LoadEx(root,"RV-505.evds",&info);
+	//EVDS_Object_LoadEx(root,"WHEELS_TEST.evds",&info);
 	//EVDS_Object_LoadEx(root,"RV-505_proper.evds",&info);
 	root_obj->invalidateChildren();
 	initializer->updateObject();

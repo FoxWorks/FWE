@@ -64,7 +64,7 @@ MainWindow::MainWindow() {
 	foxworks_icon.addFile(":/icon/foxworks1024.png");
 
 	setWindowIcon(foxworks_icon);
-	setWindowTitle(tr("FoxWorks Editor (Alpha 2)"));
+	setWindowTitle(tr("FoxWorks Editor (Alpha 3)"));
 	setUnifiedTitleAndToolBarOnMac(true);
 	resize(1024,640);
 

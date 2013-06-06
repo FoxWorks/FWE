@@ -196,21 +196,23 @@ void ObjectRenderer::meshChanged() {
 	EVDS_Object_Initialize(temp_object,1);
 
 	//Ask dear generator LOD thing to generate LODs
-	lodMeshGenerator->updateMesh();
+	if (object->getType() != "modifier") lodMeshGenerator->updateMesh();
 
 	//Do the quick hack job anyway
 	glcMesh->clear();
 
-	ObjectLODGeneratorResult result;
-		EVDS_MESH_GENERATEEX info = { 0 };
-		info.resolution = 32.0f;
-		info.min_resolution = fw_editor_settings->value("rendering.min_resolution",0.01f).toFloat();
-		info.flags = EVDS_MESH_USE_DIVISIONS;
+	if (object->getType() != "modifier") {
+		ObjectLODGeneratorResult result;
+			EVDS_MESH_GENERATEEX info = { 0 };
+			info.resolution = 32.0f;
+			info.min_resolution = fw_editor_settings->value("rendering.min_resolution",0.01f).toFloat();
+			info.flags = EVDS_MESH_USE_DIVISIONS;
 
-		EVDS_Mesh_GenerateEx(temp_object,&mesh,&info);
-		result.appendMesh(mesh,0);
-		EVDS_Mesh_Destroy(mesh);
-	result.setGLCMesh(glcMesh,object);
+			EVDS_Mesh_GenerateEx(temp_object,&mesh,&info);
+			result.appendMesh(mesh,0);
+			EVDS_Mesh_Destroy(mesh);
+		result.setGLCMesh(glcMesh,object);
+	}
 
 	glcMesh->finish();
 	glcMesh->clearBoundingBox(); //Clear bounding box to update it

@@ -39,6 +39,7 @@
     <file>icon/evds_type/rocket_engine.png</file>
     <file>icon/evds_type/gimbal.png</file>
     <file>icon/evds_type/antenna.png</file>
+    <file>icon/evds_type/train_wheels.png</file>
     <file>icon/evds_type/modifier_linear.png</file>
     <file>icon/evds_type/modifier_circular.png</file>
     <file>icon/evds_type/modifier_copy.png</file>
@@ -65,5 +66,7 @@
     <file>shader/fxaa.vert</file>
     <file>shader/outline.frag</file>
     <file>shader/outline.vert</file>
+    <file>shader/shadow.frag</file>
+    <file>shader/shadow.vert</file>
 </qresource>
 </RCC>

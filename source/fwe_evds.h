@@ -35,6 +35,7 @@
 #include <QList>
 #include "evds.h"
 #include "evds_antenna.h"
+#include "evds_train_wheels.h"
 
 #include "fwe_main.h"
 
