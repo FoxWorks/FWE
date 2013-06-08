@@ -223,6 +223,9 @@ Object* Object::insertChild(int index, const QString &description) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Object::removeChild(int index) {
+	if (index < 0) return;
+	if (index >= children.count()) return;
+
 	Object* child = children.at(index);
 	if (child) {
 		EVDS_Object_Destroy(child->object);

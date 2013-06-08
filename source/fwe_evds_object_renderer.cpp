@@ -134,6 +134,7 @@ void ObjectRenderer::positionChanged(bool travel_up) {
 		glcInstance->multMatrix(GLC_Matrix4x4(rotationMatrix));
 		glcInstance->translate(vector.position.x,vector.position.y,vector.position.z);
 
+		//Modifier object instances will store transformation matrix relative to parent, not absolute
 		if (parent->getRenderer()) {
 			//The multiplication is right instead of left in multMatrix. So the order is "all wrong"
 			glcInstance->multMatrix(parent->getRenderer()->getInstance()->matrix());
@@ -350,11 +351,11 @@ void ObjectRenderer::addModifierInstances(Object* child) {
 						modifier_inst.representation = childRenderer->modifierInstances[j].representation;
 						modifier_inst.instance = new GLC_3DViewInstance(*modifier_inst.representation);
 
-						//modifier_inst.transformation = childRenderer->modifierInstances[j].base_instance->matrix().inverted();
-						//modifier_inst.transformation = modifier_inst.transformation * childRenderer->modifierInstances[j].transformation;
-						//modifier_inst.transformation = modifier_inst.transformation * transformation;
-						//modifier_inst.transformation = childRenderer->modifierInstances[j].base_instance->matrix();
-						modifier_inst.transformation = transformation * childRenderer->modifierInstances[j].transformation;
+						//FIXME: bug - this doesn't account in any way for transformations of several
+						//nested modifiers, especially rotational transformations
+						modifier_inst.transformation = 
+							transformation * 
+							childRenderer->modifierInstances[j].transformation;
 
 						//Add instance to scene
 						GLScene* glview = object->getEVDSEditor()->getGLScene();

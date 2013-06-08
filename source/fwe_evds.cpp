@@ -367,6 +367,7 @@ void Editor::createInformationDock() {
 void Editor::showCutsection() {
 	QAction* action = dynamic_cast<QAction*>(sender());
 	glscene->setCutsectionPlane(action->property("index").toInt(),action->isChecked());
+	glscene->update();
 }
 
 
@@ -697,8 +698,8 @@ void Editor::cleanupTimer() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::newFile() {
-	//EVDS_OBJECT_LOADEX info = { 0 };
-	//EVDS_Object_LoadEx(root,"WHEELS_TEST.evds",&info);
+	EVDS_OBJECT_LOADEX info = { 0 };
+	EVDS_Object_LoadEx(root,"bug_test_case.evds",&info);
 	//EVDS_Object_LoadEx(root,"RV-505_proper.evds",&info);
 	root_obj->invalidateChildren();
 	initializer->updateObject();
