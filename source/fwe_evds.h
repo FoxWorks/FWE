@@ -33,6 +33,7 @@
 #include <QFileInfo>
 #include <QMap>
 #include <QList>
+#include <QAtomicInt>
 #include "evds.h"
 #include "evds_antenna.h"
 #include "evds_train_wheels.h"
@@ -93,6 +94,14 @@ namespace EVDS {
 	public:
 		QMap<QString,QList<QMap<QString,QString> > > objectVariables;
 		QMap<QString,QList<QMap<QString,QString> > > csectionVariables;
+
+	private:
+		QAtomicInt activeThreads;
+
+	public:
+		void addActiveThread();
+		void removeActiveThread();
+		void waitForThreads();
 
 	protected:
 		void dropEvent(QDropEvent *event);

@@ -69,7 +69,7 @@ using namespace EVDS;
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
+Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window), activeThreads(0) {
 	window = in_window;
 	selected = NULL;
 
@@ -140,7 +140,7 @@ Editor::~Editor() {
 	qDebug("Editor::~Editor: cleaning up EVDS objects");
 	delete root_obj;
 	qDebug("Editor::~Editor: waiting for remaining threads");
-	ObjectLODGenerator::waitForThreads();
+	waitForThreads();
 
 	//Destroy EVDS system
 	qDebug("Editor::~Editor: destroying system");
@@ -150,6 +150,32 @@ Editor::~Editor() {
 		actions[i]->deleteLater();
 	}
 	cutsection_menu->deleteLater();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void Editor::addActiveThread() {
+	activeThreads.fetchAndAddOrdered(1);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void Editor::removeActiveThread() {
+	activeThreads.fetchAndAddOrdered(-1);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void Editor::waitForThreads() {
+	while (activeThreads > 0) ; //FIXME: sleep somehow
+		//QApplication::processEvents();
+	//}
 }
 
 

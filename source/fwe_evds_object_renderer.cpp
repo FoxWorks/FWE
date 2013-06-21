@@ -504,6 +504,7 @@ float ObjectLODGenerator::getLODResolution(int lod) {
 ObjectLODGenerator::ObjectLODGenerator(Object* in_object, int in_lods) {
 	object = in_object;
 	numLods = in_lods;
+	editor = object->getEVDSEditor();
 
 	//Initialize temporary object
 	object_copy = 0;
@@ -551,7 +552,7 @@ void ObjectLODGenerator::stopWork() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectLODGenerator::run() {
-	ObjectLODGenerator::addActiveThread();
+	editor->addActiveThread();
 	//msleep(1000 + (qrand() % 5000)); //Give enough time for the rest of application to initialize
 	while (!doStopWork) {
 		readingLock.lock();
@@ -606,22 +607,7 @@ void ObjectLODGenerator::run() {
 
 	//Finish thread work and destroy HQ mesh
 	//qDebug("ObjectLODGenerator::run: stopped");
-	ObjectLODGenerator::removeActiveThread();
+	editor->removeActiveThread();
 }
 
-QAtomicInt ObjectLODGenerator::activeThreads(0);
 QSemaphore ObjectLODGenerator::threadsSemaphore(QThread::idealThreadCount());
-
-void ObjectLODGenerator::addActiveThread() {
-	ObjectLODGenerator::activeThreads.fetchAndAddOrdered(1);
-}
-
-void ObjectLODGenerator::removeActiveThread() {
-	ObjectLODGenerator::activeThreads.fetchAndAddOrdered(-1);
-}
-
-void ObjectLODGenerator::waitForThreads() {
-	while (ObjectLODGenerator::activeThreads > 0) {
-		msleep(10);
-	}		
-}

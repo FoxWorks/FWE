@@ -731,7 +731,7 @@ void ObjectInitializer::stopWork() {
 
 void ObjectInitializer::run() {
 	msleep(2000); //Give enough time for the rest of application to initialize
-	while (!object_copy) msleep(100); //Wait until there's an object to initialize
+	while (!object_copy && (!doStopWork)) msleep(100); //Wait until there's an object to initialize
 	while (!doStopWork) {
 		if (needObject) {
 			readingLock.lock();

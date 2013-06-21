@@ -31,7 +31,6 @@
 
 #include <QThread>
 #include <QMutex>
-#include <QAtomicInt>
 #include <QSemaphore>
 
 #include <GLC_Mesh>
@@ -40,6 +39,7 @@
 #include "evds.h"
 
 namespace EVDS {
+	class Editor;
 	class Object;
 	class ObjectLODGenerator;
 	struct ObjectRendererModifierInstance {
@@ -120,10 +120,6 @@ namespace EVDS {
 
 	public:
 		static QSemaphore threadsSemaphore;
-		static QAtomicInt activeThreads;
-		static void addActiveThread();
-		static void removeActiveThread();
-		static void waitForThreads();
 
 	public slots:
 		void doUpdateMesh();
@@ -142,6 +138,7 @@ namespace EVDS {
 		bool needMesh; //Is new mesh required
 
 		Object* object; //Object for which mesh is generated
+		Editor* editor; //Objects editor
 		EVDS_OBJECT* object_copy; //Copy of the object for this thread
 
 		int numLods; //Total number of LODs
