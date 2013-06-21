@@ -134,7 +134,6 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 Editor::~Editor() {
-	QApplication::setOverrideCursor(Qt::WaitCursor);
 	initializer->stopWork();
 	delete initializer;
 
@@ -146,7 +145,6 @@ Editor::~Editor() {
 	//Destroy EVDS system
 	qDebug("Editor::~Editor: destroying system");
 	EVDS_System_Destroy(system);
-	QApplication::restoreOverrideCursor();
 
 	for (int i = 0; i < actions.count(); i++) {
 		actions[i]->deleteLater();
@@ -759,7 +757,8 @@ bool Editor::loadFile(const QString &fileName) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void FWE_SaveFile_RemoveRedundantVariables(Object* object) {
-	EVDS_OBJECT* evds_object = object->getEVDSObject();
+	//FIXME: this code is good, but it deletes cross-sections editor right from under users hand
+	/*EVDS_OBJECT* evds_object = object->getEVDSObject();
 
 	//Search for geometry
 	EVDS_VARIABLE* variable;
@@ -786,7 +785,7 @@ void FWE_SaveFile_RemoveRedundantVariables(Object* object) {
 	//Call for every child
 	for (int i = 0; i < object->getChildrenCount(); i++) {
 		FWE_SaveFile_RemoveRedundantVariables(object->getChild(i));
-	}
+	}*/
 }
 
 bool Editor::saveFile(const QString &fileName) {

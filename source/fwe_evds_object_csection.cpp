@@ -317,7 +317,7 @@ void CrossSection::setVariable(const QString &name, double value) {
 		if (name == "tangent.radial.neg") property_sheet->updateProperty("\x02");
 		if (name == "rx") {
 			EVDS_REAL ry;
-			if (EVDS_Variable_GetAttribute(cross_section,"ry",&v) == EVDS_OK) {
+			if (EVDS_Variable_AddAttribute(cross_section,"ry",EVDS_VARIABLE_TYPE_FLOAT,&v) == EVDS_OK) {
 				EVDS_Variable_GetReal(v,&ry);
 				if (prev_value == ry) EVDS_Variable_SetReal(v,value);
 				property_sheet->updateProperty("ry");

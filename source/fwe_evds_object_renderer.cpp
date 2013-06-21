@@ -456,14 +456,12 @@ void ObjectLODGeneratorResult::appendMesh(EVDS_MESH* mesh, int lod) {
 //__itt_frame_end(pD);
 
 void ObjectLODGeneratorResult::setGLCMesh(GLC_Mesh* glcMesh, Object* object) {
+	//QApplication::setOverrideCursor(Qt::WaitCursor);
 	glcMesh->addVertice(verticesVector);
 	glcMesh->addNormals(normalsVector);
 	for (int i = 0; i < indicesLists.count(); i++) {
 		if (!indicesLists[i].isEmpty()) {
-			static GLC_Material* glcMaterial = 0;
-			if (!glcMaterial) {
-				glcMaterial = new GLC_Material();
-			}
+			GLC_Material* glcMaterial = new GLC_Material();
 			
 			//Special color logic
 			if (object->getType() == "fuel_tank") {
@@ -478,6 +476,7 @@ void ObjectLODGeneratorResult::setGLCMesh(GLC_Mesh* glcMesh, Object* object) {
 			glcMesh->addTriangles(glcMaterial, indicesLists[i], lodList[i]);
 		}
 	}
+	//QApplication::restoreOverrideCursor();
 }
 
 void ObjectLODGeneratorResult::clear() {
@@ -602,7 +601,7 @@ void ObjectLODGenerator::run() {
 	}
 
 	//Finish thread work and destroy HQ mesh
-	qDebug("ObjectLODGenerator::run: stopped");
+	//qDebug("ObjectLODGenerator::run: stopped");
 	ObjectLODGenerator::removeActiveThread();
 }
 
