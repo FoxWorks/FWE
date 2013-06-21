@@ -700,8 +700,8 @@ void Editor::cleanupTimer() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::newFile() {
-	EVDS_OBJECT_LOADEX info = { 0 };
-	EVDS_Object_LoadEx(root,"test.evds",&info);
+	//EVDS_OBJECT_LOADEX info = { 0 };
+	//EVDS_Object_LoadEx(root,"test.evds",&info);
 	//EVDS_Object_LoadEx(root,"RV-505_proper.evds",&info);
 	root_obj->invalidateChildren();
 	initializer->updateObject();
@@ -709,8 +709,44 @@ void Editor::newFile() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @brief
+/// @brief This is only relevant to pre-alpha-4 saves. Delete no later than year 2040
 ////////////////////////////////////////////////////////////////////////////////
+void FWE_LoadFile_FixRxRyBug(Object* object) {
+	//FIXME: this code is good, but it deletes cross-sections editor right from under users hand
+	EVDS_OBJECT* evds_object = object->getEVDSObject();
+
+	//Search for geometry
+	EVDS_VARIABLE* variable;
+	if (EVDS_Object_GetVariable(evds_object,"geometry.cross_sections",&variable) == EVDS_OK) {
+		SIMC_LIST* list;
+		SIMC_LIST_ENTRY* entry;
+		EVDS_Variable_GetList(variable,&list);
+
+		//Count number of entries
+		entry = SIMC_List_GetFirst(list);
+		while (entry) {
+			EVDS_VARIABLE* ry;
+			EVDS_VARIABLE* csection = (EVDS_VARIABLE*)SIMC_List_GetData(list,entry);
+			if (EVDS_Variable_GetAttribute(csection,"ry",&ry) != EVDS_OK) {
+				EVDS_VARIABLE* rx;
+				EVDS_REAL value;
+				EVDS_Variable_AddAttribute(csection,"ry",EVDS_VARIABLE_TYPE_FLOAT,&ry);
+				EVDS_Variable_AddAttribute(csection,"rx",EVDS_VARIABLE_TYPE_FLOAT,&rx);
+				EVDS_Variable_GetReal(rx,&value);
+				EVDS_Variable_SetReal(ry,value);
+			}
+
+			entry = SIMC_List_GetNext(list,entry);
+		}
+	}
+
+	//Call for every child
+	for (int i = 0; i < object->getChildrenCount(); i++) {
+		FWE_LoadFile_FixRxRyBug(object->getChild(i));
+	}
+}
+
+
 int FWE_LoadFile_OnSyntaxError(EVDS_OBJECT_LOADEX* info, const char* error) {
 	Editor* editor = (Editor*)info->userdata;
 	editor->loadError(QString(error));
@@ -746,12 +782,22 @@ bool Editor::loadFile(const QString &fileName) {
 		return false;
 
 	}
+
+	//Initialize everything
 	root_obj->invalidateChildren();
 	initializer->updateObject();
 	updateInformation(false);
+
+	//Run old version conversions
+	if (info.version < 100) {
+		FWE_LoadFile_FixRxRyBug(root_obj);
+	}
+
+	//Return control
 	QApplication::restoreOverrideCursor();
 	return true;
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
