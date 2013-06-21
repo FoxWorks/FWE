@@ -113,7 +113,11 @@ QtProperty* FWEPropertySheet::setProperty(const QMap<QString,QString> &data) {
 
 		bool ok;
 		int decimals = decimals_str.toInt(&ok);
-		if (ok) doubleManager->setDecimals(property,decimals);
+		if (ok) {
+			doubleManager->setDecimals(property,decimals);
+		} else {
+			doubleManager->setDecimals(property,3);
+		}
 
 		double step = step_str.toDouble(&ok);
 		if (ok) doubleManager->setSingleStep(property,step);
