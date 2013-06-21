@@ -737,15 +737,13 @@ void Editor::newFile() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief This is only relevant to pre-alpha-4 saves. Delete no later than year 2040
 ////////////////////////////////////////////////////////////////////////////////
-void FWE_LoadFile_FixRxRyBug(Object* object) {
-	//FIXME: this code is good, but it deletes cross-sections editor right from under users hand
-	EVDS_OBJECT* evds_object = object->getEVDSObject();
+void FWE_LoadFile_FixRxRyBug(EVDS_OBJECT* evds_object) {
+	SIMC_LIST* list;
+	SIMC_LIST_ENTRY* entry;
 
 	//Search for geometry
 	EVDS_VARIABLE* variable;
 	if (EVDS_Object_GetVariable(evds_object,"geometry.cross_sections",&variable) == EVDS_OK) {
-		SIMC_LIST* list;
-		SIMC_LIST_ENTRY* entry;
 		EVDS_Variable_GetList(variable,&list);
 
 		//Count number of entries
@@ -767,8 +765,11 @@ void FWE_LoadFile_FixRxRyBug(Object* object) {
 	}
 
 	//Call for every child
-	for (int i = 0; i < object->getChildrenCount(); i++) {
-		FWE_LoadFile_FixRxRyBug(object->getChild(i));
+	EVDS_Object_GetAllChildren(evds_object,&list);
+	entry = SIMC_List_GetFirst(list);
+	while (entry) {
+		FWE_LoadFile_FixRxRyBug((EVDS_OBJECT*)SIMC_List_GetData(list,entry));
+		entry = SIMC_List_GetNext(list,entry);
 	}
 }
 
@@ -809,15 +810,15 @@ bool Editor::loadFile(const QString &fileName) {
 
 	}
 
+	//Run old version conversions
+	if (info.version < 100) {
+		FWE_LoadFile_FixRxRyBug(root);
+	}
+
 	//Initialize everything
 	root_obj->invalidateChildren();
 	initializer->updateObject();
 	updateInformation(false);
-
-	//Run old version conversions
-	if (info.version < 100) {
-		FWE_LoadFile_FixRxRyBug(root_obj);
-	}
 
 	//Return control
 	QApplication::restoreOverrideCursor();
