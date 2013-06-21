@@ -31,6 +31,7 @@
 
 #include "fwe_main.h"
 #include "fwe_evds.h"
+#include "rdrs.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +65,7 @@ MainWindow::MainWindow() {
 	foxworks_icon.addFile(":/icon/foxworks1024.png");
 
 	setWindowIcon(foxworks_icon);
-	setWindowTitle(tr("FoxWorks Editor (Alpha 3)"));
+	setWindowTitle(tr("FoxWorks Editor"));
 	setUnifiedTitleAndToolBarOnMac(true);
 	resize(1024,640);
 
@@ -214,14 +215,17 @@ void MainWindow::paste() {
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::about() {
 	QString ivss_version = "r1a";
-	QString rdrs_version = "r1a";
 
 	char evds_version_str[64];
 	EVDS_Version(0,evds_version_str);
 	QString evds_version = "r" + QString(evds_version_str);
 
+	char rdrs_version_str[64];
+	RDRS_Version(0,rdrs_version_str);
+	QString rdrs_version = "r" + QString(rdrs_version_str);
+
 	QMessageBox::about(this, tr("About FoxWorks Editor"),
-			tr("<b>FoxWorks Editor</b> (C) 2012-2013 by Black Phoenix<br>"
+			tr("<b>FoxWorks Editor (Alpha)</b> (C) 2012-2013 by Black Phoenix<br>"
 			"<br>"
 			"Contact information:<br>"
 			"<b>Black Phoenix</b> (<i>phoenix@uol.ua</i>, <i>popovych@yanedx.ru</i>)<br>"
@@ -229,7 +233,7 @@ void MainWindow::about() {
 			"Additional software:<br>"
 			"<b>GLC_lib</b> (C) 2005-2013 by Laurent Ribon (<i>laumaya@users.sourceforge.net</i>)<br>"
 			"<b>External Vessel Dynamics Simulator (%1)</b> (C) 2012-2013 by Black Phoenix<br>"
-			"<b>Internal Vessel Systems Simulator (%2)</b> (C) 2011-2013 by Black Phoenix<br>"
+			//"<b>Internal Vessel Systems Simulator (%2)</b> (C) 2011-2013 by Black Phoenix<br>"
 			"<b>Realtime Digital Radio Simulator (%3)</b> (C) 2013 by Black Phoenix"
 			)
 			.arg(evds_version)

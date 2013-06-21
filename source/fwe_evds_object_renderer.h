@@ -31,6 +31,7 @@
 
 #include <QThread>
 #include <QMutex>
+#include <QAtomicInt>
 
 #include <GLC_Mesh>
 #include <GLC_3DViewInstance>
@@ -115,6 +116,12 @@ namespace EVDS {
 
 		//Get number of lods
 		int getNumLODs() { return numLods; }
+
+	public:
+		static QAtomicInt activeThreads;
+		static void addActiveThread();
+		static void removeActiveThread();
+		static void waitForThreads();
 
 	public slots:
 		void doUpdateMesh();

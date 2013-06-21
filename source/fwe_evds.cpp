@@ -140,14 +140,18 @@ Editor::~Editor() {
 
 	qDebug("Editor::~Editor: cleaning up EVDS objects");
 	delete root_obj;
+	qDebug("Editor::~Editor: waiting for remaining threads");
+	ObjectLODGenerator::waitForThreads();
+
+	//Destroy EVDS system
+	qDebug("Editor::~Editor: destroying system");
 	EVDS_System_Destroy(system);
-	//EVDS_System_Destroy(initialized_system);
 	QApplication::restoreOverrideCursor();
 
 	for (int i = 0; i < actions.count(); i++) {
 		actions[i]->deleteLater();
 	}
-	cutsection_menu->deleteLater();//menuAction()->setVisible(isInFront);
+	cutsection_menu->deleteLater();
 }
 
 
@@ -699,7 +703,7 @@ void Editor::cleanupTimer() {
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::newFile() {
 	EVDS_OBJECT_LOADEX info = { 0 };
-	EVDS_Object_LoadEx(root,"bug_test_case.evds",&info);
+	EVDS_Object_LoadEx(root,"test.evds",&info);
 	//EVDS_Object_LoadEx(root,"RV-505_proper.evds",&info);
 	root_obj->invalidateChildren();
 	initializer->updateObject();

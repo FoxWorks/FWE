@@ -384,7 +384,6 @@ void ObjectRenderer::addModifierInstances(Object* child) {
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectRenderer::lodMeshesGenerated() {
 	//qDebug("ObjectRenderer: LOD ready %p",this);
-	QTime time; time.start();
 	
 	lodMeshGenerator->readingLock.lock();
 		glcMesh->clear();
@@ -396,13 +395,6 @@ void ObjectRenderer::lodMeshesGenerated() {
 	lodMeshGenerator->readingLock.unlock();
 
 	object->getEVDSEditor()->getWindow()->getMainWindow()->statusBar()->showMessage("Generating LODs...",1000);
-
-	int elapsed = time.elapsed();
-	if (elapsed > 50) {
-		qDebug("ObjectRenderer: setGLCMesh(%s): %d msec (%d verts)",
-			object->getName().toAscii().data(),
-			elapsed, glcMesh->VertexCount());
-	}
 }
 
 
@@ -456,12 +448,22 @@ void ObjectLODGeneratorResult::appendMesh(EVDS_MESH* mesh, int lod) {
 		//FIXME prevent empty lists
 	}
 }
+
+//#include "C:\\Program Files\\Intel\\VTune Amplifier XE 2011\\include\\ittnotify.h"
+//#pragma comment(lib, "C:\\Program Files\\Intel\\VTune Amplifier XE 2011\\lib32\\libittnotify.lib")
+//__itt_frame pD = __itt_frame_create("Custom Domain");
+//__itt_frame_begin(pD);
+//__itt_frame_end(pD);
+
 void ObjectLODGeneratorResult::setGLCMesh(GLC_Mesh* glcMesh, Object* object) {
 	glcMesh->addVertice(verticesVector);
 	glcMesh->addNormals(normalsVector);
 	for (int i = 0; i < indicesLists.count(); i++) {
 		if (!indicesLists[i].isEmpty()) {
-			GLC_Material* glcMaterial = new GLC_Material();
+			static GLC_Material* glcMaterial = 0;
+			if (!glcMaterial) {
+				glcMaterial = new GLC_Material();
+			}
 			
 			//Special color logic
 			if (object->getType() == "fuel_tank") {
@@ -475,7 +477,6 @@ void ObjectLODGeneratorResult::setGLCMesh(GLC_Mesh* glcMesh, Object* object) {
 			//Add smoothing group
 			glcMesh->addTriangles(glcMaterial, indicesLists[i], lodList[i]);
 		}
-		//QApplication::processEvents();
 	}
 }
 
@@ -544,10 +545,6 @@ void ObjectLODGenerator::updateMesh() {
 
 void ObjectLODGenerator::stopWork() {
 	doStopWork = true;
-	while (isRunning()) {
-		msleep(10);
-		//QApplication::processEvents();
-	}
 }
 
 
@@ -555,6 +552,7 @@ void ObjectLODGenerator::stopWork() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectLODGenerator::run() {
+	ObjectLODGenerator::addActiveThread();
 	msleep(1000 + (qrand() % 5000)); //Give enough time for the rest of application to initialize
 	while (!doStopWork) {
 		readingLock.lock();
@@ -604,6 +602,22 @@ void ObjectLODGenerator::run() {
 	}
 
 	//Finish thread work and destroy HQ mesh
-	//qDebug("ObjectLODGenerator::run: stopped");
-	//if (mesh) EVDS_Mesh_Destroy(mesh);
+	qDebug("ObjectLODGenerator::run: stopped");
+	ObjectLODGenerator::removeActiveThread();
+}
+
+QAtomicInt ObjectLODGenerator::activeThreads(0);
+
+void ObjectLODGenerator::addActiveThread() {
+	ObjectLODGenerator::activeThreads.fetchAndAddOrdered(1);
+}
+
+void ObjectLODGenerator::removeActiveThread() {
+	ObjectLODGenerator::activeThreads.fetchAndAddOrdered(-1);
+}
+
+void ObjectLODGenerator::waitForThreads() {
+	while (ObjectLODGenerator::activeThreads > 0) {
+		msleep(10);
+	}		
 }
