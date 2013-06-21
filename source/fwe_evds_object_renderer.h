@@ -32,6 +32,7 @@
 #include <QThread>
 #include <QMutex>
 #include <QAtomicInt>
+#include <QSemaphore>
 
 #include <GLC_Mesh>
 #include <GLC_3DViewInstance>
@@ -118,6 +119,7 @@ namespace EVDS {
 		int getNumLODs() { return numLods; }
 
 	public:
+		static QSemaphore threadsSemaphore;
 		static QAtomicInt activeThreads;
 		static void addActiveThread();
 		static void removeActiveThread();

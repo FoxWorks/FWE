@@ -552,12 +552,13 @@ void ObjectLODGenerator::stopWork() {
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectLODGenerator::run() {
 	ObjectLODGenerator::addActiveThread();
-	msleep(1000 + (qrand() % 5000)); //Give enough time for the rest of application to initialize
+	//msleep(1000 + (qrand() % 5000)); //Give enough time for the rest of application to initialize
 	while (!doStopWork) {
 		readingLock.lock();
 		if (needMesh) {
 			//Start making the mesh
 			needMesh = false;
+			ObjectLODGenerator::threadsSemaphore.acquire();
 
 			//Transfer and initialize work object
 			EVDS_OBJECT* work_object = object_copy; //Fetch the pointer
@@ -586,6 +587,9 @@ void ObjectLODGenerator::run() {
 				//printf("Done mesh %p %p for level %d\n",object,mesh,lod);
 			}
 
+			//Make sure not too many threads run expensive tasks at once
+			ObjectLODGenerator::threadsSemaphore.release();
+
 			//Release the object that was worked on
 			if (work_object) {
 				EVDS_Object_Destroy(work_object);
@@ -606,6 +610,7 @@ void ObjectLODGenerator::run() {
 }
 
 QAtomicInt ObjectLODGenerator::activeThreads(0);
+QSemaphore ObjectLODGenerator::threadsSemaphore(QThread::idealThreadCount());
 
 void ObjectLODGenerator::addActiveThread() {
 	ObjectLODGenerator::activeThreads.fetchAndAddOrdered(1);
