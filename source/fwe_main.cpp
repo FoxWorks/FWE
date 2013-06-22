@@ -75,8 +75,17 @@ MainWindow::MainWindow() {
 	//move(pos);
 	//resize(size);
 
-	//Create new empty file
-	newFile();
+	//Create new empty file or load some file right away
+	if (QFile::exists("bug_test_case.evds")) {
+		ChildWindow *child = createMdiChild();
+		if (child->loadFile("bug_test_case.evds")) {
+			child->show();
+		} else {
+			child->close();
+		}
+	} else {
+		newFile();
+	}
 }
 
 

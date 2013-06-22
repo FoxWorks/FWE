@@ -66,6 +66,7 @@ namespace EVDS {
 	class Object;
 	class ObjectInitializer;
 	class ObjectTreeModel;
+	class ObjectModifiersManager;
 	class Editor : public QMainWindow
 	{
 		Q_OBJECT
@@ -161,6 +162,7 @@ namespace EVDS {
 		//Main workspace
 		GLScene*			glscene;
 		GLView*				glview;
+		ObjectModifiersManager* modifiers_manager;
 
 		//Menus and actions
 		QList<QAction*>		actions;

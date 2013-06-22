@@ -42,12 +42,6 @@ namespace EVDS {
 	class Editor;
 	class Object;
 	class ObjectLODGenerator;
-	struct ObjectRendererModifierInstance {
-		GLC_3DViewInstance* instance;
-		GLC_3DViewInstance* base_instance;
-		GLC_3DRep* representation;
-		GLC_Matrix4x4 transformation;
-	};
 	class ObjectRenderer : public QObject
 	{
 		Q_OBJECT
@@ -59,23 +53,15 @@ namespace EVDS {
 		GLC_3DViewInstance* getInstance() { return glcInstance; }
 		GLC_3DRep* getRepresentation() { return glcMeshRep; }
 
-		//Instances created by modifier
-		QList<ObjectRendererModifierInstance> modifierInstances;
-
 	public slots:
 		//Notifies that objects mesh has changed and must be re-generated
 		void meshChanged();
 		//Notifies that objects position in space has changed, and all children must be recalculated
-		void positionChanged(bool travel_up = false);
+		void positionChanged();
 		//Notifies that LOD meshes have been generated
 		void lodMeshesGenerated();
 
 	private:
-		//Recursively add modifier instances
-		void addModifierInstances(Object* child);
-		//Upwards recursion through objects tree that removes instances of this object from modifiers
-		void removeFromModifiers(Object* parent);
-
 		//GLC mesh for this object
 		GLC_Mesh* glcMesh;
 		GLC_3DRep* glcMeshRep;

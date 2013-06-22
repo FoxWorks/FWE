@@ -60,6 +60,7 @@
 #include "fwe_evds_object.h"
 #include "fwe_evds_object_model.h"
 #include "fwe_evds_object_renderer.h"
+#include "fwe_evds_modifiers.h"
 #include "fwe_evds_glscene.h"
 #include "fwe_prop_sheet.h"
 
@@ -117,6 +118,7 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window), activeThreads(0
 	glview = new GLView(this);
 	glview->setScene(glscene);
 	setCentralWidget(glview);
+	modifiers_manager = new ObjectModifiersManager(this);
 
 	//Create informational docks
 	createInformationDock();
@@ -819,6 +821,7 @@ bool Editor::loadFile(const QString &fileName) {
 	root_obj->invalidateChildren();
 	initializer->updateObject();
 	updateInformation(false);
+	modifiers_manager->updateModifiers();
 
 	//Return control
 	QApplication::restoreOverrideCursor();

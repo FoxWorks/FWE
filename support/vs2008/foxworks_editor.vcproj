@@ -1684,6 +1684,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\fwe_evds_modifiers.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_evds_modifiers.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\fwe_evds_object.cpp"
 			>
 		</File>
@@ -2130,6 +2138,10 @@
 			</File>
 			<File
 				RelativePath="..\..\qtmoc\moc_fwe_evds_glscene.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_evds_modifiers.cpp"
 				>
 			</File>
 			<File
