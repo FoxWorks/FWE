@@ -138,13 +138,6 @@ void ObjectModifiersManager::setInstancePosition(ObjectRendererModifierInstance*
 
 	//Start with instances objects own matrix
 	modifier_instance->instance->multMatrix(modifier_instance->base_instance->matrix());
-	{
-		double sum = 0;
-		for (int k = 0; k < 16; k++) sum += fabs(modifier_instance->base_instance->matrix().getData()[k]);
-		if (sum > 1e4) {
-			_asm { int 3 };
-		}
-	}
 	//Subtract matrix of the current modifier (to go into its local coords)
 	modifier_instance->instance->multMatrix(modifier_instance->modifier_instance->matrix().inverted());
 	//Add transformation for the current modifier
