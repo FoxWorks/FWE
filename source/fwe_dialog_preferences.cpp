@@ -37,6 +37,7 @@
 #include <QSpinBox>
 #include <QLabel>
 #include <QCheckBox>
+#include <QDoubleSpinBox>
 
 #include "fwe_main.h"
 #include "fwe_dialog_preferences.h"
@@ -51,7 +52,7 @@ PreferencesDialog::PreferencesDialog() {
 	pages->setViewMode(QListView::IconMode);
 	pages->setIconSize(QSize(64, 64));
 	pages->setMovement(QListView::Static);
-	pages->setMaximumWidth(128);
+	pages->setMaximumWidth(96);
 	pages->setSpacing(10);
 	pages->setCurrentRow(0);
 
@@ -116,6 +117,7 @@ void PreferencesDialog::createPerfomance() {
 	QFormLayout* layout = new QFormLayout;
 	page->setLayout(layout);
 	contents->addWidget(page);
+	layout->addRow(new QLabel("Perfomance and rendering preferences"));
 
 
 	/*QSlider* slider = new QSlider(Qt::Horizontal);
@@ -130,29 +132,34 @@ void PreferencesDialog::createPerfomance() {
 	QCheckBox* checkBox = new QCheckBox();
 	checkBox->setObjectName("rendering.no_lods");
 	checkBox->setChecked(fw_editor_settings->value("rendering.no_lods").toBool());
-	connect(checkBox, SIGNAL(stateChanged(bool)), this, SLOT(setBoolWarn(bool)));
+	connect(checkBox, SIGNAL(stateChanged(int)), this, SLOT(setBoolWarn(int)));
 	layout->addRow("Don't use LODs:<br>(default: <i>false</i>)", checkBox);
 
 	QSpinBox* spinBox = new QSpinBox();
 	spinBox->setObjectName("rendering.lod_count");
-	spinBox->setMinimum(1);
-	spinBox->setMaximum(20);
+	spinBox->setRange(1,20);
 	spinBox->setValue(fw_editor_settings->value("rendering.lod_count").toInt());
 	connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(setIntegerWarn(int)));
 	layout->addRow("Number of LOD levels:<br>(default: <i>6</i>)", spinBox);
 
+	spinBox = new QSpinBox();
+	spinBox->setObjectName("rendering.lod_quality");
+	spinBox->setRange(4,128);
+	spinBox->setValue(fw_editor_settings->value("rendering.lod_quality").toInt());
+	connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(setIntegerWarn(int)));
+	layout->addRow("Tessellation quality (higher is better/slower):<br>(default: <i>32</i>)", spinBox);
+
 	checkBox = new QCheckBox();
 	checkBox->setObjectName("rendering.use_fxaa");
 	checkBox->setChecked(fw_editor_settings->value("rendering.use_fxaa").toBool());
-	connect(checkBox, SIGNAL(stateChanged(bool)), this, SLOT(setBool(bool)));
+	connect(checkBox, SIGNAL(stateChanged(int)), this, SLOT(setBoolWarn(int)));
 	layout->addRow("Use FXAA (antialiasing):<br>(default: <i>true</i>)", checkBox);
 
 	spinBox = new QSpinBox();
 	spinBox->setObjectName("ui.autosave");
-	spinBox->setMinimum(5);
-	spinBox->setMaximum(60*60*12);
-	spinBox->setSuffix("seconds");
-	spinBox->setValue(fw_editor_settings->value("ui.autosave").toInt());
+	spinBox->setRange(5,60*60*12);
+	spinBox->setSuffix(" seconds");
+	spinBox->setValue(fw_editor_settings->value("ui.autosave").toInt()/1000);
 	connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(setIntegerx1000(int)));
 	layout->addRow("Interval between autosaves:<br>(default: <i>30</i> seconds)", spinBox);
 }
@@ -172,6 +179,31 @@ void PreferencesDialog::createEngineering() {
 	QFormLayout* layout = new QFormLayout;
 	page->setLayout(layout);
 	contents->addWidget(page);
+	layout->addRow(new QLabel("Engineering input, data output, processing preferences"));
+
+
+	QDoubleSpinBox* doubleSpinBox = new QDoubleSpinBox();
+	doubleSpinBox->setObjectName("rendering.outline_thickness");
+	doubleSpinBox->setMinimum(0.5);
+	doubleSpinBox->setMaximum(10.0);
+	doubleSpinBox->setSingleStep(0.1);
+	doubleSpinBox->setValue(fw_editor_settings->value("rendering.outline_thickness").toDouble());
+	connect(doubleSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setDouble(double)));
+	layout->addRow("Outline thickness:<br>(default: <i>1.0</i>)", doubleSpinBox);
+
+	QSpinBox* spinBox = new QSpinBox();
+	spinBox->setObjectName("screenshot.width");
+	spinBox->setRange(1,2048);
+	spinBox->setValue(fw_editor_settings->value("screenshot.width").toInt());
+	connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(setInteger(int)));
+	layout->addRow("Screenshot width:<br>(default: <i>2048</i>)", spinBox);
+
+	spinBox = new QSpinBox();
+	spinBox->setObjectName("screenshot.height");
+	spinBox->setRange(0,2048);
+	spinBox->setValue(fw_editor_settings->value("screenshot.height").toInt());
+	connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(setInteger(int)));
+	layout->addRow("Screenshot height:<br>(default: <i>0 - automatic</i>)", spinBox);
 }
 
 
@@ -189,6 +221,7 @@ void PreferencesDialog::createOther() {
 	QFormLayout* layout = new QFormLayout;
 	page->setLayout(layout);
 	contents->addWidget(page);
+	layout->addRow(new QLabel("Other and miscellaneous preferences"));
 }
 
 
@@ -225,11 +258,20 @@ void PreferencesDialog::setIntegerx1000(int value) {
 	fw_editor_settings->setValue(sender()->objectName(),value*1000);
 }
 
-void PreferencesDialog::setBool(bool value) {
+void PreferencesDialog::setBool(int value) {
+	fw_editor_settings->setValue(sender()->objectName(),value >= 1);
+}
+
+void PreferencesDialog::setBoolWarn(int value) {
+	needReload->show();
+	fw_editor_settings->setValue(sender()->objectName(),value >= 1);
+}
+
+void PreferencesDialog::setDouble(double value) {
 	fw_editor_settings->setValue(sender()->objectName(),value);
 }
 
-void PreferencesDialog::setBoolWarn(bool value) {
+void PreferencesDialog::setDoubleWarn(double value) {
 	needReload->show();
 	fw_editor_settings->setValue(sender()->objectName(),value);
 }

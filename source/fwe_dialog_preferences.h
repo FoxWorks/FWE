@@ -52,8 +52,10 @@ private slots:
 	void setInteger(int value);
 	void setIntegerWarn(int value);
 	void setIntegerx1000(int value);
-	void setBool(bool value);
-	void setBoolWarn(bool value);
+	void setBool(int value);
+	void setBoolWarn(int value);
+	void setDouble(double value);
+	void setDoubleWarn(double value);
 
 private:
 	void createPerfomance();

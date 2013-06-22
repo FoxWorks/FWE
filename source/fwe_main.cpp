@@ -61,8 +61,14 @@ MainWindow::MainWindow() {
 		fw_editor_settings->value("rendering.no_lods",				false));
 	fw_editor_settings->setValue ("rendering.use_fxaa",			
 		fw_editor_settings->value("rendering.use_fxaa",				true));
+	fw_editor_settings->setValue ("rendering.outline_thickness",			
+		fw_editor_settings->value("rendering.outline_thickness",	1.0));
 	fw_editor_settings->setValue ("ui.autosave",					
 		fw_editor_settings->value("ui.autosave",					30000));
+	fw_editor_settings->setValue ("screenshot.width",			
+		fw_editor_settings->value("screenshot.width",				2048));
+	fw_editor_settings->setValue ("screenshot.height",			
+		fw_editor_settings->value("screenshot.heght",				0));
 
 	//No preferences dialog
 	preferencesDialog = 0;
@@ -516,11 +522,12 @@ void MainWindow::createMenus() {
 	for (int i = 0; i < FWE_EDITOR_MAX_RECENT_FILES; ++i) {
 		recentMenu->addAction(recentFiles[i]);
 	}
+	//fileMenu->addSeparator();
+	fileMenu->addAction(saveAct);
+	fileMenu->addAction(saveAsAct);
 	fileMenu->addSeparator();
 	fileMenu->addAction(closeAct);
 	fileMenu->addAction(closeAllAct);
-	fileMenu->addAction(saveAct);
-	fileMenu->addAction(saveAsAct);
 	fileMenu->addSeparator();
 	fileMenu->addAction(exitAct);
 

@@ -256,12 +256,16 @@ void GLScene::saveScreenshot() {
 
 	//Determine best maximum size
 	float aspectRatio = ((float)previousHeight) / ((float)previousWidth);
-	int width = 2048;
+	int width = fw_editor_settings->value("screenshot.width").toInt();
 	int height = width*aspectRatio;
 
-	if (height > 2048) {
-		height = 2048;
-		width = height/aspectRatio;
+	if (fw_editor_settings->value("screenshot.height").toInt() > 0) {
+		height = fw_editor_settings->value("screenshot.height").toInt();
+	} else {
+		if (height > fw_editor_settings->value("screenshot.width").toInt()) {
+			height = fw_editor_settings->value("screenshot.width").toInt();
+			width = height/aspectRatio;
+		}
 	}
 	
 	//Create FBO and draw into it
@@ -658,7 +662,9 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 			shader_outline->bind();
 			shader_outline->setUniformValue("s_Data",0);
 			shader_outline->setUniformValue("v_invScreenSize",1.0f/rect.width(),1.0f/rect.height());
-			shader_outline->setUniformValue("f_outlineThickness",1.0f);
+			shader_outline->setUniformValue("f_outlineThickness",
+				(GLfloat)fw_editor_settings->value("rendering.outline_thickness").toDouble()
+			);
 				glBindTexture(GL_TEXTURE_2D, fbo_outline->texture());
 				drawScreenQuad();
 				glBindTexture(GL_TEXTURE_2D, fbo_outline_selected->texture());
