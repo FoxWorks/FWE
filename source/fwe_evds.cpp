@@ -586,6 +586,7 @@ void Editor::updateObject(Object* object) {
 	if (object) {
 		list_model->updateObject(object);
 	}
+	modifiers_manager->updateModifiers();
 	glscene->update();
 }
 

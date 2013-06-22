@@ -69,12 +69,14 @@ void ObjectModifiersManager::updateModifiers() {
 	//Remove all instances from glview
 	QMapIterator<Object*,QList<ObjectRendererModifierInstance> > iterator(modifierInstances);
 	while (iterator.hasNext()) {
+		iterator.next();
 		for (int i = 0; i < iterator.value().count(); i++) {
 			if (glview->getCollection()->contains(iterator.value()[i].instance->id())) {
 				glview->getCollection()->remove(iterator.value()[i].instance->id());
 			}
 			delete iterator.value()[i].instance;
 		}
+		iterator.value();
 	}
 	modifierInstances.clear();
 
@@ -97,6 +99,11 @@ void ObjectModifiersManager::processUpdateModifiers(Object* object) {
 		for (int i = 0; i < object->getChildrenCount(); i++) {
 			createModifiedCopy(object,object->getChild(i));
 		}
+
+		//Set positions of all children
+		for (int i = 0; i < modifierInstances[object].count(); i++) {
+			setInstancePosition(&modifierInstances[object][i]);
+		}
 	}
 }
 
@@ -104,41 +111,35 @@ void ObjectModifiersManager::processUpdateModifiers(Object* object) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void ObjectModifiersManager::objectPositionChanged(Object* object, bool recursive = false) {
-	/*GLScene* glview = editor->getGLScene();
+void ObjectModifiersManager::objectPositionChanged(Object* object, bool recursive) {
+}
 
-	//Update position of all modifier instances
-	QMapIterator<Object*,QList<ObjectRendererModifierInstance> > iterator(modifierInstances);
-	while (iterator.hasNext()) {
-		for (int i = 0; i < iterator.value().count(); i++) {
+void ObjectModifiersManager::setInstancePosition(ObjectRendererModifierInstance* modifier_instance) {
+	//Move instance as requested by modifier
+	modifier_instance->instance->resetMatrix();
 
-			//Move instance as requested by modifier
-			modifierInstances[i].instance->resetMatrix();
-
-			//Start with instances objects own matrix
-			modifierInstances[i].instance->multMatrix(modifierInstances[i].base_instance->matrix());
-			ObjectRendererModifierInstance inst = modifierInstances[i];
-			{
-				double sum = 0;
-				for (int k = 0; k < 16; k++) sum += fabs(modifierInstances[i].base_instance->matrix().getData()[k]);
-				if (sum > 1e4) {
-					_asm { int 3 };
-				}
-			}
-			//Subtract matrix of the current modifier (to go into its local coords)
-			modifierInstances[i].instance->multMatrix(glcInstance->matrix().inverted());
-			//Add transformation for the current modifier
-			modifierInstances[i].instance->multMatrix(modifierInstances[i].transformation);
-			//Add matrix of current transformation again (go into global coords)
-			modifierInstances[i].instance->multMatrix(glcInstance->matrix());
-
-			//Add/replace to update position
-			if (glview->getCollection()->contains(modifierInstances[i].instance->id())) {
-				glview->getCollection()->remove(modifierInstances[i].instance->id());
-			}
-			glview->getCollection()->add(*modifierInstances[i].instance);
+	//Start with instances objects own matrix
+	modifier_instance->instance->multMatrix(modifier_instance->base_instance->matrix());
+	{
+		double sum = 0;
+		for (int k = 0; k < 16; k++) sum += fabs(modifier_instance->base_instance->matrix().getData()[k]);
+		if (sum > 1e4) {
+			_asm { int 3 };
 		}
-		}*/
+	}
+	//Subtract matrix of the current modifier (to go into its local coords)
+	modifier_instance->instance->multMatrix(modifier_instance->modifier_instance->matrix().inverted());
+	//Add transformation for the current modifier
+	modifier_instance->instance->multMatrix(modifier_instance->transformation);
+	//Add matrix of current transformation again (go into global coords)
+	modifier_instance->instance->multMatrix(modifier_instance->modifier_instance->matrix());
+
+	//Add/replace to update position
+	GLScene* glview = editor->getGLScene();
+	if (glview->getCollection()->contains(modifier_instance->instance->id())) {
+		glview->getCollection()->remove(modifier_instance->instance->id());
+	}
+	glview->getCollection()->add(*modifier_instance->instance);
 }
 
 
@@ -230,6 +231,7 @@ void ObjectModifiersManager::createModifiedCopy(Object* modifier, Object* object
 
 				//Create copy of the child itself
 				ObjectRendererModifierInstance modifier_inst;
+				modifier_inst.modifier_instance = modifier->getRenderer()->getInstance();
 				modifier_inst.base_instance = object->getRenderer()->getInstance();
 				modifier_inst.real_base_instance = object->getRenderer()->getInstance();
 				modifier_inst.base_representation = object->getRenderer()->getRepresentation();
@@ -243,10 +245,11 @@ void ObjectModifiersManager::createModifiedCopy(Object* modifier, Object* object
 				modifierInstances[modifier].append(modifier_inst);
 
 				//Copy modifiers instances of the child to this modifier
-				if ((object->getType() == "modifier") && (object != modifier)) {	
+				if ((object->getType() == "modifier") && (object != modifier)) {
 					for (int j = 0; j < modifierInstances[object].count(); j++) {
 						ObjectRendererModifierInstance modifier_inst;
 						//Use the modified instance instead of original base instance
+						modifier_inst.modifier_instance = modifier->getRenderer()->getInstance();
 						modifier_inst.base_instance = modifierInstances[object][j].instance;
 						modifier_inst.real_base_instance = modifierInstances[object][j].real_base_instance;
 						modifier_inst.base_representation = modifierInstances[object][j].base_representation;
@@ -263,6 +266,13 @@ void ObjectModifiersManager::createModifiedCopy(Object* modifier, Object* object
 			}
 		}
 	}
+
+	//Create copies of the modifiers children (not included in modifiers instances)
+	//if ((object->getType() == "modifier") && (object != modifier)) {
+		for (int i = 0; i < object->getChildrenCount(); i++) {
+			createModifiedCopy(modifier,object->getChild(i));
+		}
+	//}
 }
 
 

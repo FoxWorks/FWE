@@ -43,6 +43,7 @@ namespace EVDS {
 		GLC_3DViewInstance* instance; //Instance of the modified copy
 		GLC_3DViewInstance* base_instance; //Instance, which the modified copy is based off
 		GLC_3DViewInstance* real_base_instance; //Instace, which is the original object
+		GLC_3DViewInstance* modifier_instance; //Instance, which is the modifier
 		GLC_3DRep* base_representation; //3D representation of the original object
 		GLC_Matrix4x4 transformation; //Modifiers transformation
 	};
@@ -66,8 +67,11 @@ namespace EVDS {
 	private:
 		//Finds modifiers in the given object, and updates the instances created by them
 		void processUpdateModifiers(Object* object);
+
 		//Creates a modified copy from the given object
 		void createModifiedCopy(Object* modifier, Object* object);
+		//Sets position of the modified instance
+		void setInstancePosition(ObjectRendererModifierInstance* modifier_instance);
 
 		//Instances created by modifier
 		QMap<Object*,QList<ObjectRendererModifierInstance> > modifierInstances;
