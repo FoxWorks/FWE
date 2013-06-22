@@ -60,13 +60,20 @@ namespace EVDS {
 		//Object was removed - make sure all modifiers are updated accordingly
 		void objectRemoved(Object* object);
 		//Object was added - make sure all modifiers are updated accordingly
-		void objectAdded();
+		void objectAdded(Object* object);
 		//Update position of all instances of the modified object
-		void objectPositionChanged(Object* object, bool recursive = false);
+		void objectPositionChanged(Object* object);
+		//Update modifier object parameters
+		void modifierChanged(Object* object);
+
+		//Are the objects initializing? (objectAdded calls are ignored)
+		void setInitializing(bool value) { initializing = value; }
 
 	private:
 		//Finds modifiers in the given object, and updates the instances created by them
 		void processUpdateModifiers(Object* object);
+		//Updates positions of all things
+		void processUpdatePosition(Object* object);
 
 		//Creates a modified copy from the given object
 		void createModifiedCopy(Object* modifier, Object* object);
@@ -78,6 +85,8 @@ namespace EVDS {
 
 		//EVDS editor
 		Editor* editor;
+		//Is editor initializing
+		bool initializing;
 	};
 }
 

@@ -86,6 +86,7 @@ namespace EVDS {
 		Object* getEditRoot() { return root_obj; }
 		Object* getSelected() { return selected; }
 		void clearSelection() { selected = NULL; }
+		ObjectModifiersManager* getModifiersManager() { return modifiers_manager; }
 
 		void updateInformation(bool ready);
 		void updateObject(Object* object);

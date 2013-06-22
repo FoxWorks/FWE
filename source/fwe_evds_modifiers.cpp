@@ -41,6 +41,7 @@ using namespace EVDS;
 ////////////////////////////////////////////////////////////////////////////////
 ObjectModifiersManager::ObjectModifiersManager(Editor* in_editor) {
 	editor = in_editor;
+	initializing = false;
 }
 
 
@@ -65,6 +66,8 @@ ObjectModifiersManager::~ObjectModifiersManager() {
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectModifiersManager::updateModifiers() {
 	GLScene* glview = editor->getGLScene();
+
+	qDebug("ObjectModifiersManager::updateModifiers()");
 
 	//Remove all instances from glview
 	QMapIterator<Object*,QList<ObjectRendererModifierInstance> > iterator(modifierInstances);
@@ -111,9 +114,24 @@ void ObjectModifiersManager::processUpdateModifiers(Object* object) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void ObjectModifiersManager::objectPositionChanged(Object* object, bool recursive) {
+void ObjectModifiersManager::processUpdatePosition(Object* object) {
+	//Process all children first
+	for (int i = 0; i < object->getChildrenCount(); i++) {
+		processUpdatePosition(object->getChild(i));
+	}
+
+	//Set positions of all children
+	if (object->getType() == "modifier") {
+		for (int i = 0; i < modifierInstances[object].count(); i++) {
+			setInstancePosition(&modifierInstances[object][i]);
+		}
+	}
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 void ObjectModifiersManager::setInstancePosition(ObjectRendererModifierInstance* modifier_instance) {
 	//Move instance as requested by modifier
 	modifier_instance->instance->resetMatrix();
@@ -279,14 +297,33 @@ void ObjectModifiersManager::createModifiedCopy(Object* modifier, Object* object
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void ObjectModifiersManager::objectRemoved(Object* object) {
-
+void ObjectModifiersManager::objectPositionChanged(Object* object) {
+	if (!initializing) {
+		//updateModifiers();
+		processUpdatePosition(editor->getEditRoot());
+	}
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void ObjectModifiersManager::objectAdded() {
+void ObjectModifiersManager::modifierChanged(Object* object) {
+	if (!initializing) updateModifiers();
+}
 
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ObjectModifiersManager::objectRemoved(Object* object) {
+	if (!initializing) updateModifiers();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ObjectModifiersManager::objectAdded(Object* object) {
+	if (!initializing) updateModifiers();
 }

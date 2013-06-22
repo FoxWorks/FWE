@@ -34,6 +34,7 @@
 #include "fwe_evds_object.h"
 #include "fwe_evds_object_renderer.h"
 #include "fwe_evds_object_csection.h"
+#include "fwe_evds_modifiers.h"
 #include "fwe_prop_sheet.h"
 
 using namespace EVDS;
@@ -86,6 +87,9 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 	if (renderer) {
 		renderer->meshChanged();
 		renderer->positionChanged();
+
+		//Add to modifiers
+		if (editor) editor->getModifiersManager()->objectAdded(this);
 	}
 }
 
@@ -94,6 +98,7 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 Object::~Object() {
+	if (editor) editor->getModifiersManager()->objectRemoved(this);
 	if (editor && (editor->getSelected() == this)) editor->clearSelection();
 	for (int i = 0; i < children.count(); i++) {
 		delete children[i];
@@ -564,8 +569,10 @@ void Object::update(bool visually) {
 	if (renderer) {
 		if (visually) {
 			renderer->meshChanged();
+			if (getType() == "modifier") editor->getModifiersManager()->modifierChanged(this);
 		} else {
 			renderer->positionChanged();
+			editor->getModifiersManager()->objectPositionChanged(this);
 		}
 	}
 	//if (visually && renderer) renderer->meshChanged();

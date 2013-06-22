@@ -136,6 +136,8 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window), activeThreads(0
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 Editor::~Editor() {
+	modifiers_manager->setInitializing(true); //Prevent updates of modifiers list
+
 	initializer->stopWork();
 	delete initializer;
 
@@ -586,7 +588,6 @@ void Editor::updateObject(Object* object) {
 	if (object) {
 		list_model->updateObject(object);
 	}
-	modifiers_manager->updateModifiers();
 	glscene->update();
 }
 
@@ -732,9 +733,12 @@ void Editor::newFile() {
 	//EVDS_OBJECT_LOADEX info = { 0 };
 	//EVDS_Object_LoadEx(root,"test.evds",&info);
 	//EVDS_Object_LoadEx(root,"RV-505_proper.evds",&info);
-	root_obj->invalidateChildren();
-	initializer->updateObject();
-	updateInformation(false);
+	modifiers_manager->setInitializing(false);
+		root_obj->invalidateChildren();
+		initializer->updateObject();
+		updateInformation(false);
+	modifiers_manager->setInitializing(true);
+	modifiers_manager->updateModifiers();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -819,9 +823,11 @@ bool Editor::loadFile(const QString &fileName) {
 	}
 
 	//Initialize everything
-	root_obj->invalidateChildren();
-	initializer->updateObject();
-	updateInformation(false);
+	modifiers_manager->setInitializing(true);
+		root_obj->invalidateChildren();
+		initializer->updateObject();
+		updateInformation(false);
+	modifiers_manager->setInitializing(false);
 	modifiers_manager->updateModifiers();
 
 	//Return control
