@@ -48,6 +48,7 @@ extern QSettings* fw_editor_settings; //See fwe.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #define FWE_EDITOR_MAX_RECENT_FILES	10
 class ChildWindow;
+class PreferencesDialog;
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -67,6 +68,7 @@ private slots:
 	void cut();
 	void copy();
 	void paste();
+	void preferences();
 	void about();
 	void updateInterface();
 	void updateWindowMenu();
@@ -92,6 +94,8 @@ private:
 	QMdiArea *mdiArea;
 	QSignalMapper *windowMapper;
 
+	PreferencesDialog* preferencesDialog;
+
 	QMenu *fileMenu;
 	QMenu *recentMenu;
 	QMenu *editMenu;
@@ -109,6 +113,7 @@ private:
 	QAction *cutAct;
 	QAction *copyAct;
 	QAction *pasteAct;
+	QAction *preferencesAct;
 	QAction *closeAct;
 	QAction *closeAllAct;
 	QAction *tileAct;

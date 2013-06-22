@@ -1668,6 +1668,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\fwe_dialog_preferences.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_dialog_preferences.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\fwe_evds.cpp"
 			>
 		</File>
@@ -2132,6 +2140,10 @@
 			Name="qtmoc"
 			Filter=""
 			>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_dialog_preferences.cpp"
+				>
+			</File>
 			<File
 				RelativePath="..\..\qtmoc\moc_fwe_evds.cpp"
 				>

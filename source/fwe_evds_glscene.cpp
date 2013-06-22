@@ -105,7 +105,7 @@ GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent) :
 	viewport->cameraHandle()->setIsoView();
 	world->collection()->setLodUsage(true,viewport);
 	world->collection()->setVboUsage(true);
-	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("render.min_pixel_culling",4).toInt());
+	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("rendering.min_pixel_culling").toInt());
 	GLC_SelectionMaterial::setUseSelectionMaterial(false);
 
 	//Add clipping plane
@@ -508,7 +508,7 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 		fbo_outline = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
 		fbo_outline_selected = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
 		fbo_shadow = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
-		if (fw_editor_settings->value("rendering.use_fxaa",true) == true) {
+		if (fw_editor_settings->value("rendering.use_fxaa") == true) {
 			fbo_fxaa = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
 		}
 	}

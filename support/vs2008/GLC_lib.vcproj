@@ -6,6 +6,7 @@
 	ProjectGUID="{50AF7C75-E289-8B40-BAD2-49A898A8B447}"
 	RootNamespace="GLC_lib"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -50,8 +51,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_libd32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -67,14 +68,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_libd32.lib"
 				AdditionalOptions="/MACHINE:X86"
+				OutputFile="$(OutDir)\GLC_libd32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -84,12 +82,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -128,8 +120,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_libd.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -145,14 +137,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_libd.lib"
 				AdditionalOptions="/MACHINE:X64"
+				OutputFile="$(OutDir)\GLC_libd.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -162,12 +151,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -204,8 +187,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_lib32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -221,14 +204,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_lib32.lib"
 				AdditionalOptions="/MACHINE:X86"
+				OutputFile="$(OutDir)\GLC_lib32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -238,12 +218,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -281,8 +255,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_lib.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -298,14 +272,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_lib.lib"
 				AdditionalOptions="/MACHINE:X64"
+				OutputFile="$(OutDir)\GLC_lib.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -315,12 +286,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -358,8 +323,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_libd32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -375,14 +340,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_libd32.lib"
 				AdditionalOptions="/MACHINE:X86"
+				OutputFile="$(OutDir)\GLC_libd32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -392,12 +354,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -436,8 +392,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_libd.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -453,14 +409,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_libd.lib"
 				AdditionalOptions="/MACHINE:X64"
+				OutputFile="$(OutDir)\GLC_libd.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -470,12 +423,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -512,8 +459,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_lib32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -529,14 +476,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_lib32.lib"
 				AdditionalOptions="/MACHINE:X86"
+				OutputFile="$(OutDir)\GLC_lib32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -546,12 +490,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -589,8 +527,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_lib.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -606,14 +544,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_lib.lib"
 				AdditionalOptions="/MACHINE:X64"
+				OutputFile="$(OutDir)\GLC_lib.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -623,12 +558,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -666,8 +595,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_lib_std32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -683,14 +612,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_lib_std32.lib"
 				AdditionalOptions="/MACHINE:X86"
+				OutputFile="$(OutDir)\GLC_lib_std32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -700,12 +626,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -744,8 +664,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_lib_std.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -761,14 +681,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_lib_std.lib"
 				AdditionalOptions="/MACHINE:X64"
+				OutputFile="$(OutDir)\GLC_lib_std.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -778,12 +695,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -820,8 +731,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_lib_st32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -837,14 +748,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_lib_st32.lib"
 				AdditionalOptions="/MACHINE:X86"
+				OutputFile="$(OutDir)\GLC_lib_st32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -854,12 +762,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -897,8 +799,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_lib_st.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -914,14 +816,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_lib_st.lib"
 				AdditionalOptions="/MACHINE:X64"
+				OutputFile="$(OutDir)\GLC_lib_st.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -931,12 +830,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -974,8 +867,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_lib_std32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -991,14 +884,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_lib_std32.lib"
 				AdditionalOptions="/MACHINE:X86"
+				OutputFile="$(OutDir)\GLC_lib_std32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -1008,12 +898,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1052,8 +936,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_lib_std.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -1069,14 +953,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_lib_std.lib"
 				AdditionalOptions="/MACHINE:X64"
+				OutputFile="$(OutDir)\GLC_lib_std.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -1086,12 +967,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1128,8 +1003,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_lib_st32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -1145,14 +1020,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_lib_st32.lib"
 				AdditionalOptions="/MACHINE:X86"
+				OutputFile="$(OutDir)\GLC_lib_st32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -1162,12 +1034,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1205,8 +1071,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\GLC_lib_st.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -1222,14 +1088,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\GLC_lib_st.lib"
 				AdditionalOptions="/MACHINE:X64"
+				OutputFile="$(OutDir)\GLC_lib_st.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -1241,12 +1104,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -1256,15 +1113,160 @@
 	<Files>
 		<Filter
 			Name="GLC_lib"
-			Filter=""
 			>
 			<Filter
 				Name="src"
-				Filter=""
 				>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_boundingbox.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_boundingbox.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_cachemanager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_cachemanager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_config.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_context.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_context.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_contextmanager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_contextmanager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_contextshareddata.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_contextshareddata.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_errorlog.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_errorlog.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_exception.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_exception.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_ext.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_ext.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_factory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_factory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_fileformatexception.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_fileformatexception.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_global.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_global.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_log.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_log.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_object.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_object.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_openglexception.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_openglexception.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_renderstatistics.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_renderstatistics.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_state.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_state.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_tracelog.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_tracelog.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_uniformshaderdata.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\GLC_lib\src\glc_uniformshaderdata.h"
+					>
+				</File>
 				<Filter
 					Name="3DWidget"
-					Filter=""
 					>
 					<File
 						RelativePath="..\..\external\GLC_lib\src\3DWidget\glc_3dwidget.cpp"
@@ -1333,11 +1335,9 @@
 				</Filter>
 				<Filter
 					Name="3rdparty"
-					Filter=""
 					>
 					<Filter
 						Name="lib3ds"
-						Filter=""
 						>
 						<File
 							RelativePath="..\..\external\GLC_lib\src\3rdparty\lib3ds\atmosphere.c"
@@ -3798,22 +3798,21 @@
 					</Filter>
 					<Filter
 						Name="quazip"
-						Filter=""
 						>
-						<File
-							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\JlCompress.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\JlCompress.h"
-							>
-						</File>
 						<File
 							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\crypt.h"
 							>
 						</File>
 						<File
 							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\ioapi.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\JlCompress.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\external\GLC_lib\src\3rdparty\quazip\JlCompress.h"
 							>
 						</File>
 						<File
@@ -4175,7 +4174,6 @@
 					</Filter>
 					<Filter
 						Name="zlib"
-						Filter=""
 						>
 						<File
 							RelativePath="..\..\external\GLC_lib\src\3rdparty\zlib\adler32.c"
@@ -5941,7 +5939,6 @@
 				</Filter>
 				<Filter
 					Name="geometry"
-					Filter=""
 					>
 					<File
 						RelativePath="..\..\external\GLC_lib\src\geometry\glc_3drep.cpp"
@@ -6128,157 +6125,8 @@
 						>
 					</File>
 				</Filter>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_boundingbox.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_boundingbox.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_cachemanager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_cachemanager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_config.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_context.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_context.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_contextmanager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_contextmanager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_contextshareddata.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_contextshareddata.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_errorlog.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_errorlog.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_exception.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_exception.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_ext.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_ext.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_factory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_factory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_fileformatexception.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_fileformatexception.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_global.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_global.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_log.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_log.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_object.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_object.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_openglexception.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_openglexception.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_renderstatistics.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_renderstatistics.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_state.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_state.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_tracelog.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_tracelog.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_uniformshaderdata.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\GLC_lib\src\glc_uniformshaderdata.h"
-					>
-				</File>
 				<Filter
 					Name="glu"
-					Filter=""
 					>
 					<File
 						RelativePath="..\..\external\GLC_lib\src\glu\glc_glu.h"
@@ -6291,7 +6139,6 @@
 				</Filter>
 				<Filter
 					Name="io"
-					Filter=""
 					>
 					<File
 						RelativePath="..\..\external\GLC_lib\src\io\glc_3dstoworld.cpp"
@@ -6396,7 +6243,6 @@
 				</Filter>
 				<Filter
 					Name="maths"
-					Filter=""
 					>
 					<File
 						RelativePath="..\..\external\GLC_lib\src\maths\glc_geomtools.cpp"
@@ -6469,7 +6315,6 @@
 				</Filter>
 				<Filter
 					Name="sceneGraph"
-					Filter=""
 					>
 					<File
 						RelativePath="..\..\external\GLC_lib\src\sceneGraph\glc_3dviewcollection.cpp"
@@ -6570,7 +6415,6 @@
 				</Filter>
 				<Filter
 					Name="shading"
-					Filter=""
 					>
 					<File
 						RelativePath="..\..\external\GLC_lib\src\shading\glc_light.cpp"
@@ -6631,7 +6475,6 @@
 				</Filter>
 				<Filter
 					Name="viewport"
-					Filter=""
 					>
 					<File
 						RelativePath="..\..\external\GLC_lib\src\viewport\glc_camera.cpp"
@@ -6782,16 +6625,10 @@
 		</Filter>
 		<Filter
 			Name="qtmoc"
-			Filter=""
 			>
 			<Filter
 				Name="glc"
-				Filter=""
 				>
-				<File
-					RelativePath="..\..\qtmoc\glc\moc_JlCompress.cpp"
-					>
-				</File>
 				<File
 					RelativePath="..\..\qtmoc\glc\moc_atmosphere.cpp"
 					>
@@ -7310,6 +7147,10 @@
 				</File>
 				<File
 					RelativePath="..\..\qtmoc\glc\moc_ioapi.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\qtmoc\glc\moc_JlCompress.cpp"
 					>
 				</File>
 				<File

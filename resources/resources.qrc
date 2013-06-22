@@ -18,6 +18,10 @@
     <file>icon/next.png</file>
     <file>icon/previous.png</file>
     <file>icon/about.png</file>
+    <file>icon/warning.png</file>
+    <file>icon/preferences/perfomance.png</file>
+    <file>icon/preferences/engineering.png</file>
+    <file>icon/preferences/other.png</file>
     
     <file>icon/none.png</file>
     <file>icon/add.png</file>

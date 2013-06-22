@@ -31,6 +31,7 @@
 
 #include "fwe_main.h"
 #include "fwe_evds.h"
+#include "fwe_dialog_preferences.h"
 #include "rdrs.h"
 
 
@@ -46,6 +47,25 @@ MainWindow::MainWindow() {
 	connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(updateInterface()));
 	windowMapper = new QSignalMapper(this);
 	connect(windowMapper, SIGNAL(mapped(QWidget*)), this, SLOT(setActiveSubWindow(QWidget*)));
+
+	//Define default preferences
+	fw_editor_settings->setValue ("rendering.lod_count",			
+		fw_editor_settings->value("rendering.lod_count",			6));
+	fw_editor_settings->setValue ("rendering.lod_quality",		
+		fw_editor_settings->value("rendering.lod_quality",			32.0f));
+	fw_editor_settings->setValue ("rendering.min_pixel_culling",	
+		fw_editor_settings->value("rendering.min_pixel_culling",	4));
+	fw_editor_settings->setValue ("rendering.min_resolution",		
+		fw_editor_settings->value("rendering.min_resolution",		0.01f));
+	fw_editor_settings->setValue ("rendering.no_lods",			
+		fw_editor_settings->value("rendering.no_lods",				false));
+	fw_editor_settings->setValue ("rendering.use_fxaa",			
+		fw_editor_settings->value("rendering.use_fxaa",				true));
+	fw_editor_settings->setValue ("ui.autosave",					
+		fw_editor_settings->value("ui.autosave",					30000));
+
+	//No preferences dialog
+	preferencesDialog = 0;
 
 	//Create everything
 	createActions();
@@ -222,6 +242,17 @@ void MainWindow::paste() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+void MainWindow::preferences() {
+	if (!preferencesDialog) {
+		preferencesDialog = new PreferencesDialog();
+	}
+	preferencesDialog->exec();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 void MainWindow::about() {
 	QString ivss_version = "r1a";
 
@@ -258,9 +289,9 @@ void MainWindow::updateInterface() {
 	bool hasMdiChild = (activeMdiChild() != 0);
 	saveAct->setEnabled(hasMdiChild);
 	saveAsAct->setEnabled(hasMdiChild);
-	pasteAct->setEnabled(hasMdiChild);
-	copyAct->setEnabled(hasMdiChild);
-	cutAct->setEnabled(hasMdiChild);
+	pasteAct->setEnabled(false);//hasMdiChild);
+	copyAct->setEnabled(false);//hasMdiChild);
+	cutAct->setEnabled(false);//hasMdiChild);
 	closeAct->setEnabled(hasMdiChild);
 	closeAllAct->setEnabled(hasMdiChild);
 	tileAct->setEnabled(hasMdiChild);
@@ -292,9 +323,6 @@ void MainWindow::updateInterface() {
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::updateWindowMenu() {
 	windowMenu->clear();
-	windowMenu->addAction(closeAct);
-	windowMenu->addAction(closeAllAct);
-	windowMenu->addSeparator();
 	windowMenu->addAction(tileAct);
 	windowMenu->addAction(cascadeAct);
 	windowMenu->addSeparator();
@@ -434,6 +462,10 @@ void MainWindow::createActions() {
 							  "selection"));
 	connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 
+	preferencesAct = new QAction(QIcon(":/icon/preferences.png"), tr("&Preferences..."), this);
+	preferencesAct->setStatusTip(tr("Edit FoxWorks Editor preferences and configuration"));
+	connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
+
 	closeAct = new QAction(QIcon(":/icon/close.png"), tr("Cl&ose"), this);
 	closeAct->setStatusTip(tr("Close the active window"));
 	connect(closeAct, SIGNAL(triggered()),
@@ -484,18 +516,20 @@ void MainWindow::createMenus() {
 	for (int i = 0; i < FWE_EDITOR_MAX_RECENT_FILES; ++i) {
 		recentMenu->addAction(recentFiles[i]);
 	}
+	fileMenu->addSeparator();
+	fileMenu->addAction(closeAct);
+	fileMenu->addAction(closeAllAct);
 	fileMenu->addAction(saveAct);
 	fileMenu->addAction(saveAsAct);
-
-	//fileMenu->addSeparator();
-
 	fileMenu->addSeparator();
 	fileMenu->addAction(exitAct);
 
-	//editMenu = menuBar()->addMenu(tr("&Edit"));
-	//editMenu->addAction(cutAct);
-	//editMenu->addAction(copyAct);
-	//editMenu->addAction(pasteAct);
+	editMenu = menuBar()->addMenu(tr("&Edit"));
+	editMenu->addAction(cutAct);
+	editMenu->addAction(copyAct);
+	editMenu->addAction(pasteAct);
+	editMenu->addSeparator();
+	editMenu->addAction(preferencesAct);
 
 	viewMenu = menuBar()->addMenu(tr("&View"));
 
@@ -594,7 +628,7 @@ ChildWindow::ChildWindow(MainWindow* window) {
 	//Enable autosave for this window
 	QTimer *timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(autoSave()));
-	timer->start(fw_editor_settings->value("ui.autosave",30000).toInt());
+	timer->start(fw_editor_settings->value("ui.autosave").toInt());
 }
 
 

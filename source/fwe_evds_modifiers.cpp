@@ -205,7 +205,7 @@ void ObjectModifiersManager::createModifiedCopy(Object* modifier, Object* object
 			for (int k = 0; k < vector3_count; k++) {
 				//Create transformation
 				GLC_Matrix4x4 transformation;
-				if (object->getString("pattern") == "circular") {
+				if (modifier->getString("pattern") == "circular") {
 					//Get circle parameters
 					QVector3D normal = vector1;
 					QVector3D direction = vector2;

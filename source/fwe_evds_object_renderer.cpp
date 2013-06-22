@@ -47,14 +47,14 @@ ObjectRenderer::ObjectRenderer(Object* in_object) {
 	glcInstance = new GLC_3DViewInstance(*glcMeshRep);
 
 	//Read LOD count and make sure it's sane
-	int lod_count = fw_editor_settings->value("rendering.lod_count",6).toInt();
+	int lod_count = fw_editor_settings->value("rendering.lod_count").toInt();
 	if (lod_count < 1) lod_count = 1;
 	if (lod_count > 20) lod_count = 20;
 
 	//Create mesh generators
 	lodMeshGenerator = new ObjectLODGenerator(object,lod_count);
 	connect(lodMeshGenerator, SIGNAL(signalLODsReady()), this, SLOT(lodMeshesGenerated()), Qt::QueuedConnection);
-	if (fw_editor_settings->value("rendering.no_lods",false) == false) {
+	if (fw_editor_settings->value("rendering.no_lods") == false) {
 		lodMeshGenerator->start();
 	}
 }
@@ -141,7 +141,7 @@ void ObjectRenderer::meshChanged() {
 			ObjectLODGeneratorResult result;
 				EVDS_MESH_GENERATEEX info = { 0 };
 				info.resolution = 32.0f;
-				info.min_resolution = fw_editor_settings->value("rendering.min_resolution",0.01f).toFloat();
+				info.min_resolution = fw_editor_settings->value("rendering.min_resolution").toFloat();
 				info.flags = EVDS_MESH_USE_DIVISIONS;
 
 				EVDS_Mesh_GenerateEx(temp_object,&mesh,&info);
@@ -284,7 +284,7 @@ void ObjectLODGeneratorResult::clear() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 float ObjectLODGenerator::getLODResolution(int lod) {
-	float quality = fw_editor_settings->value("rendering.lod_quality",32.0f).toFloat();
+	float quality = fw_editor_settings->value("rendering.lod_quality").toFloat();
 	return quality * (1 + lod);
 }
 
@@ -370,7 +370,7 @@ void ObjectLODGenerator::run() {
 				EVDS_MESH* mesh;
 				EVDS_MESH_GENERATEEX info = { 0 };
 				info.resolution = getLODResolution(numLods-lod-1);
-				info.min_resolution = fw_editor_settings->value("rendering.min_resolution",0.01f).toFloat();
+				info.min_resolution = fw_editor_settings->value("rendering.min_resolution").toFloat();
 				info.flags = EVDS_MESH_USE_DIVISIONS;
 
 				EVDS_Mesh_GenerateEx(work_object,&mesh,&info);
