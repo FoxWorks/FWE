@@ -301,6 +301,8 @@ void Object::setType(const QString &type) {
 	editor->setModified();
 	EVDS_Object_SetType(object,type.toUtf8().data());
 	update(false);
+
+	editor->getModifiersManager()->modifierChanged(this);
 }
 
 

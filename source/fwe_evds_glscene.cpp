@@ -255,7 +255,7 @@ void GLScene::saveScreenshot() {
 	format.setSamples(16);
 
 	//Determine best maximum size
-	float aspectRatio = ((float)previousHeight) / ((float)previousWidth);
+	float aspectRatio = previousRect.height() / previousRect.width();
 	int width = fw_editor_settings->value("screenshot.width").toInt();
 	int height = width*aspectRatio;
 
@@ -489,8 +489,7 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 		#endif
 
 		viewport->initGl();
-		previousWidth = 0;
-		previousHeight = 0;
+		previousRect = QRectF(0,0,0,0);
 		doCenter();
 
 		//Load shaders
@@ -500,20 +499,21 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	//Setup native rendering and viewport size
 	painter->beginNativePainting();
 	viewport->setWinGLSize(rect.width(), rect.height());
-	if ((rect.width() != previousWidth) || (rect.height() != previousHeight)) {
-		geometryChanged(rect);
-		previousWidth = rect.width();
-		previousHeight = rect.height();
+	geometryChanged(rect);
+	if (rect != previousRect) {
+		previousRect = rect;
 
 		if (fbo_outline) delete fbo_outline;
 		if (fbo_outline_selected) delete fbo_outline_selected;
 		if (fbo_shadow) delete fbo_shadow;
 		if (fbo_fxaa) delete fbo_fxaa;
-		fbo_outline = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
-		fbo_outline_selected = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
-		fbo_shadow = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
+		fbo_outline = new QGLFramebufferObject((int)rect.width(),(int)rect.height(),QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
+		fbo_outline_selected = new QGLFramebufferObject((int)rect.width(),(int)rect.height(),QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
+		fbo_shadow = new QGLFramebufferObject((int)rect.width(),(int)rect.height(),QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
 		if (fw_editor_settings->value("rendering.use_fxaa") == true) {
-			fbo_fxaa = new QGLFramebufferObject(previousWidth,previousHeight,QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
+			fbo_fxaa = new QGLFramebufferObject((int)rect.width(),(int)rect.height(),QGLFramebufferObject::Depth,GL_TEXTURE_2D,GL_RGBA8);
+		} else {
+			fbo_fxaa = 0;
 		}
 	}
 

@@ -302,6 +302,7 @@ void ObjectModifiersManager::objectPositionChanged(Object* object) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectModifiersManager::modifierChanged(Object* object) {
+	//if (object->getType() == "modifier")
 	if (!initializing) updateModifiers();
 }
 

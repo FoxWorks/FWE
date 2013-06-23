@@ -118,7 +118,7 @@ namespace EVDS {
 		bool sceneWireframe;
 		bool sceneInitialized;
 		bool makingScreenshot;
-		int previousWidth,previousHeight;
+		QRectF previousRect;
 
 		//Shaders and framebuffers
 		QGLFramebufferObject* fbo_outline;
