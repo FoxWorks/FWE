@@ -122,6 +122,7 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window), activeThreads(0
 
 	//Create informational docks
 	createInformationDock();
+	createCommentsDock();
 
 	//Setup initial layout
 	list_dock->raise();
@@ -212,6 +213,12 @@ void Editor::createMenuToolbar() {
 	action = new QAction(tr("Object &Information"), this);
 	action->setStatusTip("Show information about selected object or the current EVDS file");
 	connect(action, SIGNAL(triggered()), this, SLOT(showInformation()));
+	actions.append(action);
+	window->getMainWindow()->getViewMenu()->addAction(action);
+
+	action = new QAction(tr("Object &Comments"), this);
+	action->setStatusTip("Show comments associated with the selected object");
+	connect(action, SIGNAL(triggered()), this, SLOT(showComments()));
 	actions.append(action);
 	window->getMainWindow()->getViewMenu()->addAction(action);
 
@@ -394,6 +401,31 @@ void Editor::createInformationDock() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+/// @brief 
+////////////////////////////////////////////////////////////////////////////////
+void Editor::createCommentsDock() {
+	comments = new QTextEdit();
+	comments->setObjectName("EVDS_Comments");
+	connect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
+
+	comments_dock = new QDockWidget(tr("Object Comments"), this);
+	comments_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+	comments_dock->setAllowedAreas(Qt::AllDockWidgetAreas);
+	comments_dock->setWidget(comments);
+	tabifyDockWidget(bodyinfo_dock,comments_dock);
+	//addDockWidget(Qt::RightDockWidgetArea,comments_dock);
+
+	comments->setMaximumHeight(135);
+}
+
+void Editor::commentsChanged() {
+	if (selected) {
+		selected->setVariable("comments",comments->toPlainText());
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::showCutsection() {
@@ -541,6 +573,7 @@ void Editor::selectObject(const QModelIndex& index) {
 		selected = NULL;
 
 		//Update information
+		comments->setText("");
 		updateInformation(true);
 		updateObject(NULL);
 		return;
@@ -572,6 +605,9 @@ void Editor::selectObject(const QModelIndex& index) {
 	} else {
 		csection_layout->setCurrentWidget(csection_none);
 	}
+
+	//Update comments
+	comments->setText(object->getString("comments"));
 
 	//Update information
 	updateInformation(true);
@@ -723,6 +759,7 @@ void Editor::cleanupTimer() {
 
 	//Small hack for bodyinfo dock
 	bodyinfo->setMaximumHeight(csection->maximumHeight());
+	comments->setMaximumHeight(csection->maximumHeight());
 }
 
 
@@ -933,4 +970,9 @@ void Editor::showHierarchy() {
 void Editor::showInformation() {
 	bodyinfo_dock->show();
 	bodyinfo_dock->raise();
+}
+
+void Editor::showComments() {
+	comments_dock->show();
+	comments_dock->raise();
 }

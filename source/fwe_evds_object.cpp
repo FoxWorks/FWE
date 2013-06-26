@@ -438,7 +438,7 @@ void Object::setVariable(const QString &name, const QString &value) {
 		if (EVDS_Object_AddVariable(object,name.toAscii().data(),EVDS_VARIABLE_TYPE_STRING,&variable) == EVDS_OK) {
 			EVDS_Variable_SetString(variable,value.toAscii().data(),value.toAscii().count());
 		}
-		update(true);
+		if (name != "comments") update(true);
 	}
 	//update(false);
 }

@@ -5,3 +5,11 @@
 	border-color: black;
 	font: "Courier New";
 }
+
+*#EVDS_Comments {
+	background-color: white;
+	border-style: solid;
+	border-width: 2px;
+	border-color: black;
+	font: "Courier New";
+}
