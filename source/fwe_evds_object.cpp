@@ -407,7 +407,7 @@ void Object::setVariable(const QString &name, double value) {
 		update(false);
 	} else {
 		EVDS_VARIABLE* variable;
-		EVDS_Object_AddFloatVariable(object,name.toAscii().data(),value,&variable);
+		EVDS_Object_AddRealVariable(object,name.toAscii().data(),value,&variable);
 		EVDS_Variable_SetReal(variable,value);
 		update(true);
 	}

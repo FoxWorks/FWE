@@ -524,7 +524,7 @@ QAM256
 	<object_vars name="gimbal">
 		<var>
 			<type>double</type>
-			<variable>pitch_min</variable>
+			<variable>pitch.min</variable>
 			<name>Pitch min</name>
 			<step>0.1</step>
 			<units>deg</units>
@@ -532,7 +532,7 @@ QAM256
 		</var>
 		<var>
 			<type>double</type>
-			<variable>pitch_max</variable>
+			<variable>pitch.max</variable>
 			<name>Pitch max</name>
 			<step>0.1</step>
 			<units>deg</units>
@@ -540,7 +540,7 @@ QAM256
 		</var>
 		<var>
 			<type>double</type>
-			<variable>pitch_rate</variable>
+			<variable>pitch.rate</variable>
 			<name>Pitch max rate</name>
 			<step>0.1</step>
 			<units>deg/sec</units>
@@ -548,7 +548,7 @@ QAM256
 		</var>
 		<var>
 			<type>double</type>
-			<variable>pitch_bits</variable>
+			<variable>pitch.bits</variable>
 			<name>Pitch command width</name>
 			<digits>0</digits>
 			<step>1</step>
@@ -557,7 +557,7 @@ QAM256
 		</var>
 		<var>
 			<type>double</type>
-			<variable>yaw_min</variable>
+			<variable>yaw.min</variable>
 			<name>Yaw min</name>
 			<step>0.1</step>
 			<units>deg</units>
@@ -565,7 +565,7 @@ QAM256
 		</var>
 		<var>
 			<type>double</type>
-			<variable>yaw_max</variable>
+			<variable>yaw.max</variable>
 			<name>Yaw max</name>
 			<step>0.1</step>
 			<units>deg</units>
@@ -573,7 +573,7 @@ QAM256
 		</var>
 		<var>
 			<type>double</type>
-			<variable>yaw_rate</variable>
+			<variable>yaw.rate</variable>
 			<name>Yaw max rate</name>
 			<step>0.1</step>
 			<units>deg/sec</units>
@@ -581,7 +581,7 @@ QAM256
 		</var>
 		<var>
 			<type>double</type>
-			<variable>yaw_bits</variable>
+			<variable>yaw.bits</variable>
 			<name>Yaw command width</name>
 			<digits>0</digits>
 			<step>1</step>
