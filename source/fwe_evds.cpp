@@ -449,10 +449,10 @@ void Editor::rootInitialized() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Callback from when object was modified
 ////////////////////////////////////////////////////////////////////////////////
-void Editor::setModified() {
+void Editor::setModified(bool informationUpdate) {
 	window->setModified();
 	initializer->updateObject();
-	updateInformation(false);
+	if (informationUpdate) updateInformation(false);
 }
 
 
@@ -503,13 +503,40 @@ void Editor::updateInformation(bool ready) {
 			.arg(object->getInformationVariable("fuel_volume"));
 		}
 		if (object->getType() == "rocket_engine") {
-			information = information + tr("Combustion:\n");
-			information = information + tr("- O:F ratio: %1\n")
-			.arg(object->getInformationVariable("combustion.of_ratio"));
-			information = information + tr("- Temperature: %1 K\n")
-			.arg(object->getInformationVariable("combustion.temperature"));
-			information = information + tr("- Pressure: %1 Pa\n")
-			.arg(object->getInformationVariable("combustion.pressure"));
+			information = information + tr("\nVacuum parameters:\n");
+			information = information + tr(
+				"Isp: %1 sec\n"
+				"Ve: %2 m/s\n"
+				"Thrust: %3 kN\n"
+				"Mass flow: %4 (O: %5, F: %6) kg/sec\n")
+			.arg(object->getInformationVariable("vacuum.isp"),0,'G',3)
+			.arg(object->getInformationVariable("vacuum.exhaust_velocity"),0,'F',0)
+			.arg(object->getInformationVariable("vacuum.thrust")/1e3,0,'G',5)
+			.arg(object->getInformationVariable("vacuum.mass_flow"),0,'G',3)
+			.arg(object->getInformationVariable("vacuum.oxidizer_flow"),0,'G',3)
+			.arg(object->getInformationVariable("vacuum.fuel_flow"),0,'G',3);
+
+			information = information + tr("\n1 bar parameters:\n");
+			information = information + tr(
+				"Isp: %1 sec\n"
+				"Ve: %2 m/s\n"
+				"Thrust: %3 kN\n"
+				"Mass flow: %4 (O: %5, F: %6) kg/sec\n")
+			.arg(object->getInformationVariable("atmospheric.isp"),0,'G',3)
+			.arg(object->getInformationVariable("atmospheric.exhaust_velocity"),0,'F',0)
+			.arg(object->getInformationVariable("atmospheric.thrust")/1e3,0,'G',5)
+			.arg(object->getInformationVariable("atmospheric.mass_flow"),0,'G',3)
+			.arg(object->getInformationVariable("atmospheric.oxidizer_flow"),0,'G',3)
+			.arg(object->getInformationVariable("atmospheric.fuel_flow"),0,'G',3);
+
+			information = information + tr("\nCombustion:\n");
+			information = information + tr(
+				"O:F ratio: %1\n"
+				"Temperature: %2 K\n"
+				"Pressure: %3 Pa\n")
+			.arg(object->getInformationVariable("combustion.of_ratio"),0,'G',3)
+			.arg(object->getInformationVariable("combustion.temperature"),0,'G',3)
+			.arg(object->getInformationVariable("combustion.pressure"),0,'G',3);
 		}
 
 		QVector3D ix = object->getInformationVector("total_ix");

@@ -418,7 +418,7 @@ void Object::setVariable(const QString &name, double value) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Object::setVariable(const QString &name, const QString &value) {
-	editor->setModified();
+	editor->setModified(name != "comments");
 
 	if (name[0] == '@') {
 		int specialIndex = name.right(1).toInt();
@@ -588,25 +588,33 @@ void Object::update(bool visually) {
 void Object::recursiveUpdateInformation(ObjectInitializer* initializer) {
 	//Update information about the current object
 	TemporaryObject* temporary_object = initializer->getObject(this);
+	EVDS_OBJECT* evds_object = temporary_object->getEVDSObject();
 
-	//FIXME: this sucks
-	info_vectors["cm"] = temporary_object->getVector("cm");
-	info_vectors["total_cm"] = temporary_object->getVector("total_cm");
-	info_vectors["jx"] = temporary_object->getVector("jx");
-	info_vectors["jy"] = temporary_object->getVector("jy");
-	info_vectors["jz"] = temporary_object->getVector("jz");
-	info_vectors["total_ix"] = temporary_object->getVector("total_ix");
-	info_vectors["total_iy"] = temporary_object->getVector("total_iy");
-	info_vectors["total_iz"] = temporary_object->getVector("total_iz");
-	info_variables["mass"] = temporary_object->getVariable("mass");
-	info_variables["total_mass"] = temporary_object->getVariable("total_mass");
-	info_variables["fuel_mass"] = temporary_object->getVariable("fuel_mass");
-	info_variables["fuel_volume"] = temporary_object->getVariable("fuel_volume");
-	info_variables["combustion.of_ratio"] = temporary_object->getVariable("combustion.of_ratio");
+	SIMC_LIST* list;
+	SIMC_LIST_ENTRY* entry;
 
-	//FIXME: loop this from info_vectors, info_variables:
-	info_defined["cm"] = temporary_object->isVariableDefined("cm");
-	info_defined["total_cm"] = temporary_object->isVariableDefined("total_cm");
+	//Scan all variables
+	EVDS_Object_GetVariables(evds_object,&list);
+	entry = SIMC_List_GetFirst(list);
+	while (entry) {
+		EVDS_VARIABLE* variable = (EVDS_VARIABLE*)SIMC_List_GetData(list,entry);
+
+		//Get name and type to fill out info_vectors/info_variables arrays
+		char name_str[65] = { 0 };
+		EVDS_VARIABLE_TYPE type;
+		EVDS_Variable_GetName(variable,name_str,64);
+		EVDS_Variable_GetType(variable,&type);
+
+		QString name(name_str);
+		if (type == EVDS_VARIABLE_TYPE_FLOAT) { //Floating point var
+			info_variables[name] = temporary_object->getVariable(name);
+		} else if (type == EVDS_VARIABLE_TYPE_VECTOR) { //Vector var
+			info_vectors[name] = temporary_object->getVector(name);
+		}
+
+		info_defined[name] = temporary_object->isVariableDefined(name);
+		entry = SIMC_List_GetNext(list,entry);
+	}
 
 	delete temporary_object;
 

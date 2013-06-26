@@ -79,7 +79,7 @@ namespace EVDS {
 		bool loadFile(const QString &fileName);
 		bool saveFile(const QString &fileName);
 		void updateInterface(bool isInFront);
-		void setModified();
+		void setModified(bool informationUpdate = true);
 
 		ChildWindow* getWindow() { return window; }
 		GLScene* getGLScene() { return glscene; }

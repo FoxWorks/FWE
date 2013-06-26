@@ -155,50 +155,195 @@ Modifier
 	<object_vars name="rocket_engine">
 		<var>
 			<type>double</type>
-			<variable>exit_radius</variable>
+			<variable>nozzle.exit_radius</variable>
 			<name>Exit radius</name>
 			<step>0.10</step>
 			<units>m</units>
+			<group>Nozzle</group>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>chamber_radius</variable>
-			<name>Chamber radius</name>
-			<step>0.10</step>
-			<units>m</units>
-			<description></description>
-		</var>
-		<var>
-			<type>double</type>
-			<variable>chamber_length</variable>
-			<name>Chamber length</name>
-			<step>0.02</step>
-			<units>m</units>
-			<description></description>
-		</var>
-		<var>
-			<type>double</type>
-			<variable>area_ratio</variable>
+			<variable>nozzle.area_ratio</variable>
 			<name>Throat area ratio</name>
 			<step>0.10</step>
 			<units></units>
+			<group>Nozzle</group>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>nozzle_length</variable>
+			<variable>nozzle.length</variable>
 			<name>Nozzle length</name>
 			<step>0.10</step>
 			<units>m</units>
+			<group>Nozzle</group>
 			<description></description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>divergence_angle</variable>
+			<variable>nozzle.divergence_angle</variable>
 			<name>Divergence angle</name>
 			<step>1.0</step>
 			<units>deg</units>
+			<group>Nozzle</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>combustion.chamber_radius</variable>
+			<name>Chamber radius</name>
+			<step>0.10</step>
+			<units>m</units>
+			<group>Combustion chamber</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>combustion.chamber_length</variable>
+			<name>Chamber length</name>
+			<step>0.02</step>
+			<units>m</units>
+			<group>Combustion chamber</group>
+			<description></description>
+		</var>
+		<var>
+			<type>enum</type>
+			<variable>combustion.fuel</variable>
+			<name>Fuel</name>
+			<values>
+@materials.oxidizer
+@materials.fuel
+			</values>
+			<group>Combustion chamber</group>
+			<description></description>
+		</var>
+		<var>
+			<type>enum</type>
+			<variable>combustion.oxidizer</variable>
+			<name>Oxidizer</name>
+			<values>
+@materials.oxidizer
+@materials.fuel
+			</values>
+			<group>Combustion chamber</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>combustion.of_ratio</variable>
+			<name>Oxidier/Fuel ratio</name>
+			<step>0.1</step>
+			<group>Combustion chamber</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>control.min_throttle</variable>
+			<name>Minimum throttle</name>
+			<step>1</step>
+			<units>%</units>
+			<group>Engine controller</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>control.max_throttle</variable>
+			<name>Maximum throttle</name>
+			<step>1</step>
+			<units>%</units>
+			<group>Engine controller</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>control.throttle_speed</variable>
+			<name>Throttle speed</name>
+			<step>1</step>
+			<units>%/sec</units>
+			<group>Engine controller</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>control.startup_time</variable>
+			<name>Startup time</name>
+			<step>0.1</step>
+			<units>sec</units>
+			<group>Engine controller</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>control.shutdown_time</variable>
+			<name>Shutdown time</name>
+			<step>0.1</step>
+			<units>sec</units>
+			<group>Engine controller</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>vacuum.isp</variable>
+			<name>Isp</name>
+			<units>sec</units>
+			<group>Vacuum parameters</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>vacuum.thrust</variable>
+			<name>Thrust</name>
+			<units>N</units>
+			<group>Vacuum parameters</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>vacuum.fuel_flow</variable>
+			<name>Fuel flow</name>
+			<units>kg/sec</units>
+			<group>Vacuum parameters</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>vacuum.oxidizer_flow</variable>
+			<name>Oxidizer flow</name>
+			<units>kg/sec</units>
+			<group>Vacuum parameters</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>atmospheric.isp</variable>
+			<name>Isp</name>
+			<units>sec</units>
+			<group>Atmosphere (1 bar) parameters</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>atmospheric.thrust</variable>
+			<name>Thrust</name>
+			<units>N</units>
+			<group>Atmosphere (1 bar) parameters</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>atmospheric.fuel_flow</variable>
+			<name>Fuel flow</name>
+			<units>kg/sec</units>
+			<group>Atmosphere (1 bar) parameters</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>atmospheric.oxidizer_flow</variable>
+			<name>Oxidizer flow</name>
+			<units>kg/sec</units>
+			<group>Atmosphere (1 bar) parameters</group>
 			<description></description>
 		</var>
 	</object_vars>
