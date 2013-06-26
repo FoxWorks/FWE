@@ -413,6 +413,7 @@ void Editor::createCommentsDock() {
 	comments_dock->setAllowedAreas(Qt::AllDockWidgetAreas);
 	comments_dock->setWidget(comments);
 	tabifyDockWidget(bodyinfo_dock,comments_dock);
+	bodyinfo_dock->raise();
 	//addDockWidget(Qt::RightDockWidgetArea,comments_dock);
 
 	comments->setMaximumHeight(135);
@@ -500,6 +501,15 @@ void Editor::updateInformation(bool ready) {
 			.arg(object->getInformationVariable("fuel_mass"));
 			information = information + tr("Fuel volume: %1 m\xB3\n")
 			.arg(object->getInformationVariable("fuel_volume"));
+		}
+		if (object->getType() == "rocket_engine") {
+			information = information + tr("Combustion:\n");
+			information = information + tr("- O:F ratio: %1\n")
+			.arg(object->getInformationVariable("combustion.of_ratio"));
+			information = information + tr("- Temperature: %1 K\n")
+			.arg(object->getInformationVariable("combustion.temperature"));
+			information = information + tr("- Pressure: %1 Pa\n")
+			.arg(object->getInformationVariable("combustion.pressure"));
 		}
 
 		QVector3D ix = object->getInformationVector("total_ix");
@@ -855,7 +865,7 @@ bool Editor::loadFile(const QString &fileName) {
 	}
 
 	//Run old version conversions
-	if (info.version < 100) {
+	if (info.version == 0) {
 		FWE_LoadFile_FixRxRyBug(root);
 	}
 

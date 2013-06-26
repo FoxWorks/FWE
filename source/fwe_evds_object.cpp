@@ -589,6 +589,7 @@ void Object::recursiveUpdateInformation(ObjectInitializer* initializer) {
 	//Update information about the current object
 	TemporaryObject* temporary_object = initializer->getObject(this);
 
+	//FIXME: this sucks
 	info_vectors["cm"] = temporary_object->getVector("cm");
 	info_vectors["total_cm"] = temporary_object->getVector("total_cm");
 	info_vectors["jx"] = temporary_object->getVector("jx");
@@ -601,6 +602,7 @@ void Object::recursiveUpdateInformation(ObjectInitializer* initializer) {
 	info_variables["total_mass"] = temporary_object->getVariable("total_mass");
 	info_variables["fuel_mass"] = temporary_object->getVariable("fuel_mass");
 	info_variables["fuel_volume"] = temporary_object->getVariable("fuel_volume");
+	info_variables["combustion.of_ratio"] = temporary_object->getVariable("combustion.of_ratio");
 
 	//FIXME: loop this from info_vectors, info_variables:
 	info_defined["cm"] = temporary_object->isVariableDefined("cm");
