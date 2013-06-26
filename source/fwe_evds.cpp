@@ -406,7 +406,6 @@ void Editor::createInformationDock() {
 void Editor::createCommentsDock() {
 	comments = new QTextEdit();
 	comments->setObjectName("EVDS_Comments");
-	connect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
 
 	comments_dock = new QDockWidget(tr("Object Comments"), this);
 	comments_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
@@ -644,7 +643,9 @@ void Editor::selectObject(const QModelIndex& index) {
 	}
 
 	//Update comments
+	disconnect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
 	comments->setText(object->getString("comments"));
+	connect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
 
 	//Update information
 	updateInformation(true);

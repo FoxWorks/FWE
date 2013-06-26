@@ -133,9 +133,11 @@ void CrossSectionEditor::sectionSelected(int index) {
 		tab->setTabText(index,tr("%1").arg(index+1));
 		tab->addTab("");
 
-		//Update geometry
-		object->update(true);
-		object->getEVDSEditor()->setModified();
+		//Update geometry, unless this is the first cross-section to be created
+		if (index != 0) {
+			object->update(true);
+			object->getEVDSEditor()->setModified();
+		}
 	}
 	sections->setCurrentIndex(index);
 	object->update(false);
