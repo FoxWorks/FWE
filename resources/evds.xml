@@ -24,6 +24,8 @@ train_wheels
 Train wheels
 modifier
 Modifier
+wiring.connector
+Wiring - connector
 			</values>
 		</var>
 		<var>
@@ -762,7 +764,6 @@ Point-defined
 			<type>double</type>
 			<variable>gauge</variable>
 			<name>Track gauge</name>
-			<digits>3</digits>
 			<units>m</units>
 			<step>0.1</step>
 			<description></description>
@@ -771,7 +772,6 @@ Point-defined
 			<type>double</type>
 			<variable>outer_diameter</variable>
 			<name>Outer diameter</name>
-			<digits>3</digits>
 			<units>m</units>
 			<step>0.1</step>
 			<description></description>
@@ -780,7 +780,6 @@ Point-defined
 			<type>double</type>
 			<variable>inner_diameter</variable>
 			<name>Inner diameter</name>
-			<digits>3</digits>
 			<units>m</units>
 			<step>0.1</step>
 			<description></description>
@@ -789,7 +788,6 @@ Point-defined
 			<type>double</type>
 			<variable>axle_diameter</variable>
 			<name>Axle diameter</name>
-			<digits>3</digits>
 			<units>m</units>
 			<step>0.1</step>
 			<description></description>
@@ -798,7 +796,6 @@ Point-defined
 			<type>double</type>
 			<variable>disk_thickness</variable>
 			<name>Disk thickness</name>
-			<digits>3</digits>
 			<units>m</units>
 			<step>0.1</step>
 			<description></description>
@@ -807,7 +804,6 @@ Point-defined
 			<type>double</type>
 			<variable>rim_height</variable>
 			<name>Rim height</name>
-			<digits>3</digits>
 			<units>m</units>
 			<step>0.1</step>
 			<description></description>
@@ -816,7 +812,6 @@ Point-defined
 			<type>double</type>
 			<variable>flange_thickness</variable>
 			<name>Flange thickness</name>
-			<digits>3</digits>
 			<units>m</units>
 			<step>0.1</step>
 			<description></description>
@@ -825,7 +820,6 @@ Point-defined
 			<type>double</type>
 			<variable>flange_height</variable>
 			<name>Flange height</name>
-			<digits>3</digits>
 			<units>m</units>
 			<step>0.1</step>
 			<description></description>
@@ -834,7 +828,6 @@ Point-defined
 			<type>double</type>
 			<variable>hub_diameter</variable>
 			<name>Hub diameter</name>
-			<digits>3</digits>
 			<units>m</units>
 			<step>0.1</step>
 			<description></description>
@@ -843,9 +836,44 @@ Point-defined
 			<type>double</type>
 			<variable>hub_height</variable>
 			<name>Hub height</name>
-			<digits>3</digits>
 			<units>m</units>
 			<step>0.1</step>
+			<description></description>
+		</var>
+	</object_vars>		
+	<object_vars name="wiring.connector">
+		<var>
+			<type>double</type>
+			<variable>wire.radius</variable>
+			<name>Wire radius</name>
+			<units>m</units>
+			<step>0.001</step>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>pin_padding</variable>
+			<name>Pin padding</name>
+			<units>m</units>
+			<step>0.001</step>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>pin_count.x</variable>
+			<name>X</name>
+			<digits>0</digits>
+			<step>1</step>
+			<group>Connector pins count</group>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>pin_count.y</variable>
+			<name>Y</name>
+			<digits>0</digits>
+			<step>1</step>
+			<group>Connector pins count</group>
 			<description></description>
 		</var>
 	</object_vars>		

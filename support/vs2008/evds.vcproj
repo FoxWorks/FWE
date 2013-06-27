@@ -1293,6 +1293,10 @@
 					RelativePath="..\..\external\evds\source\evds_common\evds_prop_rk4.c"
 					>
 				</File>
+				<File
+					RelativePath="..\..\external\evds\source\evds_common\evds_wiring.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="evds_core"
