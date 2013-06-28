@@ -145,6 +145,9 @@ void ObjectModifiersManager::setInstancePosition(ObjectRendererModifierInstance*
 	//Add matrix of current transformation again (go into global coords)
 	modifier_instance->instance->multMatrix(modifier_instance->modifier_instance->matrix());
 
+	//Update visibility of this object
+	modifier_instance->instance->setVisibility(modifier_instance->real_base_instance->isVisible());
+
 	//Add/replace to update position
 	GLScene* glview = editor->getGLScene();
 	if (glview->getCollection()->contains(modifier_instance->instance->id())) {

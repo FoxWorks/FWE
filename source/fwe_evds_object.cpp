@@ -402,14 +402,25 @@ void Object::setVariable(const QString &name, double value) {
 			case 6: roll = EVDS_RAD(value); break;
 			case 8: EVDS_Object_SetUID(object,(unsigned int)value); break;
 		}
-		EVDS_Quaternion_SetEuler(&vector.orientation,vector.orientation.coordinate_system,roll,pitch,yaw);
+		EVDS_Quaternion_FromEuler(&vector.orientation,vector.orientation.coordinate_system,roll,pitch,yaw);
 		EVDS_Object_SetStateVector(object,&vector);
 		update(false);
 	} else {
 		EVDS_VARIABLE* variable;
 		EVDS_Object_AddRealVariable(object,name.toAscii().data(),value,&variable);
 		EVDS_Variable_SetReal(variable,value);
-		update(true);
+		if ((name == "disable") ||
+			(name == "mass") ||
+			(name == "ixx") ||
+			(name == "iyy") ||
+			(name == "izz") ||
+			(name == "jxx") ||
+			(name == "jyy") ||
+			(name == "jzz")) {
+			update(false);
+		} else {
+			update(true);
+		}
 	}
 }
 
@@ -454,7 +465,7 @@ double Object::getVariable(const QString &name) {
 		EVDS_STATE_VECTOR vector;
 		EVDS_REAL pitch,yaw,roll;
 		EVDS_Object_GetStateVector(object,&vector);
-		EVDS_Quaternion_GetEuler(&vector.orientation,vector.orientation.coordinate_system,&roll,&pitch,&yaw);
+		EVDS_Quaternion_ToEuler(&vector.orientation,vector.orientation.coordinate_system,&roll,&pitch,&yaw);
 		EVDS_Object_GetUID(object,&uid);
 		switch (specialIndex) {
 			case 1: return vector.position.x; break;

@@ -37,6 +37,12 @@ Wiring - connector
 			<description>Unique identifier of the object</description>
 		</var>
 		<var>
+			<type>bool</type>
+			<variable>disable</variable>
+			<name>Disable</name>
+			<description>Object is missing in the selected variant/configuration</description>
+		</var>
+		<var>
 			<type>double</type>
 			<important>true</important>
 			<variable>@1</variable>

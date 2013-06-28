@@ -101,10 +101,22 @@ void ObjectRenderer::positionChanged() {
 		glcInstance->multMatrix(GLC_Matrix4x4(rotationMatrix));
 		glcInstance->translate(vector.position.x,vector.position.y,vector.position.z);
 
+		//Update visibility of this object
+		if (object->getVariable("disable") > 0.5) {
+			glcInstance->setVisibility(false);
+		} else {
+			glcInstance->setVisibility(true);
+		}
+
 		//Add parents transformation to place this object relative to its parent
 		if (parent->getRenderer()) {
 			//The multiplication is right instead of left in multMatrix. So the order is "all wrong"
 			glcInstance->multMatrix(parent->getRenderer()->getInstance()->matrix());
+
+			//Take visibility from parent
+			if (parent->getRenderer()->getInstance()->isVisible() == false) {
+				glcInstance->setVisibility(false);
+			}
 		}
 		
 		//Add/replace in GL widget to update position
