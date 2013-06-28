@@ -94,14 +94,22 @@ QVariant ObjectTreeModel::data(const QModelIndex &index, int role) const {
 		}
 	}
 
+	//Show item as disabled
+	if (object->getVariable("disable") > 0.5) {
+		if (role == Qt::ForegroundRole) {
+			return QColor(96,96,96);
+		}
+		if (role == Qt::FontRole) {
+			 QFont italicFont;
+             italicFont.setItalic(true);
+             return italicFont;
+		}
+	}
+
 	//Return text
 	if (role != Qt::DisplayRole && role != Qt::EditRole) return QVariant();
 	if (index.column() == 0) {
-		if (object->getVariable("disable") > 0.5) {
-			return QVariant("[" + object->getName() + "]");
-		} else {
-			return QVariant(object->getName());
-		}
+		return QVariant(object->getName());
 	} else {
 		return QVariant(object->getType());		
 	}
