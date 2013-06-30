@@ -176,7 +176,7 @@ Wiring - connector
 			<description></description>
 		</var>
 		<var>
-			<type>datetime</type>
+			<type>string</type>
 			<variable>document.date</variable>
 			<name>Date</name>
 			<group>Document</group>
@@ -186,6 +186,13 @@ Wiring - connector
 			<type>string</type>
 			<variable>document.created_by</variable>
 			<name>Created by</name>
+			<group>Document</group>
+			<description></description>
+		</var>
+		<var>
+			<type>string</type>
+			<variable>document.drawn_by</variable>
+			<name>Drawn by</name>
 			<group>Document</group>
 			<description></description>
 		</var>
