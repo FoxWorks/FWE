@@ -103,6 +103,9 @@ Object::~Object() {
 	for (int i = 0; i < children.count(); i++) {
 		delete children[i];
 	}
+	for (int i = 0; i < hidden_children.count(); i++) {
+		delete hidden_children[i];
+	}
 	if (renderer) delete renderer;
 	if (property_sheet) property_sheet->deleteLater();
 	if (csection_editor) csection_editor->deleteLater();
@@ -160,6 +163,37 @@ Object* Object::insertNewChild(int index) {
 	Object* new_object_obj = new Object(new_object,this,editor);
 	children.insert(index,new_object_obj);
 	return new_object_obj;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+Object* Object::appendHiddenChild() {
+	//Create new object
+	EVDS_SYSTEM* system;
+	EVDS_OBJECT* new_object;
+
+	EVDS_Object_GetSystem(object,&system);
+	EVDS_Object_Create(system,object,&new_object);
+
+	//Create object for it
+	Object* new_object_obj = new Object(new_object,this,editor);
+	hidden_children.insert(0,new_object_obj);
+	return new_object_obj;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void Object::hideChild(int index) {
+	if (index < 0) return;
+	if (index >= children.count()) return;
+
+	Object* child = children.at(index);
+	children.removeAt(index);
+	hidden_children.insert(0,child);
 }
 
 

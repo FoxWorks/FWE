@@ -73,6 +73,7 @@ using namespace EVDS;
 Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window), activeThreads(0) {
 	window = in_window;
 	selected = NULL;
+	document = NULL;
 
 	//Create EVDS system. Use flag that lists all children, even uninitialized ones to make sure
 	// tree controls list all objects while they are messed around with.
@@ -126,7 +127,6 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window), activeThreads(0
 
 	//Setup initial layout
 	list_dock->raise();
-
 
 	//Enable drag and drop
 	setAcceptDrops(true);
@@ -281,7 +281,7 @@ void Editor::createListDock() {
 	addDockWidget(Qt::LeftDockWidgetArea, list_dock);
 
 	//Create remaining interface
-	list_model = new ObjectTreeModel(this,this);
+	list_model = new ObjectTreeModel(this,root_obj,this);
 	list_tree = new QTreeView(this);
 	list_tree->setModel(list_model);
 	list_tree->expandAll();
@@ -324,12 +324,8 @@ void Editor::createPropertiesDock() {
 	properties_dock->setWidget(properties);
 	addDockWidget(Qt::LeftDockWidgetArea, properties_dock);
 
-	//Create document properties
-	properties_document = new FWEPropertySheet(this);
-
 	//Create layout
 	properties_layout = new QStackedLayout;
-	properties_layout->addWidget(properties_document);
 	properties->setLayout(properties_layout);
 }
 
@@ -604,7 +600,12 @@ void Editor::removeObject() {
 void Editor::selectObject(const QModelIndex& index) {
 	//Should selection be cleared
 	if (!index.isValid()) {
-		properties_layout->setCurrentWidget(properties_document);
+		QWidget* property_sheet = document->getPropertySheet();
+		if (properties_layout->indexOf(property_sheet) < 0) {
+			properties_layout->addWidget(property_sheet);
+		}
+		properties_layout->setCurrentWidget(property_sheet);
+		//properties_layout->setCurrentWidget(properties_document);
 		csection_layout->setCurrentWidget(csection_none);
 		selected = NULL;
 
@@ -814,6 +815,11 @@ void Editor::newFile() {
 		updateInformation(false);
 	modifiers_manager->setInitializing(true);
 	modifiers_manager->updateModifiers();
+
+	document = root_obj->appendHiddenChild();
+	document->setType("metadata");
+	document->setName("");
+	selectObject(QModelIndex());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -904,6 +910,22 @@ bool Editor::loadFile(const QString &fileName) {
 		updateInformation(false);
 	modifiers_manager->setInitializing(false);
 	modifiers_manager->updateModifiers();
+
+	//Find the "document" object, or create it
+	document = 0;
+	for (int i = 0; i < root_obj->getChildrenCount(); i++) {
+		if (root_obj->getChild(i)->getType() == "foxworks.document") {
+			document = root_obj->getChild(i);
+			root_obj->hideChild(i);
+		}
+	}
+	if (!document) {
+		document = root_obj->appendHiddenChild();
+		document->setType("metadata");
+		document->setName("");
+		//static_cast<EVDS::ObjectTreeModel*>(list_tree->model())->insertRow(QModelIndex());
+	}
+	selectObject(QModelIndex());
 
 	//Return control
 	QApplication::restoreOverrideCursor();

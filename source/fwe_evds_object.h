@@ -71,6 +71,8 @@ namespace EVDS {
 		int getChildIndex(Object* child) { return children.indexOf(child); }
 		Object* getParent() { return parent; }
 		Object* insertNewChild(int index);
+		Object* appendHiddenChild();
+		void hideChild(int index);
 		Object* insertChild(int index, const QString &description);
 		void removeChild(int index);
 		void invalidateChildren();
@@ -114,6 +116,7 @@ namespace EVDS {
 
 		EVDS::Object* parent;
 		QList<Object*> children;
+		QList<Object*> hidden_children;
 
 		ObjectRenderer* renderer;
 		CrossSectionEditor* csection_editor;

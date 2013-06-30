@@ -41,7 +41,7 @@ namespace EVDS {
 		Q_OBJECT
 
 	public:
-		ObjectTreeModel(EVDS::Editor* in_editor, QWidget* parent);
+		ObjectTreeModel(EVDS::Editor* in_editor, EVDS::Object* in_root, QWidget* parent);
 		~ObjectTreeModel();
 
 		QVariant data(const QModelIndex &index, int role) const;
@@ -66,6 +66,7 @@ namespace EVDS {
 
 	private:
 		EVDS::Editor* editor;
+		EVDS::Object* root;
 	};
 }
 

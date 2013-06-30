@@ -37,10 +37,11 @@ using namespace EVDS;
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-ObjectTreeModel::ObjectTreeModel(EVDS::Editor* in_editor, QWidget* parent) 
+ObjectTreeModel::ObjectTreeModel(EVDS::Editor* in_editor, EVDS::Object* in_root, QWidget* parent) 
 	: QAbstractItemModel(parent) 
 {
 	editor = in_editor;
+	root = in_root;
 }
 
 
@@ -200,7 +201,7 @@ bool ObjectTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 	//Insert new object from encoded data
 	Object* object;
 	if (!parent.isValid()) {
-		object = editor->getEditRoot();
+		object = root;
 	} else {
 		object = (Object*)(parent.internalPointer());
 	}
@@ -240,7 +241,7 @@ QModelIndex ObjectTreeModel::index(int row, int column, const QModelIndex &paren
 
 	Object* object;
 	if (!parent.isValid()) {
-		object = editor->getEditRoot();
+		object = root;
 	} else {
 		object = (Object*)(parent.internalPointer());
 	}
@@ -263,7 +264,7 @@ QModelIndex ObjectTreeModel::parent(const QModelIndex &index) const
 	Object* object = (Object*)(index.internalPointer());
 	Object* parent = object->getParent();
 
-	if (parent == editor->getEditRoot()) return QModelIndex();
+	if (parent == root) return QModelIndex();
 
 	Object* parent_parent = parent->getParent();
 	int idx = parent_parent->getChildIndex(parent);
@@ -280,7 +281,7 @@ int ObjectTreeModel::rowCount(const QModelIndex &parent) const
 
 	Object* object;
 	if (!parent.isValid()) {
-		object = editor->getEditRoot();
+		object = root;
 	} else {
 		object = (Object*)(parent.internalPointer());
 	}
@@ -296,7 +297,7 @@ int ObjectTreeModel::rowCount(const QModelIndex &parent) const
 bool ObjectTreeModel::insertRows(int row, int count, const QModelIndex &parent) {
 	Object* object;
 	if (!parent.isValid()) {
-		object = editor->getEditRoot();
+		object = root;
 	} else {
 		object = (Object*)(parent.internalPointer());
 	}
@@ -317,7 +318,7 @@ bool ObjectTreeModel::insertRows(int row, int count, const QModelIndex &parent) 
 bool ObjectTreeModel::removeRows(int row, int count, const QModelIndex &parent) {
 	Object* object;
 	if (!parent.isValid()) {
-		object = editor->getEditRoot();
+		object = root;
 	} else {
 		object = (Object*)(parent.internalPointer());
 	}

@@ -151,7 +151,6 @@ namespace EVDS {
 		QDockWidget*		properties_dock;
 		QWidget*			properties;
 		QStackedLayout*		properties_layout;
-		FWEPropertySheet*	properties_document;
 
 		//Object cross-sections
 		QDockWidget*		csection_dock;
@@ -187,6 +186,7 @@ namespace EVDS {
 		EVDS_OBJECT* root;
 		EVDS::Object* root_obj;
 		EVDS::Object* selected;
+		EVDS::Object* document;
 
 		//EVDS objects (initialized/simulation area)
 		ObjectInitializer* initializer;
