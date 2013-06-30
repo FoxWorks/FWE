@@ -160,6 +160,57 @@ Wiring - connector
 			<description></description>
 		</var>
 	</object_vars>
+	<object_vars name="metadata">
+		<var>
+			<type>string</type>
+			<variable>document.code</variable>
+			<name>Code</name>
+			<group>Document</group>
+			<description></description>
+		</var>
+		<var>
+			<type>string</type>
+			<variable>document.title</variable>
+			<name>Title</name>
+			<group>Document</group>
+			<description></description>
+		</var>
+		<var>
+			<type>datetime</type>
+			<variable>document.date</variable>
+			<name>Date</name>
+			<group>Document</group>
+			<description></description>
+		</var>
+		<var>
+			<type>string</type>
+			<variable>document.created_by</variable>
+			<name>Created by</name>
+			<group>Document</group>
+			<description></description>
+		</var>
+		<var>
+			<type>string</type>
+			<variable>document.verified_by</variable>
+			<name>Verified by</name>
+			<group>Document</group>
+			<description></description>
+		</var>
+		<var>
+			<type>string</type>
+			<variable>document.company</variable>
+			<name>Company</name>
+			<group>Document</group>
+			<description></description>
+		</var>
+		<var>
+			<type>string</type>
+			<variable>document.copyright</variable>
+			<name>Copyright</name>
+			<group>Document</group>
+			<description></description>
+		</var>
+	</object_vars>
 	<object_vars name="rocket_engine">
 		<var>
 			<type>double</type>

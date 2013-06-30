@@ -27,6 +27,7 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ////////////////////////////////////////////////////////////////////////////////
 #include <QString>
+#include <QDateTime>
 #include <math.h>
 
 #include "fwe_prop_sheet.h"
@@ -48,6 +49,10 @@ FWEPropertySheet::FWEPropertySheet(QWidget* parent) : QtTreePropertyBrowser(pare
 	enumFactory = new StringEnumFactory();
 	booleanManager = new QtBoolPropertyManager();
 	booleanFactory = new QtCheckBoxFactory();
+	stringManager = new QtStringPropertyManager();
+	stringFactory = new QtLineEditFactory();
+	datetimeManager = new QtDateTimePropertyManager();
+	datetimeFactory = new QtDateTimeEditFactory();
 
 	connect(doubleManager, SIGNAL(valueChanged(QtProperty *, double)),
 			this, SLOT(doublePropertyChanged(QtProperty *, double)));
@@ -55,11 +60,17 @@ FWEPropertySheet::FWEPropertySheet(QWidget* parent) : QtTreePropertyBrowser(pare
 			this, SLOT(enumPropertyChanged(QtProperty *, int)));
 	connect(booleanManager, SIGNAL(valueChanged(QtProperty *, bool)),
 			this, SLOT(booleanPropertyChanged(QtProperty *, bool)));
+	connect(stringManager, SIGNAL(valueChanged(QtProperty *, const QString&)),
+			this, SLOT(stringPropertyChanged(QtProperty *, const QString&)));
+	connect(datetimeManager, SIGNAL(valueChanged(QtProperty *, const QDateTime&)),
+			this, SLOT(dateTimePropertyChanged(QtProperty *, const QDateTime&)));
 
 	//Create browser
 	setFactoryForManager(doubleManager, doubleFactory);
 	setFactoryForManager(enumManager, enumFactory);
 	setFactoryForManager(booleanManager, booleanFactory);
+	setFactoryForManager(stringManager, stringFactory);
+	setFactoryForManager(datetimeManager, datetimeFactory);
 }
 
 
@@ -138,6 +149,10 @@ QtProperty* FWEPropertySheet::setProperty(const QMap<QString,QString> &data) {
 		enumManager->setEnumValues(property,enum_values);
 		enumManager->setEnumNames(property,enum_names);
 		initialValueHack = 0;
+	} else if (type == "string") {
+		property = stringManager->addProperty(name);
+	} else if (type == "datetime") {
+		property = datetimeManager->addProperty(name);
 	}
 
 	//Add to group
@@ -187,7 +202,7 @@ void FWEPropertySheet::doublePropertyChanged(QtProperty* property, double value)
 void FWEPropertySheet::enumPropertyChanged(QtProperty* property, int value) {
 	if (initialValueHack) return;
 
-	emit enumChanged(propertyName[property],enumManager->stringValue(property));
+	emit stringChanged(propertyName[property],enumManager->stringValue(property));
 }
 
 
@@ -202,6 +217,26 @@ void FWEPropertySheet::booleanPropertyChanged(QtProperty* property, bool value) 
 	} else {
 		emit doubleChanged(propertyName[property],0.0);
 	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void FWEPropertySheet::stringPropertyChanged(QtProperty* property, const QString& value) {
+	if (initialValueHack) return;
+
+	emit stringChanged(propertyName[property],value);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void FWEPropertySheet::dateTimePropertyChanged(QtProperty* property, const QDateTime &value) {
+	if (initialValueHack) return;
+
+	emit stringChanged(propertyName[property],value.toString(Qt::ISODate));
 }
 
 
@@ -243,9 +278,11 @@ void FWEPropertySheet::updateProperty(const QString& name) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void FWEPropertySheet::setEnum(const QString& name, const QString& value) {
+void FWEPropertySheet::setString(const QString& name, const QString& value) {
 	if (!propertyByName.contains(name)) return;
 	enumManager->setStringValue(propertyByName[name],value);
+	stringManager->setValue(propertyByName[name],value);
+	datetimeManager->setValue(propertyByName[name],QDateTime::fromString(value,Qt::ISODate));
 }
 
 

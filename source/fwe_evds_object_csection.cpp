@@ -250,8 +250,8 @@ void CrossSection::createPropertySheet() {
 	//Connect up signals and slots
 	connect(property_sheet, SIGNAL(doubleChanged(const QString&, double)),
 			this, SLOT(doubleChanged(const QString&, double)));
-	connect(property_sheet, SIGNAL(enumChanged(const QString&, const QString&)),
-			this, SLOT(enumChanged(const QString&, const QString&)));
+	connect(property_sheet, SIGNAL(stringChanged(const QString&, const QString&)),
+			this, SLOT(stringChanged(const QString&, const QString&)));
 	connect(property_sheet, SIGNAL(propertyUpdate(const QString&)),
 			this, SLOT(propertyUpdate(const QString&)));
 
@@ -425,7 +425,7 @@ void CrossSection::doubleChanged(const QString& name, double value) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void CrossSection::enumChanged(const QString& name, const QString& value) {
+void CrossSection::stringChanged(const QString& name, const QString& value) {
 	setVariable(name,value);
 }
 
@@ -435,7 +435,7 @@ void CrossSection::enumChanged(const QString& name, const QString& value) {
 ////////////////////////////////////////////////////////////////////////////////
 void CrossSection::propertyUpdate(const QString& name) {
 	if (name == "@3") { //Special: type
-		property_sheet->setEnum(name,getType());
+		property_sheet->setString(name,getType());
 	} else { //Other variable
 		property_sheet->setDouble(name,getVariable(name));
 	}

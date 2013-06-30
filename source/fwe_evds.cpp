@@ -417,6 +417,8 @@ void Editor::createCommentsDock() {
 void Editor::commentsChanged() {
 	if (selected) {
 		selected->setVariable("comments",comments->toPlainText());
+	} else {
+		document->setVariable("comments",comments->toPlainText());
 	}
 }
 
@@ -610,9 +612,13 @@ void Editor::selectObject(const QModelIndex& index) {
 		selected = NULL;
 
 		//Update information
-		comments->setText("");
 		updateInformation(true);
 		updateObject(NULL);
+
+		//Update comments
+		disconnect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
+		comments->setText(document->getString("comments"));
+		connect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
 		return;
 	}
 
@@ -914,7 +920,7 @@ bool Editor::loadFile(const QString &fileName) {
 	//Find the "document" object, or create it
 	document = 0;
 	for (int i = 0; i < root_obj->getChildrenCount(); i++) {
-		if (root_obj->getChild(i)->getType() == "foxworks.document") {
+		if (root_obj->getChild(i)->getType() == "metadata") {
 			document = root_obj->getChild(i);
 			root_obj->hideChild(i);
 		}

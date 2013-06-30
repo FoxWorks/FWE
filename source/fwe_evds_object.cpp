@@ -368,13 +368,13 @@ QWidget* Object::getPropertySheet() {
 		//Connect up signals and slots
 		connect(property_sheet, SIGNAL(doubleChanged(const QString&, double)),
 				this, SLOT(doubleChanged(const QString&, double)));
-		connect(property_sheet, SIGNAL(enumChanged(const QString&, const QString&)),
-				this, SLOT(enumChanged(const QString&, const QString&)));
+		connect(property_sheet, SIGNAL(stringChanged(const QString&, const QString&)),
+				this, SLOT(stringChanged(const QString&, const QString&)));
 		connect(property_sheet, SIGNAL(propertyUpdate(const QString&)),
 				this, SLOT(propertyUpdate(const QString&)));
 
 		//Create default set of properties
-		property_sheet->setProperties(editor->objectVariables[""]);
+		if (getType() != "metadata") property_sheet->setProperties(editor->objectVariables[""]);
 		if (!getType().isEmpty()) property_sheet->setProperties(editor->objectVariables[getType()]);
 		return property_sheet;
 	}
@@ -392,7 +392,7 @@ void Object::doubleChanged(const QString& name, double value) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void Object::enumChanged(const QString& name, const QString& value) {
+void Object::stringChanged(const QString& name, const QString& value) {
 	setVariable(name,value);
 }
 
@@ -402,9 +402,9 @@ void Object::enumChanged(const QString& name, const QString& value) {
 ////////////////////////////////////////////////////////////////////////////////
 void Object::propertyUpdate(const QString& name) {
 	if (name == "@7") { //Special: type
-		property_sheet->setEnum(name,getType());
+		property_sheet->setString(name,getType());
 	} else { //Other variable
-		property_sheet->setEnum(name,getString(name));
+		property_sheet->setString(name,getString(name));
 		property_sheet->setDouble(name,getVariable(name));
 	}
 }
@@ -613,6 +613,8 @@ void Object::deleteCrossSectionsEditor() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Object::update(bool visually) {
+	if (getType() == "metadata") return; //Do not do any updates for metadata
+
 	if (renderer) {
 		if (visually) {
 			renderer->meshChanged();

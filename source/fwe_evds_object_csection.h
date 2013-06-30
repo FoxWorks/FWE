@@ -91,7 +91,7 @@ namespace EVDS {
 
 	private slots:
 		void doubleChanged(const QString& name, double value);
-		void enumChanged(const QString& name, const QString& value);
+		void stringChanged(const QString& name, const QString& value);
 		void propertyUpdate(const QString& name);
 
 	private:

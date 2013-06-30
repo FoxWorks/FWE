@@ -52,7 +52,7 @@ public:
 	void setProperties(const QList<QMap<QString,QString> >& list);
 	void setDouble(const QString& name, double value);
 	void setHiddenDouble(const QString& name, double value);
-	void setEnum(const QString& name, const QString& value);
+	void setString(const QString& name, const QString& value);
 	void updateProperty(const QString& name);
 	void hackPitchYawRoll(double* p, double *y, double *r);
 
@@ -60,7 +60,7 @@ signals:
 	/// Called when a double property value is changed by user
 	void doubleChanged(const QString& name, double value);
 	/// Called when an enumeration value is changed by user
-	void enumChanged(const QString& name, const QString& value);
+	void stringChanged(const QString& name, const QString& value);
 	/// Called value displayed must be updated
 	void propertyUpdate(const QString& name);
 
@@ -68,6 +68,8 @@ private slots:
 	void doublePropertyChanged(QtProperty* property, double value);
 	void enumPropertyChanged(QtProperty* property, int value);
 	void booleanPropertyChanged(QtProperty* property, bool value);
+	void stringPropertyChanged(QtProperty* property, const QString& value);
+	void dateTimePropertyChanged(QtProperty* property, const QDateTime &value);
 
 private:
 	QtGroupPropertyManager *groupManager;
@@ -77,6 +79,10 @@ private:
 	StringEnumFactory *enumFactory;
 	QtBoolPropertyManager* booleanManager;
 	QtCheckBoxFactory *booleanFactory;
+	QtStringPropertyManager* stringManager;
+	QtLineEditFactory* stringFactory;
+	QtDateTimePropertyManager* datetimeManager;
+	QtDateTimeEditFactory* datetimeFactory;
 
 	int initialValueHack;
 	QMap<QString, QtProperty *> propertyGroupByName;
