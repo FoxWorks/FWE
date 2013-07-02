@@ -42,6 +42,7 @@ ObjectTreeModel::ObjectTreeModel(EVDS::Editor* in_editor, EVDS::Object* in_root,
 {
 	editor = in_editor;
 	root = in_root;
+	acceptedMimeType = "application/vnd.evds+xml";
 }
 
 
@@ -141,7 +142,8 @@ Qt::ItemFlags ObjectTreeModel::flags(const QModelIndex &index) const {
 QStringList ObjectTreeModel::mimeTypes() const
 {
 	 QStringList types;
-	 types << "application/vnd.evds+xml";
+	 types << acceptedMimeType;//"application/vnd.evds+xml";
+	 //types << "application/vnd.evds.ref+xml";
 	 return types;
 }
 
@@ -153,6 +155,7 @@ QMimeData* ObjectTreeModel::mimeData(const QModelIndexList &indexes) const
 {
 	QMimeData *mimeData = new QMimeData();
 	QString encodedData = "";
+	QString encodedReferenceData = "";
 
 	//Store all EVDS objects (actually only a single selected one supported right now)
 	for (int i = 0; i < 1; i++) { //indexes.count()
@@ -169,11 +172,39 @@ QMimeData* ObjectTreeModel::mimeData(const QModelIndexList &indexes) const
 			//Encode data
 			encodedData = info.description; //encodedData + info.description + "\n"
 			free(info.description);
+
+			//Encode reference for schematics editor
+			EVDS_OBJECT* evds_object = object->getEVDSObject();
+			EVDS_OBJECT* reference;
+			EVDS_SYSTEM* system;
+			EVDS_Object_GetSystem(evds_object,&system);
+			EVDS_Object_Create(system,0,&reference);
+
+			//Get reference
+			char reference_str[8193] = { 0 };
+			EVDS_Object_GetReference(evds_object,editor->getEditRoot()->getEVDSObject(),reference_str,8192);
+
+			//Write it
+			EVDS_VARIABLE* variable;
+			EVDS_Object_SetName(reference,object->getName().toAscii().data());
+			EVDS_Object_SetType(reference,"foxworks.schematics.object");
+			EVDS_Object_AddVariable(reference,"reference",EVDS_VARIABLE_TYPE_STRING,&variable);
+			EVDS_Variable_SetString(variable,reference_str,8193);
+			
+			//Save it and encode
+			EVDS_Object_SaveEx(reference,0,&info);
+			encodedReferenceData = info.description;
+			free(info.description);
+
+			//Destroy temporary object
+			EVDS_Object_Destroy(reference);
+			//encodedReferenceData
 		}
 	}
 
-	mimeData->setText(encodedData);
+	mimeData->setText(encodedReferenceData);
 	mimeData->setData("application/vnd.evds+xml",encodedData.toUtf8());
+	mimeData->setData("application/vnd.evds.ref+xml",encodedReferenceData.toUtf8());
 	return mimeData;
 }
 
@@ -185,7 +216,7 @@ bool ObjectTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 								   int row, int column, const QModelIndex &parent) {
 	//Verify drop can be accepted
 	if (action == Qt::IgnoreAction)	return true;
-	if (!data->hasFormat("application/vnd.evds+xml")) return false;
+	if (!data->hasFormat(acceptedMimeType)) return false;
 	if (column > 0) return false;
 
 	//Get index

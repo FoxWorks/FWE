@@ -58,6 +58,7 @@ namespace EVDS {
 		bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
 		void updateObject(Object* object);
+		void setAcceptedMimeType(const QString& type) { acceptedMimeType = type; }
 
 		Qt::DropActions supportedDropActions() const { return Qt::CopyAction | Qt::MoveAction; }
 		QStringList mimeTypes() const;
@@ -65,6 +66,7 @@ namespace EVDS {
 		bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 
 	private:
+		QString acceptedMimeType;
 		EVDS::Editor* editor;
 		EVDS::Object* root;
 	};

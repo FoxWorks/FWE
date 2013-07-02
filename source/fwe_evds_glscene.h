@@ -43,12 +43,13 @@
 namespace EVDS {
 	class Object;
 	class Editor;
+	class SchematicsEditor;
 	class GLScene : public QGraphicsScene
 	{
 		Q_OBJECT
 
 	public:
-		GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent = 0);
+		GLScene(GLScene* in_parent_scene, Editor* in_editor, SchematicsEditor* in_schematics_editor, QWidget *parent = 0);
 		~GLScene();
 
 		GLC_3DViewCollection* getCollection() { return world->collection(); }
@@ -88,10 +89,13 @@ namespace EVDS {
 		void createInterface();
 		//Recursively GLC-select object and its children
 		void recursiveSelect(Object* object);
+		//Draw schematics page layout
+		void drawSchematicsPage();
 
 		//Parent scene from which GLC stuff is taken
 		GLScene* parent_scene;
 		Editor* editor;
+		SchematicsEditor* schematics_editor;
 
 		//UI elements
 		QWidget* panel_control;

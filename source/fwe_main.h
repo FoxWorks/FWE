@@ -131,6 +131,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 namespace EVDS {
 	class Editor;
+	class SchematicsEditor;
 }
 
 class ChildWindow : public QMainWindow
@@ -175,6 +176,7 @@ protected:
 	QWidget* editorsWidget;
 	QStackedLayout* editorsLayout;
 	EVDS::Editor* EVDSEditor;
+	EVDS::SchematicsEditor* SchematicsEditor;
 };
 
 #endif

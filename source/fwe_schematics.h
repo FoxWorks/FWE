@@ -26,19 +26,11 @@
 /// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef FWE_EVDS_H
-#define FWE_EVDS_H
+#ifndef FWE_SCHEMATICS_H
+#define FWE_SCHEMATICS_H
 
 #include <QMainWindow>
-#include <QFileInfo>
-#include <QMap>
-#include <QList>
-#include <QAtomicInt>
-#include "evds.h"
-#include "evds_antenna.h"
-#include "evds_train_wheels.h"
-
-#include "fwe_main.h"
+#include "fwe_evds.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -58,53 +50,32 @@ QT_END_NAMESPACE
 
 ////////////////////////////////////////////////////////////////////////////////
 class GLC_3DViewInstance;
-class FWEPropertySheet;
 class ChildWindow;
 namespace EVDS {
 	class GLScene;
 	class GLView;
 	class Object;
-	class ObjectInitializer;
 	class ObjectTreeModel;
-	class ObjectModifiersManager;
-	class Editor : public QMainWindow
+	class SchematicsEditor : public QMainWindow
 	{
 		Q_OBJECT
 
 	public:
-		Editor(ChildWindow* in_window);
-		~Editor();
+		SchematicsEditor(ChildWindow* in_window, EVDS::Editor* in_editor);
+		~SchematicsEditor();
 
-		void newFile();
-		bool loadFile(const QString &fileName);
-		bool saveFile(const QString &fileName);
+		void initializeForFile();
 		void updateInterface(bool isInFront);
-		void setModified(bool informationUpdate = true);
+		void setModified();
 
 		ChildWindow* getWindow() { return window; }
 		GLScene* getGLScene() { return glscene; }
-		Object* getEditRoot() { return root_obj; }
-		Object* getEditDocument() { return document; }
-		Object* getSelected() { return selected; }
-		void clearSelection() { selected = NULL; }
-		ObjectModifiersManager* getModifiersManager() { return modifiers_manager; }
+		//Object* getSelected() { return selected; }
+		//void clearSelection() { selected = NULL; }
 
-		void updateInformation(bool ready);
-		void updateObject(Object* object);
-		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
-		void loadError(const QString& error);
-
-	public:
-		QMap<QString,QList<QMap<QString,QString> > > objectVariables;
-		QMap<QString,QList<QMap<QString,QString> > > csectionVariables;
-
-	private:
-		QAtomicInt activeThreads;
-
-	public:
-		void addActiveThread();
-		void removeActiveThread();
-		void waitForThreads();
+		//void updateObject(Object* object);
+		//void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
+		//void loadError(const QString& error);
 
 	protected:
 		void dropEvent(QDropEvent *event);
@@ -112,7 +83,7 @@ namespace EVDS {
 		void dragEnterEvent(QDragEnterEvent *event);
 
 	private slots:
-		void addObject();
+		/*void addObject();
 		void removeObject();
 		void selectObject(const QModelIndex& index);
 		void commentsChanged();
@@ -124,22 +95,23 @@ namespace EVDS {
 		void showHierarchy();
 		void showInformation();
 		void showCutsection();
-		void showComments();
+		void showComments();*/
 
 	private:
 		QString currentFile;
 
 		void createMenuToolbar();
 		void createListDock();
+		void createObjectListDock();
 		void createPropertiesDock();
-		void createCSectionDock();
-		void createInformationDock();
-		void createCommentsDock();
+		//void createCSectionDock();
+		//void createInformationDock();
+		//void createCommentsDock();
 
 		//Object types
-		void loadObjectData();
+		//void loadObjectData();
 
-		//List of objects
+		//List of schematics elements
 		ObjectTreeModel*	list_model;
 		QDockWidget*		list_dock;
 		QWidget*			list;
@@ -148,13 +120,20 @@ namespace EVDS {
 		QPushButton*		list_remove;
 		QVBoxLayout*		list_layout;
 
+		//List of edited objects
+		ObjectTreeModel*	objectlist_model;
+		QDockWidget*		objectlist_dock;
+		QWidget*			objectlist;
+		QTreeView*			objectlist_tree;
+		QVBoxLayout*		objectlist_layout;
+
 		//Object properties
 		QDockWidget*		properties_dock;
 		QWidget*			properties;
 		QStackedLayout*		properties_layout;
 
 		//Object cross-sections
-		QDockWidget*		csection_dock;
+		/*QDockWidget*		csection_dock;
 		QWidget*			csection;
 		QStackedLayout*		csection_layout;
 		QLabel*				csection_none;
@@ -165,34 +144,28 @@ namespace EVDS {
 
 		//Comments dock
 		QDockWidget*		comments_dock;
-		QTextEdit*			comments;
+		QTextEdit*			comments;*/
 
 		//Main workspace
 		GLScene*			glscene;
 		GLView*				glview;
-		ObjectModifiersManager* modifiers_manager;
 
 		//Menus and actions
 		QList<QAction*>		actions;
+/*
 		QMenu*				cutsection_menu;
 		QAction*			cutsection_x;
 		QAction*			cutsection_y;
 		QAction*			cutsection_z;
-
+*/
 		//Parent window
 		ChildWindow*		window;
 
 		//EVDS objects (editing area)
-		EVDS_SYSTEM* system;
-		EVDS_OBJECT* root;
-		EVDS::Object* root_obj;
+		EVDS::Editor* editor;
+		//EVDS::Object* document;
+		EVDS::Object* root;
 		EVDS::Object* selected;
-		EVDS::Object* document;
-
-		//EVDS objects (initialized/simulation area)
-		ObjectInitializer* initializer;
-		EVDS_SYSTEM* initialized_system;
-		EVDS_OBJECT* initialized_root;
 	};
 }
 

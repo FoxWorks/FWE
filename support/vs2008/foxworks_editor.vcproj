@@ -1763,6 +1763,14 @@
 			RelativePath="..\..\source\fwe_prop_thumbwheel.h"
 			>
 		</File>
+		<File
+			RelativePath="..\..\source\fwe_schematics.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_schematics.h"
+			>
+		</File>
 		<Filter
 			Name="qt-solutions"
 			Filter=""
@@ -2186,6 +2194,10 @@
 			</File>
 			<File
 				RelativePath="..\..\qtmoc\moc_fwe_prop_thumbwheel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_schematics.cpp"
 				>
 			</File>
 			<File

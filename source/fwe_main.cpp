@@ -31,6 +31,7 @@
 
 #include "fwe_main.h"
 #include "fwe_evds.h"
+#include "fwe_schematics.h"
 #include "fwe_dialog_preferences.h"
 #include "rdrs.h"
 
@@ -629,6 +630,10 @@ ChildWindow::ChildWindow(MainWindow* window) {
 	EVDSEditor = new EVDS::Editor(this);
 	editorsLayout->addWidget(EVDSEditor);
 
+	SchematicsEditor = new EVDS::SchematicsEditor(this,EVDSEditor);
+	editorsLayout->addWidget(SchematicsEditor);
+	editorsLayout->setCurrentWidget(SchematicsEditor);
+
 	//Delete child on close
 	setAttribute(Qt::WA_DeleteOnClose);
 
@@ -644,6 +649,7 @@ ChildWindow::ChildWindow(MainWindow* window) {
 ////////////////////////////////////////////////////////////////////////////////
 void ChildWindow::newFile() {
 	EVDSEditor->newFile();
+	SchematicsEditor->initializeForFile();
 
 	isModified = false;
 	currentFile = "";
@@ -662,6 +668,7 @@ bool ChildWindow::loadFile(const QString &fileName) {
 
 	//Load file data
 	if (!EVDSEditor->loadFile(fileName)) return false;
+	SchematicsEditor->initializeForFile();
 	return true;
 }
 
@@ -781,6 +788,7 @@ void ChildWindow::updateTitle() {
 ////////////////////////////////////////////////////////////////////////////////
 void ChildWindow::updateInterface(bool isInFront) {
 	EVDSEditor->updateInterface(isInFront);
+	SchematicsEditor->updateInterface(isInFront);
 }
 
 

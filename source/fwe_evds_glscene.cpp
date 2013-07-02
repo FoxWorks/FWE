@@ -57,9 +57,10 @@ using namespace EVDS;
 ///		view->setViewport(glwidget);
 ///
 ////////////////////////////////////////////////////////////////////////////////
-GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent) : QGraphicsScene(parent) {
+GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, SchematicsEditor* in_schematics_editor, QWidget *parent) : QGraphicsScene(parent) {
 	parent_scene = in_parent_scene; //FIXME: support for this
 	editor = in_editor;
+	schematics_editor = in_schematics_editor;
 
 	//Have everything be initialized later
 	sceneInitialized = false;
@@ -117,6 +118,7 @@ GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, QWidget *parent) :
 	sceneShadowed = false;
 	sceneWireframe = false;
 	makingScreenshot = false;
+	if (schematics_editor) viewport->cameraHandle()->setTopView();
 
 	//Create interface and enable drag and drop
 	createInterface();
@@ -160,17 +162,19 @@ void GLScene::createInterface() {
 	connect(button_center, SIGNAL(pressed()), this, SLOT(doCenter()));
 	panel_control->layout()->addWidget(button_center);
 
-	button_projection = new QPushButton(QIcon(":/icon/glview/projection_ortho.png"),"");
-	connect(button_projection, SIGNAL(pressed()), this, SLOT(toggleProjection()));
-	panel_control->layout()->addWidget(button_projection);
+	if (!schematics_editor) { //Only in EVDS editor
+		button_projection = new QPushButton(QIcon(":/icon/glview/projection_ortho.png"),"");
+		connect(button_projection, SIGNAL(pressed()), this, SLOT(toggleProjection()));
+		panel_control->layout()->addWidget(button_projection);
 
-	button_shadow = new QPushButton(QIcon(":/icon/glview/render_shadow.png"),"");
-	connect(button_shadow, SIGNAL(pressed()), this, SLOT(toggleShadow()));
-	panel_control->layout()->addWidget(button_shadow);
+		button_shadow = new QPushButton(QIcon(":/icon/glview/render_shadow.png"),"");
+		connect(button_shadow, SIGNAL(pressed()), this, SLOT(toggleShadow()));
+		panel_control->layout()->addWidget(button_shadow);
 
-	button_material_mode = new QPushButton(QIcon(":/icon/glview/render_shaded.png"),"");
-	connect(button_material_mode, SIGNAL(pressed()), this, SLOT(toggleMaterialMode()));
-	panel_control->layout()->addWidget(button_material_mode);
+		button_material_mode = new QPushButton(QIcon(":/icon/glview/render_shaded.png"),"");
+		connect(button_material_mode, SIGNAL(pressed()), this, SLOT(toggleMaterialMode()));
+		panel_control->layout()->addWidget(button_material_mode);
+	}
 
 	button_save_picture = new QPushButton(QIcon(":/icon/glview/render_screenshot.png"),"");
 	connect(button_save_picture, SIGNAL(pressed()), this, SLOT(saveScreenshot()));
@@ -178,50 +182,42 @@ void GLScene::createInterface() {
 	
 
 	//Fill view panel with buttons
-	QPushButton* button = new QPushButton(QIcon(":/icon/glview/view_iso.png"),"");
-	button->setIconSize(QSize(20,20));
-	connect(button, SIGNAL(pressed()), this, SLOT(setIsoView()));
-	panel_view->layout()->addWidget(button);
+	if (!schematics_editor) { //Only in schematics editor
+		QPushButton* button = new QPushButton(QIcon(":/icon/glview/view_iso.png"),"");
+		button->setIconSize(QSize(20,20));
+		connect(button, SIGNAL(pressed()), this, SLOT(setIsoView()));
+		panel_view->layout()->addWidget(button);
 
-	button = new QPushButton(QIcon(":/icon/glview/view_front.png"),"");
-	button->setIconSize(QSize(20,20));
-	connect(button, SIGNAL(pressed()), this, SLOT(setFrontView()));
-	panel_view->layout()->addWidget(button);
+		button = new QPushButton(QIcon(":/icon/glview/view_front.png"),"");
+		button->setIconSize(QSize(20,20));
+		connect(button, SIGNAL(pressed()), this, SLOT(setFrontView()));
+		panel_view->layout()->addWidget(button);
 
-	button = new QPushButton(QIcon(":/icon/glview/view_back.png"),"");
-	button->setIconSize(QSize(20,20));
-	connect(button, SIGNAL(pressed()), this, SLOT(setBackView()));
-	panel_view->layout()->addWidget(button);
+		button = new QPushButton(QIcon(":/icon/glview/view_back.png"),"");
+		button->setIconSize(QSize(20,20));
+		connect(button, SIGNAL(pressed()), this, SLOT(setBackView()));
+		panel_view->layout()->addWidget(button);
 
-	button = new QPushButton(QIcon(":/icon/glview/view_left.png"),"");
-	button->setIconSize(QSize(20,20));
-	connect(button, SIGNAL(pressed()), this, SLOT(setLeftView()));
-	panel_view->layout()->addWidget(button);
+		button = new QPushButton(QIcon(":/icon/glview/view_left.png"),"");
+		button->setIconSize(QSize(20,20));
+		connect(button, SIGNAL(pressed()), this, SLOT(setLeftView()));
+		panel_view->layout()->addWidget(button);
 
-	button = new QPushButton(QIcon(":/icon/glview/view_right.png"),"");
-	button->setIconSize(QSize(20,20));
-	connect(button, SIGNAL(pressed()), this, SLOT(setRightView()));
-	panel_view->layout()->addWidget(button);
+		button = new QPushButton(QIcon(":/icon/glview/view_right.png"),"");
+		button->setIconSize(QSize(20,20));
+		connect(button, SIGNAL(pressed()), this, SLOT(setRightView()));
+		panel_view->layout()->addWidget(button);
 
-	button = new QPushButton(QIcon(":/icon/glview/view_top.png"),"");
-	button->setIconSize(QSize(20,20));
-	connect(button, SIGNAL(pressed()), this, SLOT(setTopView()));
-	panel_view->layout()->addWidget(button);
+		button = new QPushButton(QIcon(":/icon/glview/view_top.png"),"");
+		button->setIconSize(QSize(20,20));
+		connect(button, SIGNAL(pressed()), this, SLOT(setTopView()));
+		panel_view->layout()->addWidget(button);
 
-	button = new QPushButton(QIcon(":/icon/glview/view_bottom.png"),"");
-	button->setIconSize(QSize(20,20));
-	connect(button, SIGNAL(pressed()), this, SLOT(setBottomView()));
-	panel_view->layout()->addWidget(button);
-
-	/*QMenu* view_menu = new QMenu(button_view);
-	button_view->setMenu(view_menu);
-	QAction* action = new QAction(QIcon(":/icon/glview/view_iso.png"), tr("Isometric"), this);
-	connect(action, SIGNAL(triggered()), this, SLOT(setIsoView()));
-	view_menu->addAction(action);
-	action = new QAction(QIcon(":/icon/glview/view_left.png"), tr("Left"), this);
-	connect(action, SIGNAL(triggered()), this, SLOT(setLeftView()));
-	view_menu->addAction(action);
-	view_menu->setMinimumHeight(24);*/
+		button = new QPushButton(QIcon(":/icon/glview/view_bottom.png"),"");
+		button->setIconSize(QSize(20,20));
+		connect(button, SIGNAL(pressed()), this, SLOT(setBottomView()));
+		panel_view->layout()->addWidget(button);
+	}
 }
 
 
@@ -380,10 +376,6 @@ void GLScene::geometryChanged(const QRectF &rect) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 QGLShaderProgram* GLScene::compileShader(const QString& name) {
-	//if (!QGLShaderProgram::hasOpenGLShaderPrograms(context())) {
-		//return 0;
-	//}
-
 	QGLShader fragment(QGLShader::Fragment);
 	QGLShader vertex(QGLShader::Vertex);
 
@@ -416,6 +408,28 @@ void GLScene::loadShaders() {
 	shader_outline = compileShader("outline");
 	shader_shadow = compileShader("shadow");
 	shader_fxaa = compileShader("fxaa");
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Draw schematics page layout
+////////////////////////////////////////////////////////////////////////////////
+void GLScene::drawSchematicsPage() {
+	glBegin(GL_LINES);
+		glColor4f(0,0,0,1);
+
+		glVertex2f(-1.0,-1.0);
+		glVertex2f( 1.0,-1.0);
+
+		glVertex2f( 1.0,-1.0);
+		glVertex2f( 1.0, 1.0);
+
+		glVertex2f( 1.0, 1.0);
+		glVertex2f(-1.0, 1.0);
+
+		glVertex2f(-1.0, 1.0);
+		glVertex2f(-1.0,-1.0);
+	glEnd();
 }
 
 
@@ -470,8 +484,7 @@ void GLScene::recursiveSelect(Object* object) {
 	}
 }
 
-void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
-{
+void GLScene::drawBackground(QPainter *painter, const QRectF& rect) {
 	if ((painter->paintEngine()->type() != QPaintEngine::OpenGL) &&
 		(painter->paintEngine()->type() != QPaintEngine::OpenGL2)) {
 		qWarning("GLScene: requires valid OpenGL context");
@@ -517,8 +530,12 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 		}
 	}
 
-	//Always use orthographic view
-	viewport->setToOrtho(sceneOrthographic);
+	//Use orthographic view
+	if (schematics_editor) {
+		viewport->setToOrtho(true);
+	} else {
+		viewport->setToOrtho(sceneOrthographic);
+	}
 	bool inSelectionMode = GLC_State::isInSelectionMode();
 
 	//Process selection from the editor
@@ -530,7 +547,7 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 
 	//==========================================================================
 	//Clear screen and buffers
-	glClearColor(0.0f,0.0f,0.0f,0.0f);
+	glClearColor(1.0f,1.0f,1.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (fbo_outline) {
 		fbo_outline->bind();
@@ -552,7 +569,7 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 	}
 	if (fbo_fxaa) {
 		fbo_fxaa->bind();
-			glClearColor(0.0f,0.0f,0.0f,0.0f);
+			glClearColor(1.0f,1.0f,1.0f,0.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		fbo_fxaa->release();
 	}
@@ -560,7 +577,7 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 
 	//==========================================================================
 	//Draw background
-	if (!inSelectionMode) {
+	if ((!inSelectionMode) && (!schematics_editor)) {
 		if (fbo_fxaa) fbo_fxaa->bind();
 			if (shader_background) {
 				shader_background->bind();
@@ -593,9 +610,19 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 			world->render(1, glc::OutlineSilhouetteRenderFlag);
 		fbo_outline_selected->release();
 	}
+	if ((!inSelectionMode) && fbo_outline_selected && schematics_editor) { //Draw schematics page borders etc
+		fbo_outline_selected->bind();
+			glClear(GL_DEPTH_BUFFER_BIT);
+			viewport->setDistMin(-1.0);
+			viewport->setDistMax(1.0);
+				drawSchematicsPage();
+			viewport->setDistMinAndMax(world->collection()->boundingBox());
+		fbo_outline_selected->release();
+	}
+
 
 	//Draw into shadows buffer
-	if ((!inSelectionMode) && fbo_shadow && shader_shadow && sceneShadowed) {
+	if ((!inSelectionMode) && fbo_shadow && shader_shadow && sceneShadowed && (!schematics_editor)) {
 		fbo_shadow->bind();
 			GLC_Context::current()->glcPushMatrix();
 			GLC_Context::current()->glcTranslated(0,0,1.2*world->collection()->boundingBox().lowerCorner().z());
@@ -639,7 +666,7 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect)
 
 	//Render scene into world
 	if ((!inSelectionMode) && fbo_fxaa) fbo_fxaa->bind();
-		if (!sceneWireframe) {
+		if (!sceneWireframe && (!schematics_editor)) {
 			world->render(0, glc::ShadingFlag);
 			//glClear(GL_DEPTH_BUFFER_BIT);
 			world->render(1, glc::ShadingFlag);
@@ -734,8 +761,10 @@ void GLScene::mousePressEvent(QGraphicsSceneMouseEvent* e) {
 	int y = e->scenePos().y();
 	switch (e->button()) {
 		case (Qt::RightButton):
-			controller.setActiveMover(GLC_MoverController::TrackBall, GLC_UserInput(x,y));
-			update();
+			if (!schematics_editor) {
+				controller.setActiveMover(GLC_MoverController::TrackBall, GLC_UserInput(x,y));
+				update();
+			}
 			break;
 		case (Qt::LeftButton):
 			if (widget_manager->mousePressEvent(&mouseEvent) == glc::BlockedEvent) {
