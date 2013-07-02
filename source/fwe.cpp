@@ -29,6 +29,7 @@
 #include <QApplication>
 #include <QFile>
 #include <QSettings>
+#include <QFontDatabase>
 //#include <QCleanlooksStyle>
 
 #include "fwe.h"
@@ -89,6 +90,10 @@ void fw_editor_initialize(int flags, int argc, char *argv[]) {
 		fw_editor_settings = new QSettings("FoxWorks", "Editor"); //Load settings
 		fw_mainWindow = new MainWindow(); //Show main window
 		fw_mainWindow->show();
+
+		//Load default fonts
+		QFontDatabase fontDatabase; 
+		fontDatabase.addApplicationFont(":/gost_2_304-81_type_b.ttf");
 
 		//Load default stylesheet
 		QFile stylesheet(":/stylesheet.qss");

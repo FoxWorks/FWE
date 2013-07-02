@@ -373,8 +373,14 @@ QWidget* Object::getPropertySheet() {
 		connect(property_sheet, SIGNAL(propertyUpdate(const QString&)),
 				this, SLOT(propertyUpdate(const QString&)));
 
-		//Create default set of properties
-		if (getType() != "metadata") property_sheet->setProperties(editor->objectVariables[""]);
+		//Create default set of properties FIXME: make it less of a hack
+		if ((getType() != "metadata") &&
+			(getType().mid(0,8) != "foxworks")) {
+			property_sheet->setProperties(editor->objectVariables[""]);
+		}
+		if (getType().mid(0,20) == "foxworks.schematics.") {
+			property_sheet->setProperties(editor->objectVariables["foxworks.schematics."]);
+		}
 		if (!getType().isEmpty()) property_sheet->setProperties(editor->objectVariables[getType()]);
 		return property_sheet;
 	}

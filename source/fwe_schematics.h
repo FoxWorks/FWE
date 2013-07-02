@@ -68,12 +68,13 @@ namespace EVDS {
 		void updateInterface(bool isInFront);
 		void setModified();
 
+		Object* getRoot() { return root; }
 		ChildWindow* getWindow() { return window; }
 		GLScene* getGLScene() { return glscene; }
-		//Object* getSelected() { return selected; }
-		//void clearSelection() { selected = NULL; }
+		Object* getSelected() { return selected; }
+		void clearSelection() { selected = NULL; }
 
-		//void updateObject(Object* object);
+		void updateObject(Object* object);
 		//void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
 		//void loadError(const QString& error);
 
@@ -83,12 +84,10 @@ namespace EVDS {
 		void dragEnterEvent(QDragEnterEvent *event);
 
 	private slots:
-		/*void addObject();
+		void addObject();
 		void removeObject();
 		void selectObject(const QModelIndex& index);
-		void commentsChanged();
-		void cleanupTimer();
-		void rootInitialized();
+		/*
 
 		void showProperties();
 		void showCrossSections();

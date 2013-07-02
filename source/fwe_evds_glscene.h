@@ -90,7 +90,9 @@ namespace EVDS {
 		//Recursively GLC-select object and its children
 		void recursiveSelect(Object* object);
 		//Draw schematics page layout
-		void drawSchematicsPage();
+		void drawSchematicsPage(QPainter *painter);
+		//Project coordinates
+		QPointF project(float x, float y, float z = 0.0);
 
 		//Parent scene from which GLC stuff is taken
 		GLScene* parent_scene;

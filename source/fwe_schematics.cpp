@@ -27,27 +27,6 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ////////////////////////////////////////////////////////////////////////////////
 #include <QWidget>
-/*#include <QCloseEvent>
-#include <QDockWidget>
-#include <QTreeView>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QStackedLayout>
-#include <QFormLayout>
-#include <QFileDialog>
-#include <QLabel>
-#include <QTimer>
-#include <QModelIndex>
-#include <QSettings>
-#include <QMessageBox>
-#include <QApplication>
-#include <QAction>
-#include <QMenu>
-#include <QSlider>
-#include <QCheckBox>
-#include <QTextEdit>
-#include <QStack>
-#include <QXmlStreamReader>*/
 
 #include <GLC_3DViewCollection>
 #include <GLC_3DViewInstance>
@@ -242,7 +221,7 @@ void SchematicsEditor::setModified() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-/*void SchematicsEditor::addObject() {
+void SchematicsEditor::addObject() {
 	QModelIndex index = list_tree->selectionModel()->currentIndex();
 	static_cast<EVDS::ObjectTreeModel*>(list_tree->model())->insertRow(0,index);
 }
@@ -263,23 +242,15 @@ void SchematicsEditor::removeObject() {
 void SchematicsEditor::selectObject(const QModelIndex& index) {
 	//Should selection be cleared
 	if (!index.isValid()) {
-		QWidget* property_sheet = document->getPropertySheet();
+		QWidget* property_sheet = root->getPropertySheet();
 		if (properties_layout->indexOf(property_sheet) < 0) {
 			properties_layout->addWidget(property_sheet);
 		}
 		properties_layout->setCurrentWidget(property_sheet);
-		//properties_layout->setCurrentWidget(properties_document);
-		csection_layout->setCurrentWidget(csection_none);
 		selected = NULL;
 
 		//Update information
-		updateInformation(true);
 		updateObject(NULL);
-
-		//Update comments
-		disconnect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
-		comments->setText(document->getString("comments"));
-		connect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
 		return;
 	}
 
@@ -299,25 +270,6 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 	}
 	properties_layout->setCurrentWidget(property_sheet);
 
-	//Show cross-sections editor
-	QWidget* csection_editor = object->getCrossSectionsEditor();
-	if (csection_editor) {
-		if (csection_layout->indexOf(csection_editor) < 0) {
-			csection_layout->addWidget(csection_editor);
-		}
-		csection_layout->setCurrentWidget(csection_editor);
-	} else {
-		csection_layout->setCurrentWidget(csection_none);
-	}
-
-	//Update comments
-	disconnect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
-	comments->setText(object->getString("comments"));
-	connect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
-
-	//Update information
-	updateInformation(true);
-
 	//Redraw
 	updateObject(NULL);
 }
@@ -331,7 +283,7 @@ void SchematicsEditor::updateObject(Object* object) {
 		list_model->updateObject(object);
 	}
 	glscene->update();
-}*/
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -369,11 +321,11 @@ void SchematicsEditor::initializeForFile() {
 		root->setName("");
 	}
 
-	//selectObject(QModelIndex());
 	//Create schematics editor itself
 	createObjectListDock();
 	createListDock();
 	createPropertiesDock();
+	selectObject(QModelIndex());
 }
 
 

@@ -32,6 +32,7 @@
 #include <QPushButton>
 #include <QMenu>
 #include <QHBoxLayout>
+#include <QFontMetrics>
 
 #include <GLC_UserInput>
 #include <GLC_Exception>
@@ -43,6 +44,7 @@
 #include "fwe_evds_object.h"
 #include "fwe_evds_object_renderer.h"
 #include "fwe_evds_glscene.h"
+#include "fwe_schematics.h"
 
 using namespace EVDS;
 
@@ -414,22 +416,140 @@ void GLScene::loadShaders() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Draw schematics page layout
 ////////////////////////////////////////////////////////////////////////////////
-void GLScene::drawSchematicsPage() {
-	glBegin(GL_LINES);
-		glColor4f(0,0,0,1);
+QPointF GLScene::project(float x, float y, float z) {
+	//Get OpenGL matrices
+	double projectionMatrix[16];
+	double viewMatrix[16];
+	glGetDoublev(GL_PROJECTION_MATRIX, projectionMatrix);
+	glGetDoublev(GL_MODELVIEW_MATRIX, viewMatrix);
 
-		glVertex2f(-1.0,-1.0);
-		glVertex2f( 1.0,-1.0);
+	//Create result
+	QPointF result;
+	QVector3D screenPos = QVector3D(x,y,0)*QMatrix4x4(viewMatrix)*QMatrix4x4(projectionMatrix);
+	result.setX(0.5*(screenPos.x()+1.0) * previousRect.width());
+	result.setY(0.5*(1.0-screenPos.y()) * previousRect.height());
+	return result;
+}
 
-		glVertex2f( 1.0,-1.0);
-		glVertex2f( 1.0, 1.0);
 
-		glVertex2f( 1.0, 1.0);
-		glVertex2f(-1.0, 1.0);
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Draw schematics page layout
+////////////////////////////////////////////////////////////////////////////////
+void GLScene::drawSchematicsPage(QPainter *painter) {
+	//Define paper size
+	float width = schematics_editor->getRoot()->getVariable("paper.width")*0.01;
+	float height = schematics_editor->getRoot()->getVariable("paper.height")*0.01;
+	float margin = 0.006f; //6 mm
+	float normal_font = 0.005f; //5 mm
+	float normal_font_w = normal_font*0.75;
+	float small_font = 0.0035f; //3.5 mm
+	float thick_line = 0.0010f; //1.5 mm
+	if (width <= 0.0f) width = 0.297f;
+	if (height <= 0.0f) height = 0.210f;
 
-		glVertex2f(-1.0, 1.0);
-		glVertex2f(-1.0,-1.0);
-	glEnd();
+	//Define line thickness
+	int thick_line_px = project(0,0).y()-project(0,thick_line).y();
+	if (thick_line_px < 1) thick_line_px = 1;
+
+	//Define font thickness
+	int normal_font_px = project(0,0).y()-project(0,normal_font).y();
+	if (normal_font_px < 1) normal_font_px = 1;
+	int small_font_px = project(0,0).y()-project(0,small_font).y();
+	if (small_font_px < 1) small_font_px = 1;
+	painter->setFont(QFont("GOST type B",normal_font_px));
+
+
+	//Draw paper borders
+	painter->setPen(QPen(QBrush(QColor(0,0,0)),thick_line_px));
+	painter->drawRect(QRectF(project(0,0),project(width,height)));
+	painter->drawRect(QRectF(project(margin,margin),project(width-margin,height-margin)));
+
+
+	//Draw sections
+	float sectionWidth = width / 10.0f;
+	float sectionHeight = height / 10.0f;
+	for (int x = 1; x < 10; x++) {
+		painter->drawLine(project(sectionWidth*x,0.00f),project(sectionWidth*x,margin));
+		painter->drawLine(project(sectionWidth*x,height-margin),project(sectionWidth*x,height));
+		painter->drawText(project(sectionWidth*(x-0.5f),0.5*(margin-normal_font)),tr("%1").arg(x));
+		painter->drawText(project(sectionWidth*(x-0.5f),height-margin+0.5*(margin-normal_font)),tr("%1").arg(x));
+	}
+	for (int y = 1; y < 10; y++) {
+		painter->drawLine(project(0.00f,sectionHeight*y),project(margin,sectionHeight*y));
+		painter->drawLine(project(width-margin,sectionHeight*y),project(width,sectionHeight*y));
+		painter->drawText(
+			project(
+			0.5*(margin-normal_font_w),
+			sectionHeight*(y-0.5f)-normal_font*0.5),tr("%1").arg((char)((y-1)+'A')));
+		painter->drawText(
+			project(
+			width-margin+0.5*(margin-normal_font_w),
+			sectionHeight*(y-0.5f)-normal_font*0.5),tr("%1").arg((char)((y-1)+'A')));
+	}
+
+
+	//Draw page information (GOST 2.104)
+	if (1) { //First page
+#define local(x,y) project(width-0.185-margin+x,margin+0.040-y)
+
+		//General frame
+		painter->drawRect(QRectF(local(0.000,0.000),local(0.185,0.040)));
+
+		//Draw all other lines
+		painter->drawLine(local(0.065,0.000),local(0.065,0.040));
+		painter->drawLine(local(0.065,0.015),local(0.185,0.015));
+		painter->drawLine(local(0.135,0.015),local(0.135,0.040));
+
+		painter->drawLine(local(0.135,0.020),local(0.185,0.020));
+		painter->drawLine(local(0.135,0.025),local(0.185,0.025));
+		painter->drawLine(local(0.150,0.015),local(0.150,0.025));
+		painter->drawLine(local(0.165,0.015),local(0.165,0.025));
+
+		painter->drawLine(local(0.017,0.000),local(0.017,0.040));
+		for (int line = 1; line <= 7; line++) {
+			painter->drawLine(local(0.000,0.005*line),local(0.065,0.005*line));
+		}
+
+		painter->drawLine(local(0.017,0.000),local(0.017,0.040));
+
+		//Draw texts
+		painter->setFont(QFont("GOST type B",small_font_px));
+			painter->drawText(local(0.001,0.014),"Created");
+			painter->drawText(local(0.001,0.019),"Drawn");
+			painter->drawText(local(0.001,0.024),"Verified");
+
+			painter->drawText(local(0.137,0.019),"Sheet");
+			painter->drawText(local(0.152,0.019),"Count");
+			painter->drawText(local(0.170,0.019),"Scale");
+
+			//Fill out fields
+			painter->drawText(local(0.018,0.014),editor->getEditDocument()->getString("document.created_by"));
+			painter->drawText(local(0.018,0.019),editor->getEditDocument()->getString("document.drawn_by"));
+			painter->drawText(local(0.018,0.024),editor->getEditDocument()->getString("document.verified_by"));
+		painter->setFont(QFont("GOST type B",normal_font_px));
+
+		//Fill out big fields
+		QFontMetrics metric = painter->fontMetrics();
+		QString value = editor->getEditDocument()->getString("document.code");
+		painter->drawText(local(0.065 + 0.5*(0.185-0.065),0.000 + 0.5*(0.000-0.015) + 0.001)
+			-QPointF(metric.width(value)/2,-metric.height()/2),value);
+
+		value = editor->getEditDocument()->getString("document.title");
+		painter->drawText(local(0.065 + 0.5*(0.135-0.065),0.015 + 0.5*(0.015-0.040) + 0.001)
+			-QPointF(metric.width(value)/2,-metric.height()/2),value);
+
+
+		//painter->drawText(QRectF(local(0.065,0.000),local(0.185,0.015)),
+			//Qt::AlignCenter,editor->getEditDocument()->getString("document.code"));
+		//painter->drawText(QRectF(local(0.065,0.015),local(0.135,0.015)),
+			//Qt::AlignCenter,editor->getEditDocument()->getString("document.title"));
+
+#undef local
+	} else {
+
+	}
+
+	//drawGOSTText(painter,0.05f,0.05f,normal_font,"1234567890");
 }
 
 
@@ -511,6 +631,9 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect) {
 
 	//Setup native rendering and viewport size
 	painter->beginNativePainting();
+	glClearColor(1.0f,1.0f,1.0f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	viewport->setWinGLSize(rect.width(), rect.height());
 	geometryChanged(rect);
 	if (rect != previousRect) {
@@ -610,15 +733,6 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect) {
 			world->render(1, glc::OutlineSilhouetteRenderFlag);
 		fbo_outline_selected->release();
 	}
-	if ((!inSelectionMode) && fbo_outline_selected && schematics_editor) { //Draw schematics page borders etc
-		fbo_outline_selected->bind();
-			glClear(GL_DEPTH_BUFFER_BIT);
-			viewport->setDistMin(-1.0);
-			viewport->setDistMax(1.0);
-				drawSchematicsPage();
-			viewport->setDistMinAndMax(world->collection()->boundingBox());
-		fbo_outline_selected->release();
-	}
 
 
 	//Draw into shadows buffer
@@ -674,6 +788,16 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect) {
 		if (!makingScreenshot) {
 			viewport->useClipPlane(false);
 			widget_manager->render();
+			viewport->useClipPlane(true);
+		}
+		if (schematics_editor) { //Draw schematics page in world
+			viewport->useClipPlane(false);
+				QPainter fbo_painter(fbo_fxaa);
+				if (makingScreenshot) {
+					drawSchematicsPage(painter);
+				} else {
+					drawSchematicsPage(&fbo_painter);
+				}
 			viewport->useClipPlane(true);
 		}
 	if ((!inSelectionMode) && fbo_fxaa) fbo_fxaa->release();

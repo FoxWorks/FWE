@@ -3,6 +3,8 @@
     <file>stylesheet.qss</file>
     <file>evds.xml</file>
 
+    <file>gost_2_304-81_type_b.ttf</file>
+
     <file>icon/foxworks.png</file>
     <file>icon/foxworks256.png</file>
     <file>icon/foxworks1024.png</file>
