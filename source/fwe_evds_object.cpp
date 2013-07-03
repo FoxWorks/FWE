@@ -166,6 +166,15 @@ Object* Object::insertNewChild(int index) {
 	Object* new_object_obj = new Object(new_object,this,editor);
 	new_object_obj->setSchematicsEditor(schematics_editor);
 	children.insert(index,new_object_obj);
+
+	//Special logic for schematics editor
+	if (schematics_editor) {
+		if (this == schematics_editor->getRoot()) {
+			new_object_obj->setType("foxworks.schematics.sheet");
+		} else {
+			new_object_obj->setType("foxworks.schematics.element");
+		}
+	}
 	return new_object_obj;
 }
 
