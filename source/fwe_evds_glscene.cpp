@@ -363,6 +363,10 @@ void GLScene::saveCurrentSheet(const QString& baseFilename) {
 	QGLFramebufferObjectFormat format;
 	format.setSamples(16);
 
+	//Disable LODs, culling
+	viewport->setMinimumPixelCullingSize(0);
+	world->collection()->setLodUsage(false,viewport);
+
 	//Get number of pixels per cm
 	float ppcm = schematics_editor->getCurrentSheet()->getVariable("paper.ppcm");
 	if (ppcm <= 0.0) ppcm = 32.0;
@@ -377,8 +381,8 @@ void GLScene::saveCurrentSheet(const QString& baseFilename) {
 
 	//Create final image buffer
 	QImage finalImage(width,height,QImage::Format_RGB32);
-	int fbo_width = 128;
-	int fbo_height = 128;
+	int fbo_width = 1024;
+	int fbo_height = 1024;
 	int x = 0;
 	int y = 0;
 
@@ -442,6 +446,10 @@ void GLScene::saveCurrentSheet(const QString& baseFilename) {
 	//Save image
 	finalImage.save(baseFilename,0,95);
 	//renderFbo.toImage().save(baseFilename,0,95);
+
+	//Restore culling/LOD settings
+	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("rendering.min_pixel_culling").toInt());
+	world->collection()->setLodUsage(true,viewport);
 }
 
 
@@ -706,12 +714,21 @@ void GLScene::drawSchematicsPage(QPainter *painter) {
 
 	//Draw all labels
 	for (int i = 0; i < sheet->getChildrenCount(); i++) {
-		if (sheet->getChild(i)->getType() != "foxworks.schematics.object") {
-			EVDS_STATE_VECTOR vector;
-			EVDS_Object_GetStateVector(sheet->getChild(i)->getEVDSObject(),&vector);
+		Object* element = sheet->getChild(i);
+		if (element->getType() == "foxworks.schematics.element") {
+			if (element->getString("reference") == "") {
+				EVDS_STATE_VECTOR vector;
+				EVDS_Object_GetStateVector(element->getEVDSObject(),&vector);
 
-			painter->drawText(project(vector.position.x,vector.position.y),
-				sheet->getChild(i)->getName());
+				QString value = element->getName();
+				if (element->getString("comments") != "") value = element->getString("comments");
+				
+				//Fake multi-line text
+				QStringList lines = value.split("\n");
+				for (int i = 0; i < lines.count(); i++) {
+					painter->drawText(project(vector.position.x,vector.position.y - (normal_font+0.001f)*i),lines[i]);
+				}
+			}
 		}
 	}
 

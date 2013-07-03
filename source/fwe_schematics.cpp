@@ -213,6 +213,33 @@ void SchematicsEditor::createPropertiesDock() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+/// @brief 
+////////////////////////////////////////////////////////////////////////////////
+void SchematicsEditor::createCommentsDock() {
+	comments = new QTextEdit();
+	comments->setObjectName("EVDS_Comments");
+
+	comments_dock = new QDockWidget(tr("Element Text"), this);
+	comments_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+	comments_dock->setAllowedAreas(Qt::AllDockWidgetAreas);
+	comments_dock->setWidget(comments);
+	//tabifyDockWidget(bodyinfo_dock,comments_dock);
+	addDockWidget(Qt::RightDockWidgetArea,comments_dock);
+	//bodyinfo_dock->raise();
+
+	comments->setMaximumHeight(135);
+}
+
+void SchematicsEditor::commentsChanged() {
+	if (selected) {
+		selected->setVariable("comments",comments->toPlainText());
+	} else {
+		editor->getEditDocument()->setVariable("comments",comments->toPlainText());
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 /// @brief Callback from when object was modified
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsEditor::setModified() {
@@ -262,6 +289,11 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 
 		//Update information
 		updateObject(NULL);
+
+		//Update comments
+		disconnect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
+		comments->setText(editor->getEditDocument()->getString("comments"));
+		connect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
 		return;
 	}
 
@@ -292,6 +324,11 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 	}
 	prev_sheet = sheet;
 
+	//Update comments
+	disconnect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
+	comments->setText(object->getString("comments"));
+	connect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
+
 	//Redraw
 	updateObject(NULL);
 }
@@ -301,6 +338,7 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsEditor::updateObject(Object* object) {
+	invalidateChildren(root);
 	if (object) {
 		list_model->updateObject(object);
 	}
@@ -356,6 +394,7 @@ void SchematicsEditor::initializeForFile() {
 	createObjectListDock();
 	createListDock();
 	createPropertiesDock();
+	createCommentsDock();
 	selectObject(QModelIndex());
 }
 

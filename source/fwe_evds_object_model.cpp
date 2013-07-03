@@ -188,7 +188,7 @@ QMimeData* ObjectTreeModel::mimeData(const QModelIndexList &indexes) const
 				//Write it
 				EVDS_VARIABLE* variable;
 				EVDS_Object_SetName(reference,object->getName().toAscii().data());
-				EVDS_Object_SetType(reference,"foxworks.schematics.object");
+				EVDS_Object_SetType(reference,"foxworks.schematics.element");
 				EVDS_Object_AddVariable(reference,"reference",EVDS_VARIABLE_TYPE_STRING,&variable);
 				EVDS_Variable_SetString(variable,reference_str,8193);
 				

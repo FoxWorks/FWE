@@ -93,6 +93,7 @@ namespace EVDS {
 		void addObject();
 		void removeObject();
 		void selectObject(const QModelIndex& index);
+		void commentsChanged();
 		/*
 
 		void showProperties();
@@ -112,7 +113,7 @@ namespace EVDS {
 		void createPropertiesDock();
 		//void createCSectionDock();
 		//void createInformationDock();
-		//void createCommentsDock();
+		void createCommentsDock();
 
 		//Object types
 		//void loadObjectData();
@@ -146,11 +147,11 @@ namespace EVDS {
 
 		//Rigid body information
 		QDockWidget*		bodyinfo_dock;
-		QTextEdit*			bodyinfo;
+		QTextEdit*			bodyinfo;*/
 
 		//Comments dock
 		QDockWidget*		comments_dock;
-		QTextEdit*			comments;*/
+		QTextEdit*			comments;
 
 		//Main workspace
 		GLScene*			glscene;

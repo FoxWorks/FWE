@@ -162,21 +162,6 @@ Wiring - connector
 	</object_vars>
 	<object_vars name="foxworks.schematics">
 		<var>
-			<type>enum</type>
-			<variable>@7</variable>
-			<name>Type</name>
-			<description>Objects type</description>
-			<values>
-foxworks.schematics.sheet
-Sheet
-foxworks.schematics.label
-Text label
-foxworks.schematics.object
-Object
-foxworks.schematics.csection
-Object cross-section</values>
-		</var>
-		<var>
 			<type>double</type>
 			<important>true</important>
 			<variable>@1</variable>
@@ -201,11 +186,29 @@ Object cross-section</values>
 		<var>
 			<type>double</type>
 			<important>true</important>
+			<variable>@4</variable>
+			<group>Placement</group>
+			<name>Pitch</name>
+			<units>deg</units>
+			<description>Euler angles for objects attitude (Y axis)</description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
 			<variable>@5</variable>
 			<group>Placement</group>
-			<name>Rotation</name>
+			<name>Yaw</name>
 			<units>deg</units>
-			<description>Rotation of the element</description>
+			<description>Euler angles for objects attitude (Z axis)</description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>@6</variable>
+			<group>Placement</group>
+			<name>Roll</name>
+			<units>deg</units>
+			<description>Euler angles for objects attitude (X axis)</description>
 		</var>
 		<var>
 			<type>double</type>
@@ -316,77 +319,12 @@ A4
 			<description></description>
 		</var>
 	</object_vars>		
-	<object_vars name="foxworks.schematics.label">
-		<var>
-			<type>string</type>
-			<variable>text</variable>
-			<name>Text</name>
-			<description></description>
-		</var>
-	</object_vars>		
-	<object_vars name="foxworks.schematics.object">
+	<object_vars name="foxworks.schematics.element">
 		<var>
 			<type>string</type>
 			<variable>reference</variable>
 			<name>Object reference</name>
 			<description></description>
-		</var>
-		<var>
-			<type>double</type>
-			<important>true</important>
-			<variable>@1</variable>
-			<group>Position/Orientation</group>
-			<name>X</name>
-			<step>0.001</step>
-			<units>m</units>
-			<description>Position of object in coordinates of parent</description>
-		</var>
-		<var>
-			<type>double</type>
-			<important>true</important>
-			<variable>@2</variable>
-			<group>Position/Orientation</group>
-			<name>Y</name>
-			<step>0.001</step>
-			<units>m</units>
-			<description>Position of object in coordinates of parent</description>
-		</var>
-		<var>
-			<type>double</type>
-			<important>true</important>
-			<variable>@3</variable>
-			<group>Position/Orientation</group>
-			<name>Z</name>
-			<step>0.001</step>
-			<units>m</units>
-			<description>Position of object in coordinates of parent</description>
-		</var>
-		<var>
-			<type>double</type>
-			<important>true</important>
-			<variable>@4</variable>
-			<group>Position/Orientation</group>
-			<name>Pitch</name>
-			<units>deg</units>
-			<description>Euler angles for objects attitude (Y axis)</description>
-		</var>
-		<var>
-			<type>double</type>
-			<important>true</important>
-			<variable>@5</variable>
-			<group>Position/Orientation</group>
-			<name>Yaw</name>
-			<units>deg</units>
-			<description>Euler angles for objects attitude (Z axis)</description>
-		</var>
-		<var>
-			<type>double</type>
-			<important>true</important>
-			<variable>@6</variable>
-			<group>Position/Orientation</group>
-			<name>Roll</name>
-			<units>deg</units>
-			<description>Euler angles for objects attitude (X axis)</description>
 		</var>
 	</object_vars>		
 	<object_vars name="metadata">

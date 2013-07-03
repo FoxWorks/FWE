@@ -109,19 +109,21 @@ void SchematicsRenderingManager::processUpdateInstances(Object* element) {
 	}
 
 	//Create instances for object elements
-	if (element->getType() == "foxworks.schematics.object") {
+	if (element->getType() == "foxworks.schematics.element") {
 		EVDS_OBJECT* evds_object = 0;
 		QString reference = element->getString("reference");
 
-		EVDS_SYSTEM* system;
-		EVDS_Object_GetSystem(element->getEVDSObject(),&system);
-		EVDS_System_QueryObject(schematics_editor->getEVDSEditor()->getEditRoot()->getEVDSObject(),
-			reference.toAscii().data(),0,&evds_object);
+		if (reference != "") {
+			EVDS_SYSTEM* system;
+			EVDS_Object_GetSystem(element->getEVDSObject(),&system);
+			EVDS_System_QueryObject(schematics_editor->getEVDSEditor()->getEditRoot()->getEVDSObject(),
+				reference.toAscii().data(),0,&evds_object);
 
-		if (evds_object) {
-			Object* object;
-			EVDS_Object_GetUserdata(evds_object,(void**)&object);
-			createInstance(element,object);
+			if (evds_object) {
+				Object* object;
+				EVDS_Object_GetUserdata(evds_object,(void**)&object);
+				createInstance(element,object);
+			}
 		}
 	}
 }
