@@ -368,10 +368,8 @@ void GLScene::saveCurrentSheet(const QString& baseFilename) {
 	if (ppcm <= 0.0) ppcm = 32.0;
 
 	//Get paper size
-	float paper_width = schematics_editor->getCurrentSheet()->getVariable("paper.width");
-	float paper_height = schematics_editor->getCurrentSheet()->getVariable("paper.height");
-	if (paper_width <= 0.0f) paper_width = 29.7f;
-	if (paper_height <= 0.0f) paper_height = 21.0f;
+	float paper_width,paper_height;
+	schematics_editor->getCurrentSheet()->getSheetPaperSizeInCM(&paper_width,&paper_height);
 
 	//Get picture size
 	int width = paper_width*ppcm;
@@ -543,15 +541,17 @@ void GLScene::drawSchematicsPage(QPainter *painter) {
 	if (!sheet) return;
 
 	//Define paper size
-	float width = sheet->getVariable("paper.width")*0.01;
-	float height = sheet->getVariable("paper.height")*0.01;
+	float width,height;
+	sheet->getSheetPaperSizeInCM(&width,&height);
+	width *= 0.01f;
+	height *= 0.01f;
+
+	//Define other variables
 	float margin = 0.006f; //6 mm
 	float normal_font = 0.005f; //5 mm
 	float normal_font_w = normal_font*0.75;
 	float small_font = 0.0035f; //3.5 mm
 	float thick_line = 0.0007f; //1.5 mm
-	if (width <= 0.0f) width = 0.297f;
-	if (height <= 0.0f) height = 0.210f;
 
 	//Define line thickness
 	int thick_line_px = project(0,0).y()-project(0,thick_line).y();

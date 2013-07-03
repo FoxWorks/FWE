@@ -220,6 +220,25 @@ Object cross-section</values>
 	</object_vars>		
 	<object_vars name="foxworks.schematics.sheet">
 		<var>
+			<type>enum</type>
+			<variable>paper.format</variable>
+			<name>Format</name>
+			<group>Paper</group>
+			<description></description>
+			<values>
+a0
+A0
+a1
+A1
+a2
+A2
+a3
+A3
+a4
+A4
+			</values>
+		</var>
+		<var>
 			<type>double</type>
 			<variable>paper.width</variable>
 			<name>Width</name>
@@ -230,11 +249,29 @@ Object cross-section</values>
 		</var>
 		<var>
 			<type>double</type>
+			<variable>paper.width_multiplier</variable>
+			<name>Width multiplier</name>
+			<group>Paper</group>
+			<step>1</step>
+			<digits>0</digits>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
 			<variable>paper.height</variable>
 			<name>Height</name>
 			<group>Paper</group>
 			<step>1</step>
 			<units>cm</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>paper.height_multiplier</variable>
+			<name>Height multiplier</name>
+			<group>Paper</group>
+			<step>1</step>
+			<digits>0</digits>
 			<description></description>
 		</var>
 		<var>

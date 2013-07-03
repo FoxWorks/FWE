@@ -607,6 +607,43 @@ bool Object::isOxidizerTank() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+void Object::getSheetPaperSizeInCM(float* width, float* height) {
+	QString format = getString("paper.format");
+	if (format == "") format = "a4";
+	double fw = 29.7;
+	double fh = 21.0;
+	if (format == "a3") {
+		fw = 29.7;
+		fh = 42.0;
+	} else if (format == "a2") {
+		fw = 42.0;
+		fh = 59.4;
+	} else if (format == "a1") {
+		fw = 59.4;
+		fh = 81.4;
+	} else if (format == "a0") {
+		fw = 84.1;
+		fh = 118.9;
+	}
+
+	double w = getVariable("paper.width");
+	double h = getVariable("paper.height");
+	if (w <= 0.0) w = fw;
+	if (h <= 0.0) h = fh;
+
+	double wm = getVariable("paper.width_multiplier");
+	double hm = getVariable("paper.height_multiplier");
+	if (wm > 1.0) w *= wm;
+	if (hm > 1.0) h *= hm;
+
+	*width = w;
+	*height = h;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 QWidget* Object::getCrossSectionsEditor() {
 	if (csection_editor) {
 		return csection_editor;

@@ -79,6 +79,7 @@ namespace EVDS {
 		void invalidateChildren();
 
 		bool isOxidizerTank();
+		void getSheetPaperSizeInCM(float* width, float* height);
 
 		QWidget* getPropertySheet();
 		QWidget* getCrossSectionsEditor();
