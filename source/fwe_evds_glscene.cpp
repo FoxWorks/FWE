@@ -376,6 +376,12 @@ void GLScene::saveCurrentSheet(const QString& baseFilename) {
 	//Get picture size
 	int width = paper_width*ppcm;
 	int height = paper_height*ppcm;
+
+	while ((width > 2048) || (height > 2048)) {
+		ppcm = ppcm*0.5;
+		width = paper_width*ppcm;
+		height = paper_height*ppcm;
+	}
 	
 	//Create FBO and draw into it
 	QGLFramebufferObject renderFbo(width,height);
@@ -387,7 +393,9 @@ void GLScene::saveCurrentSheet(const QString& baseFilename) {
 		GLC_Camera old_camera = GLC_Camera(*viewport->cameraHandle());
 		//Frame image correctly
 		//viewport->reframe(GLC_BoundingBox(GLC_Point3d(0,0,0),GLC_Point3d(paper_width*0.01,paper_height*0.01,0)),1.4);
-		viewport->cameraHandle()->translate(GLC_Vector3d(paper_width*0.01f*0.5f,paper_height*0.01f*0.5f,0));
+		const GLC_Vector3d deltaVector(GLC_Vector3d(paper_width*0.01f*0.5f,paper_height*0.01f*0.5f,0)
+			- viewport->cameraHandle()->target());
+		viewport->cameraHandle()->translate(deltaVector);
 		viewport->cameraHandle()->setDistEyeTarget(paper_height*0.01f*1.430f);
 
 		//Render%

@@ -72,6 +72,9 @@ namespace EVDS {
 		//Get modifier instances
 		QList<ObjectRendererModifierInstance>& getInstances(Object* object) { return modifierInstances[object]; }
 
+	private slots:
+		void doUpdateModifiers();
+
 	private:
 		//Finds modifiers in the given object, and updates the instances created by them
 		void processUpdateModifiers(Object* object);
@@ -90,6 +93,8 @@ namespace EVDS {
 		Editor* editor;
 		//Is editor initializing
 		bool initializing;
+		//Should modifiers be updated
+		bool shouldUpdateModifiers;
 	};
 }
 

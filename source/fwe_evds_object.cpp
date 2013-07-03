@@ -109,8 +109,9 @@ Object::~Object() {
 		delete hidden_children[i];
 	}
 	if (renderer) delete renderer;
-	if (property_sheet) property_sheet->deleteLater();
-	if (csection_editor) csection_editor->deleteLater();
+	//These will get deleted when corresponding widgets are deleted
+	//if (property_sheet) property_sheet->deleteLater();
+	//if (csection_editor) csection_editor->deleteLater();
 }
 
 

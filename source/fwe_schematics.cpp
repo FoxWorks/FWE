@@ -87,7 +87,6 @@ SchematicsEditor::~SchematicsEditor() {
 	for (int i = 0; i < actions.count(); i++) {
 		actions[i]->deleteLater();
 	}
-	//cutsection_menu->deleteLater();
 }
 
 

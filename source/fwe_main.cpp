@@ -655,7 +655,7 @@ ChildWindow::ChildWindow(MainWindow* window) {
 
 	SchematicsEditor = new EVDS::SchematicsEditor(this,EVDSEditor);
 	editorsLayout->addWidget(SchematicsEditor);
-	SchematicsEditor->setHidden(true);
+	SchematicsEditor->setEditorHidden(true);
 
 	//Delete child on close
 	setAttribute(Qt::WA_DeleteOnClose);
@@ -672,7 +672,7 @@ ChildWindow::ChildWindow(MainWindow* window) {
 ////////////////////////////////////////////////////////////////////////////////
 void ChildWindow::showEVDS() {
 	editorsLayout->setCurrentWidget(EVDSEditor);
-	SchematicsEditor->setHidden(true);
+	SchematicsEditor->setEditorHidden(true);
 }
 
 
@@ -681,7 +681,7 @@ void ChildWindow::showEVDS() {
 ////////////////////////////////////////////////////////////////////////////////
 void ChildWindow::showSchematics() {
 	editorsLayout->setCurrentWidget(SchematicsEditor);
-	SchematicsEditor->setHidden(false);
+	SchematicsEditor->setEditorHidden(false);
 }
 
 

@@ -205,7 +205,7 @@ QMimeData* ObjectTreeModel::mimeData(const QModelIndexList &indexes) const
 		}
 	}
 
-	mimeData->setText(encodedReferenceData);
+	mimeData->setText(encodedData);
 	mimeData->setData("application/vnd.evds+xml",encodedData.toUtf8());
 	mimeData->setData("application/vnd.evds.ref+xml",encodedReferenceData.toUtf8());
 	return mimeData;
@@ -242,7 +242,7 @@ bool ObjectTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 	beginInsertRows(parent,beginRow,beginRow);
-	object->insertChild(beginRow,data->text());
+	object->insertChild(beginRow,QString(data->data(acceptedMimeType)));
 	endInsertRows();
 	QApplication::restoreOverrideCursor();
 

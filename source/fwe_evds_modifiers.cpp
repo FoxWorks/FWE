@@ -42,6 +42,11 @@ using namespace EVDS;
 ObjectModifiersManager::ObjectModifiersManager(Editor* in_editor) {
 	editor = in_editor;
 	initializing = false;
+	shouldUpdateModifiers = false;
+
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(doUpdateModifiers()));
+	timer->start(10);
 }
 
 
@@ -67,8 +72,6 @@ ObjectModifiersManager::~ObjectModifiersManager() {
 void ObjectModifiersManager::updateModifiers() {
 	GLScene* glview = editor->getGLScene();
 
-	qDebug("ObjectModifiersManager::updateModifiers()");
-
 	//Remove all instances from glview
 	QMapIterator<Object*,QList<ObjectRendererModifierInstance> > iterator(modifierInstances);
 	while (iterator.hasNext()) {
@@ -82,6 +85,32 @@ void ObjectModifiersManager::updateModifiers() {
 		iterator.value();
 	}
 	modifierInstances.clear();
+
+	//Run update routine
+	shouldUpdateModifiers = true;
+}
+
+void ObjectModifiersManager::doUpdateModifiers() {
+	if (!shouldUpdateModifiers) return;
+	shouldUpdateModifiers = false;
+
+	//GLScene* glview = editor->getGLScene();
+
+	qDebug("ObjectModifiersManager::updateModifiers()");
+
+	//Remove all instances from glview
+	/*QMapIterator<Object*,QList<ObjectRendererModifierInstance> > iterator(modifierInstances);
+	while (iterator.hasNext()) {
+		iterator.next();
+		for (int i = 0; i < iterator.value().count(); i++) {
+			if (glview->getCollection()->contains(iterator.value()[i].instance->id())) {
+				glview->getCollection()->remove(iterator.value()[i].instance->id());
+			}
+			delete iterator.value()[i].instance;
+		}
+		iterator.value();
+	}
+	modifierInstances.clear();*/
 
 	//Process all object starting from root
 	processUpdateModifiers(editor->getEditRoot());
