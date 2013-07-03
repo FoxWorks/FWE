@@ -36,6 +36,7 @@
 #include "fwe_evds_object_csection.h"
 #include "fwe_evds_modifiers.h"
 #include "fwe_prop_sheet.h"
+#include "fwe_schematics.h"
 
 using namespace EVDS;
 
@@ -48,6 +49,7 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 	object = in_object;
 	editor = in_editor;
 	parent = in_parent;
+	schematics_editor = NULL;
 
 	//Is object initialized
 	int initialized;
@@ -161,6 +163,7 @@ Object* Object::insertNewChild(int index) {
 
 	//Create object for it and add it to the children
 	Object* new_object_obj = new Object(new_object,this,editor);
+	new_object_obj->setSchematicsEditor(schematics_editor);
 	children.insert(index,new_object_obj);
 	return new_object_obj;
 }
@@ -179,6 +182,7 @@ Object* Object::appendHiddenChild() {
 
 	//Create object for it
 	Object* new_object_obj = new Object(new_object,this,editor);
+	new_object_obj->setSchematicsEditor(schematics_editor);
 	hidden_children.insert(0,new_object_obj);
 	return new_object_obj;
 }
@@ -253,6 +257,7 @@ Object* Object::insertChild(int index, const QString &description) {
 
 	//Create object for it and add it to the children
 	Object* new_object_obj = new Object(new_object,this,editor);
+	new_object_obj->setSchematicsEditor(schematics_editor);
 	children.insert(index,new_object_obj);
 	return new_object_obj;
 }
@@ -271,7 +276,12 @@ void Object::removeChild(int index) {
 	}
 	children.removeAt(index);
 	delete child;
-	editor->updateObject(NULL);
+
+	if (schematics_editor) {
+		schematics_editor->updateObject(NULL);
+	} else {
+		editor->updateObject(NULL);
+	}
 }
 
 
@@ -374,12 +384,11 @@ QWidget* Object::getPropertySheet() {
 				this, SLOT(propertyUpdate(const QString&)));
 
 		//Create default set of properties FIXME: make it less of a hack
-		if ((getType() != "metadata") &&
-			(getType().mid(0,8) != "foxworks")) {
+		if ((getType() != "metadata") && (!schematics_editor)) {
 			property_sheet->setProperties(editor->objectVariables[""]);
 		}
-		if (getType().mid(0,20) == "foxworks.schematics.") {
-			property_sheet->setProperties(editor->objectVariables["foxworks.schematics."]);
+		if (schematics_editor) {
+			property_sheet->setProperties(editor->objectVariables["foxworks.schematics"]);
 		}
 		if (!getType().isEmpty()) property_sheet->setProperties(editor->objectVariables[getType()]);
 		return property_sheet;
@@ -478,7 +487,11 @@ void Object::setVariable(const QString &name, const QString &value) {
 			if (property_sheet) { //Update property sheet
 				QWidget* prev_sheet = property_sheet;
 				property_sheet = 0;
-				editor->propertySheetUpdated(prev_sheet,getPropertySheet());
+				if (schematics_editor) {
+					schematics_editor->propertySheetUpdated(prev_sheet,getPropertySheet());
+				} else {
+					editor->propertySheetUpdated(prev_sheet,getPropertySheet());
+				}
 				prev_sheet->deleteLater();
 			}
 			update(true);
@@ -631,7 +644,11 @@ void Object::update(bool visually) {
 		}
 	}
 	//if (visually && renderer) renderer->meshChanged();
-	editor->updateObject(this);
+	if (schematics_editor) {
+		schematics_editor->updateObject(this);
+	} else {
+		editor->updateObject(this);
+	}
 }
 
 

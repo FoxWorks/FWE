@@ -45,6 +45,7 @@ QT_END_NAMESPACE
 class FWEPropertySheet;
 namespace EVDS {
 	class Editor;
+	class SchematicsEditor;
 	class ObjectRenderer;
 	class ObjectInitializer;
 	class CrossSectionEditor;
@@ -85,6 +86,7 @@ namespace EVDS {
 		EVDS_OBJECT* getEVDSObject() { return object; }
 		int getSelectedCrossSection();
 		void deleteCrossSectionsEditor();
+		void setSchematicsEditor(SchematicsEditor* editor) { schematics_editor = editor; }
 
 		Object* getInitializedObject(); //Part of the entirely initialized copy of the vessel
 		ObjectRenderer* getRenderer() { return renderer; }
@@ -113,6 +115,7 @@ namespace EVDS {
 
 		EVDS_OBJECT* object;
 		EVDS::Editor* editor;
+		EVDS::SchematicsEditor* schematics_editor;
 
 		EVDS::Object* parent;
 		QList<Object*> children;

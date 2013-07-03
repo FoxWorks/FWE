@@ -162,33 +162,19 @@ Wiring - connector
 	</object_vars>
 	<object_vars name="foxworks.schematics">
 		<var>
-			<type>double</type>
-			<variable>paper.width</variable>
-			<name>Paper width</name>
-			<step>1</step>
-			<units>cm</units>
-			<description></description>
-		</var>
-		<var>
-			<type>double</type>
-			<variable>paper.height</variable>
-			<name>Paper height</name>
-			<step>1</step>
-			<units>cm</units>
-			<description></description>
-		</var>
-	</object_vars>		
-	<object_vars name="foxworks.schematics.">
-		<var>
 			<type>enum</type>
 			<variable>@7</variable>
 			<name>Type</name>
 			<description>Objects type</description>
 			<values>
+foxworks.schematics.sheet
+Sheet
 foxworks.schematics.label
 Text label
 foxworks.schematics.object
-Object</values>
+Object
+foxworks.schematics.csection
+Object cross-section</values>
 		</var>
 		<var>
 			<type>double</type>
@@ -222,6 +208,24 @@ Object</values>
 			<description>Rotation of the element</description>
 		</var>
 	</object_vars>		
+	<object_vars name="foxworks.schematics.sheet">
+		<var>
+			<type>double</type>
+			<variable>paper.width</variable>
+			<name>Paper width</name>
+			<step>1</step>
+			<units>cm</units>
+			<description></description>
+		</var>
+		<var>
+			<type>double</type>
+			<variable>paper.height</variable>
+			<name>Paper height</name>
+			<step>1</step>
+			<units>cm</units>
+			<description></description>
+		</var>
+	</object_vars>		
 	<object_vars name="foxworks.schematics.label">
 		<var>
 			<type>string</type>
@@ -239,45 +243,60 @@ Object</values>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>cutsection.start</variable>
-			<group>Cutsection</group>
-			<name>Start distance</name>
+			<important>true</important>
+			<variable>@1</variable>
+			<group>Position/Orientation</group>
+			<name>X</name>
 			<step>0.1</step>
 			<units>m</units>
-			<description></description>
+			<description>Position of object in coordinates of parent</description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>cutsection.end</variable>
-			<group>Cutsection</group>
-			<name>End distance</name>
+			<important>true</important>
+			<variable>@2</variable>
+			<group>Position/Orientation</group>
+			<name>Y</name>
 			<step>0.1</step>
 			<units>m</units>
-			<description></description>
+			<description>Position of object in coordinates of parent</description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>cutsection.axis.x</variable>
-			<group>Cutsection</group>
-			<name>Axis X</name>
+			<important>true</important>
+			<variable>@3</variable>
+			<group>Position/Orientation</group>
+			<name>Z</name>
+			<step>0.1</step>
 			<units>m</units>
-			<description></description>
+			<description>Position of object in coordinates of parent</description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>cutsection.axis.y</variable>
-			<group>Cutsection</group>
-			<name>Axis Y</name>
-			<units>m</units>
-			<description></description>
+			<important>true</important>
+			<variable>@4</variable>
+			<group>Position/Orientation</group>
+			<name>Pitch</name>
+			<units>deg</units>
+			<description>Euler angles for objects attitude (Y axis)</description>
 		</var>
 		<var>
 			<type>double</type>
-			<variable>cutsection.axis.z</variable>
-			<group>Cutsection</group>
-			<name>Axis Z</name>
-			<units>m</units>
-			<description></description>
+			<important>true</important>
+			<variable>@5</variable>
+			<group>Position/Orientation</group>
+			<name>Yaw</name>
+			<units>deg</units>
+			<description>Euler angles for objects attitude (Z axis)</description>
+		</var>
+		<var>
+			<type>double</type>
+			<important>true</important>
+			<variable>@6</variable>
+			<group>Position/Orientation</group>
+			<name>Roll</name>
+			<units>deg</units>
+			<description>Euler angles for objects attitude (X axis)</description>
 		</var>
 	</object_vars>		
 	<object_vars name="metadata">

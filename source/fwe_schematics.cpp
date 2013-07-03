@@ -55,6 +55,7 @@ SchematicsEditor::SchematicsEditor(ChildWindow* in_window, EVDS::Editor* in_edit
 	editor = in_editor;
 	selected = NULL;
 	root = NULL;
+	sheet = NULL;
 
 	//Create parts of main UI (other parts are created later)
 	createMenuToolbar();
@@ -242,7 +243,7 @@ void SchematicsEditor::removeObject() {
 void SchematicsEditor::selectObject(const QModelIndex& index) {
 	//Should selection be cleared
 	if (!index.isValid()) {
-		QWidget* property_sheet = root->getPropertySheet();
+		QWidget* property_sheet = editor->getEditDocument()->getPropertySheet();
 		if (properties_layout->indexOf(property_sheet) < 0) {
 			properties_layout->addWidget(property_sheet);
 		}
@@ -270,6 +271,13 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 	}
 	properties_layout->setCurrentWidget(property_sheet);
 
+	//Get currently selected schematics sheet
+	sheet = object;
+	while (sheet && (sheet->getType() != "foxworks.schematics.sheet")) {
+		sheet = sheet->getParent();
+		if (sheet == root) sheet = NULL;
+	}
+
 	//Redraw
 	updateObject(NULL);
 }
@@ -289,7 +297,7 @@ void SchematicsEditor::updateObject(Object* object) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-/*void SchematicsEditor::propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet) {
+void SchematicsEditor::propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet) {
 	bool resetCurrent = true; //FIXME
 	//if (properties_layout->widget() == old_sheet) resetCurrent = true;
 	properties_layout->removeWidget(old_sheet);
@@ -297,12 +305,19 @@ void SchematicsEditor::updateObject(Object* object) {
 	if (resetCurrent) {	
 		properties_layout->setCurrentWidget(new_sheet);
 	}
-}*/
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+void SchematicsEditor::invalidateChildren(Object* object) {
+	object->setSchematicsEditor(this);
+	for (int i = 0; i < object->getChildrenCount(); i++) {
+		invalidateChildren(object->getChild(i));
+	}
+}
+
 void SchematicsEditor::initializeForFile() {
 	//Read schematics
 	Object* document = editor->getEditDocument();
@@ -320,6 +335,7 @@ void SchematicsEditor::initializeForFile() {
 		root->setType("foxworks.schematics");
 		root->setName("");
 	}
+	invalidateChildren(root);
 
 	//Create schematics editor itself
 	createObjectListDock();

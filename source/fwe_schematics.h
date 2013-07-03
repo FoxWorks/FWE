@@ -68,6 +68,7 @@ namespace EVDS {
 		void updateInterface(bool isInFront);
 		void setModified();
 
+		Object* getCurrentSheet() { return sheet; }
 		Object* getRoot() { return root; }
 		ChildWindow* getWindow() { return window; }
 		GLScene* getGLScene() { return glscene; }
@@ -75,7 +76,7 @@ namespace EVDS {
 		void clearSelection() { selected = NULL; }
 
 		void updateObject(Object* object);
-		//void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
+		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
 		//void loadError(const QString& error);
 
 	protected:
@@ -99,6 +100,7 @@ namespace EVDS {
 	private:
 		QString currentFile;
 
+		void invalidateChildren(Object* object);
 		void createMenuToolbar();
 		void createListDock();
 		void createObjectListDock();
@@ -165,6 +167,7 @@ namespace EVDS {
 		//EVDS::Object* document;
 		EVDS::Object* root;
 		EVDS::Object* selected;
+		EVDS::Object* sheet;
 	};
 }
 

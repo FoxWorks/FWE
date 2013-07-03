@@ -436,14 +436,17 @@ QPointF GLScene::project(float x, float y, float z) {
 /// @brief Draw schematics page layout
 ////////////////////////////////////////////////////////////////////////////////
 void GLScene::drawSchematicsPage(QPainter *painter) {
+	Object* sheet = schematics_editor->getCurrentSheet();
+	if (!sheet) return;
+
 	//Define paper size
-	float width = schematics_editor->getRoot()->getVariable("paper.width")*0.01;
-	float height = schematics_editor->getRoot()->getVariable("paper.height")*0.01;
+	float width = sheet->getVariable("paper.width")*0.01;
+	float height = sheet->getVariable("paper.height")*0.01;
 	float margin = 0.006f; //6 mm
 	float normal_font = 0.005f; //5 mm
 	float normal_font_w = normal_font*0.75;
 	float small_font = 0.0035f; //3.5 mm
-	float thick_line = 0.0010f; //1.5 mm
+	float thick_line = 0.0007f; //1.5 mm
 	if (width <= 0.0f) width = 0.297f;
 	if (height <= 0.0f) height = 0.210f;
 
@@ -530,11 +533,23 @@ void GLScene::drawSchematicsPage(QPainter *painter) {
 
 		//Fill out big fields
 		QFontMetrics metric = painter->fontMetrics();
-		QString value = editor->getEditDocument()->getString("document.code");
+		QString value;
+
+
+		if (sheet->getString("sheet.created_by") != "") {
+			value = sheet->getString("sheet.created_by");
+		} else {
+			value = editor->getEditDocument()->getString("document.code");
+		}
 		painter->drawText(local(0.065 + 0.5*(0.185-0.065),0.000 + 0.5*(0.000-0.015) + 0.001)
 			-QPointF(metric.width(value)/2,-metric.height()/2),value);
 
-		value = editor->getEditDocument()->getString("document.title");
+
+		if (sheet->getString("sheet.code") != "") {
+			value = sheet->getString("sheet.code");
+		} else {
+			value = editor->getEditDocument()->getString("document.code");
+		}
 		painter->drawText(local(0.065 + 0.5*(0.135-0.065),0.015 + 0.5*(0.015-0.040) + 0.001)
 			-QPointF(metric.width(value)/2,-metric.height()/2),value);
 
