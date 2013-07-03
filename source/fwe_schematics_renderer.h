@@ -26,8 +26,8 @@
 /// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef FWE_EVDS_MODIFIERS_H
-#define FWE_EVDS_MODIFIERS_H
+#ifndef FWE_SCHEMATICS_RENDERER_H
+#define FWE_SCHEMATICS_RENDERER_H
 
 #include <QThread>
 
@@ -37,59 +37,40 @@
 #include "evds.h"
 
 namespace EVDS {
-	class Editor;
 	class Object;
-	struct ObjectRendererModifierInstance {
-		GLC_3DViewInstance* instance; //Instance of the modified copy
-		GLC_3DViewInstance* base_instance; //Instance, which the modified copy is based off
-		GLC_3DViewInstance* real_base_instance; //Instace, which is the original object
-		GLC_3DViewInstance* modifier_instance; //Instance, which is the modifier
+	class SchematicsEditor;
+	struct SchematicsObjectInstance {
+		GLC_3DViewInstance* instance; //Instance of the object at schematics
+		GLC_3DViewInstance* base_instance; //Instance of the original object
 		GLC_3DRep* base_representation; //3D representation of the original object
-		GLC_Matrix4x4 transformation; //Modifiers transformation
+		GLC_Matrix4x4 transformation; //Additional transformation
 	};
-	class ObjectModifiersManager : public QObject
+	class SchematicsRenderingManager : public QObject
 	{
 		Q_OBJECT
 
 	public:
-		ObjectModifiersManager(Editor* in_editor);
-		~ObjectModifiersManager();
+		SchematicsRenderingManager(SchematicsEditor* in_editor);
+		~SchematicsRenderingManager();
 
-		//Update all modifiers
-		void updateModifiers();
-		//Object was removed - make sure all modifiers are updated accordingly
-		void objectRemoved(Object* object);
-		//Object was added - make sure all modifiers are updated accordingly
-		void objectAdded(Object* object);
-		//Update position of all instances of the modified object
-		void objectPositionChanged(Object* object);
-		//Update modifier object parameters
-		void modifierChanged(Object* object);
-
-		//Are the objects initializing? (objectAdded calls are ignored)
-		void setInitializing(bool value) { initializing = value; }
-
-		//Get modifier instances
-		QList<ObjectRendererModifierInstance>& getInstances(Object* object) { return modifierInstances[object]; }
+		//Re-create instances
+		void updateInstances();
+		//Re-position instances
+		void updatePositions();
 
 	private:
-		//Finds modifiers in the given object, and updates the instances created by them
-		void processUpdateModifiers(Object* object);
-		//Updates positions of all things
-		void processUpdatePosition(Object* object);
-
-		//Creates a modified copy from the given object
-		void createModifiedCopy(Object* modifier, Object* object);
+		//Find all elements and update instances for them
+		void processUpdateInstances(Object* element);
+		//Create instance given element description and target object
+		void createInstance(Object* element, Object* object);
 		//Sets position of the modified instance
-		void setInstancePosition(ObjectRendererModifierInstance* modifier_instance);
+		void setInstancePosition(SchematicsObjectInstance* schematics_instance);
 
-		//Instances created by modifier
-		QMap<Object*,QList<ObjectRendererModifierInstance> > modifierInstances;
+		//Instances created for schematics
+		QList<SchematicsObjectInstance> schematicsInstances;
 
-		//EVDS editor
-		Editor* editor;
-		//Is editor initializing
-		bool initializing;
+		//Schematics editor
+		SchematicsEditor* schematics_editor;
 	};
 }
 

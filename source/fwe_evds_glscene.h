@@ -68,12 +68,13 @@ namespace EVDS {
 		void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 		void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
-	private slots:
+	public slots:
 		void doCenter();
 		void toggleProjection();
 		void toggleShadow();
 		void toggleMaterialMode();
 		void saveScreenshot();
+		void saveSheets();
 		void setIsoView();
 		void setLeftView();
 		void setRightView();
@@ -85,6 +86,8 @@ namespace EVDS {
 		void cutsectionUpdated();
 
 	private:
+		//Save a single snapshot of a sheet
+		void saveCurrentSheet(const QString& baseFilename);
 		//Create panels and interface
 		void createInterface();
 		//Recursively GLC-select object and its children
@@ -107,6 +110,7 @@ namespace EVDS {
 		QPushButton* button_shadow;
 		QPushButton* button_material_mode;
 		QPushButton* button_save_picture;
+		QPushButton* button_save_sheets;
 
 		//GLC Specific
 		GLC_Light* light[1];

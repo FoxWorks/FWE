@@ -33,6 +33,7 @@
 #include <QMenu>
 #include <QHBoxLayout>
 #include <QFontMetrics>
+#include <QFileInfo>
 
 #include <GLC_UserInput>
 #include <GLC_Exception>
@@ -45,6 +46,7 @@
 #include "fwe_evds_object_renderer.h"
 #include "fwe_evds_glscene.h"
 #include "fwe_schematics.h"
+#include "fwe_schematics_renderer.h"
 
 using namespace EVDS;
 
@@ -181,6 +183,12 @@ void GLScene::createInterface() {
 	button_save_picture = new QPushButton(QIcon(":/icon/glview/render_screenshot.png"),"");
 	connect(button_save_picture, SIGNAL(pressed()), this, SLOT(saveScreenshot()));
 	panel_control->layout()->addWidget(button_save_picture);
+
+	if (schematics_editor) {
+		button_save_sheets = new QPushButton();//QIcon(":/icon/glview/render_screenshot.png"),"");
+		connect(button_save_sheets, SIGNAL(pressed()), this, SLOT(saveSheets()));
+		panel_control->layout()->addWidget(button_save_sheets);
+	}
 	
 
 	//Fill view panel with buttons
@@ -294,6 +302,35 @@ void GLScene::saveScreenshot() {
 		renderFbo.toImage().save(fileName,0,95);
 	}
 }
+void GLScene::saveSheets() {
+	QString baseFilename = editor->getWindow()->getCurrentFile();
+	QFileInfo baseInfo = QFileInfo(baseFilename);
+
+	Object* old_sheet = schematics_editor->getCurrentSheet();
+	int sheet_no = 1;
+	for (int i = 0; i < schematics_editor->getRoot()->getChildrenCount(); i++) {
+		Object* sheet = schematics_editor->getRoot()->getChild(i);
+		if (sheet->getType() == "foxworks.schematics.sheet") {
+			schematics_editor->setCurrentSheet(sheet);
+			schematics_editor->getSchematicsRenderingManager()->updateInstances();
+
+			QString code = sheet->getString("sheet.code");
+			if (code == "") code = editor->getEditDocument()->getString("document.code");
+			if (code == "") code = baseInfo.baseName();
+			if (sheet->getVariable("sheet.number") > 0.0) sheet_no = (int)sheet->getVariable("sheet.number");
+
+			saveCurrentSheet(tr("%1 (sheet %2).jpg")
+				.arg(code)
+				.arg(sheet_no));
+
+			editor->getWindow()->getMainWindow()->statusBar()->showMessage(tr("Exported sheet %1..").arg(sheet_no),2000);
+			sheet_no++;
+		}
+	}
+	schematics_editor->setCurrentSheet(old_sheet);
+	schematics_editor->getSchematicsRenderingManager()->updateInstances();
+	editor->getWindow()->getMainWindow()->statusBar()->showMessage("Finished exporting sheets!",3000);
+}
 void GLScene::setIsoView() {
 	viewport->cameraHandle()->setIsoView();
 }
@@ -314,6 +351,64 @@ void GLScene::setTopView() {
 }
 void GLScene::setBottomView() {
 	viewport->cameraHandle()->setBottomView();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void GLScene::saveCurrentSheet(const QString& baseFilename) {
+	if (!schematics_editor->getCurrentSheet()) return;
+
+	QGLFramebufferObjectFormat format;
+	format.setSamples(16);
+
+	//Get number of pixels per cm
+	float ppcm = schematics_editor->getCurrentSheet()->getVariable("paper.ppcm");
+	if (ppcm <= 0.0) ppcm = 32.0;
+
+	//Get paper size
+	float paper_width = schematics_editor->getCurrentSheet()->getVariable("paper.width");
+	float paper_height = schematics_editor->getCurrentSheet()->getVariable("paper.height");
+	if (paper_width <= 0.0f) paper_width = 29.7f;
+	if (paper_height <= 0.0f) paper_height = 21.0f;
+
+	//Get picture size
+	int width = paper_width*ppcm;
+	int height = paper_height*ppcm;
+	
+	//Create FBO and draw into it
+	QGLFramebufferObject renderFbo(width,height);
+	QPainter fboPainter(&renderFbo);
+	fboPainter.setRenderHint(QPainter::Antialiasing);
+	fboPainter.setRenderHint(QPainter::HighQualityAntialiasing);
+
+		//Save camera
+		GLC_Camera old_camera = GLC_Camera(*viewport->cameraHandle());
+		//Frame image correctly
+		//viewport->reframe(GLC_BoundingBox(GLC_Point3d(0,0,0),GLC_Point3d(paper_width*0.01,paper_height*0.01,0)),1.4);
+		viewport->cameraHandle()->translate(GLC_Vector3d(paper_width*0.01f*0.5f,paper_height*0.01f*0.5f,0));
+		viewport->cameraHandle()->setDistEyeTarget(paper_height*0.01f*1.430f);
+
+		//Render%
+		QRectF oldRect = sceneRect();
+		setSceneRect(QRectF(0,0,width,height));
+		panel_control->hide();
+		panel_view->hide();
+			makingScreenshot = true;
+			render(&fboPainter);
+			makingScreenshot = false;
+		setSceneRect(oldRect);
+		panel_control->show();
+		panel_view->show();
+
+		//Restore camera
+		viewport->cameraHandle()->setCam(old_camera);
+
+	fboPainter.end();
+
+	//Save image
+	renderFbo.toImage().save(baseFilename,0,95);
 }
 
 
@@ -529,6 +624,10 @@ void GLScene::drawSchematicsPage(QPainter *painter) {
 			painter->drawText(local(0.018,0.014),editor->getEditDocument()->getString("document.created_by"));
 			painter->drawText(local(0.018,0.019),editor->getEditDocument()->getString("document.drawn_by"));
 			painter->drawText(local(0.018,0.024),editor->getEditDocument()->getString("document.verified_by"));
+
+			double scale = sheet->getVariable("sheet.scale");
+			if (scale <= 0.0) scale = 1.0;
+			painter->drawText(local(0.170,0.024),"1:" + tr("%1").arg(scale));
 		painter->setFont(QFont("GOST type B",normal_font_px));
 
 		//Fill out big fields
@@ -536,8 +635,8 @@ void GLScene::drawSchematicsPage(QPainter *painter) {
 		QString value;
 
 
-		if (sheet->getString("sheet.created_by") != "") {
-			value = sheet->getString("sheet.created_by");
+		if (sheet->getString("sheet.code") != "") {
+			value = sheet->getString("sheet.code");
 		} else {
 			value = editor->getEditDocument()->getString("document.code");
 		}
@@ -545,12 +644,17 @@ void GLScene::drawSchematicsPage(QPainter *painter) {
 			-QPointF(metric.width(value)/2,-metric.height()/2),value);
 
 
-		if (sheet->getString("sheet.code") != "") {
-			value = sheet->getString("sheet.code");
+		if (sheet->getString("sheet.title") != "") {
+			value = sheet->getString("sheet.title");
 		} else {
-			value = editor->getEditDocument()->getString("document.code");
+			value = editor->getEditDocument()->getString("document.title");
 		}
 		painter->drawText(local(0.065 + 0.5*(0.135-0.065),0.015 + 0.5*(0.015-0.040) + 0.001)
+			-QPointF(metric.width(value)/2,-metric.height()/2),value);
+
+
+		value = editor->getEditDocument()->getString("document.company");
+		painter->drawText(local(0.135 + 0.5*(0.185-0.135),0.025 + 0.5*(0.025-0.040) + 0.001)
 			-QPointF(metric.width(value)/2,-metric.height()/2),value);
 
 
@@ -562,6 +666,18 @@ void GLScene::drawSchematicsPage(QPainter *painter) {
 #undef local
 	} else {
 
+	}
+
+
+	//Draw all labels
+	for (int i = 0; i < sheet->getChildrenCount(); i++) {
+		if (sheet->getChild(i)->getType() == "foxworks.schematics.label") {
+			EVDS_STATE_VECTOR vector;
+			EVDS_Object_GetStateVector(sheet->getChild(i)->getEVDSObject(),&vector);
+
+			painter->drawText(project(vector.position.x,vector.position.y),
+				sheet->getChild(i)->getString("text"));
+		}
 	}
 
 	//drawGOSTText(painter,0.05f,0.05f,normal_font,"1234567890");
@@ -805,16 +921,6 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect) {
 			widget_manager->render();
 			viewport->useClipPlane(true);
 		}
-		if (schematics_editor) { //Draw schematics page in world
-			viewport->useClipPlane(false);
-				QPainter fbo_painter(fbo_fxaa);
-				if (makingScreenshot) {
-					drawSchematicsPage(painter);
-				} else {
-					drawSchematicsPage(&fbo_painter);
-				}
-			viewport->useClipPlane(true);
-		}
 	if ((!inSelectionMode) && fbo_fxaa) fbo_fxaa->release();
 
 
@@ -828,9 +934,15 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect) {
 			shader_outline->bind();
 			shader_outline->setUniformValue("s_Data",0);
 			shader_outline->setUniformValue("v_invScreenSize",1.0f/rect.width(),1.0f/rect.height());
-			shader_outline->setUniformValue("f_outlineThickness",
-				(GLfloat)fw_editor_settings->value("rendering.outline_thickness").toDouble()
-			);
+			if (schematics_editor) {
+				float thickness = fabs(project(0.0,0.0).y() - project(0.0,0.0007f).y())*0.5f;
+				if (thickness < 0.5) thickness = 0.5;
+				shader_outline->setUniformValue("f_outlineThickness",thickness);
+			} else {
+				shader_outline->setUniformValue("f_outlineThickness",
+					(GLfloat)fw_editor_settings->value("rendering.outline_thickness").toDouble()
+				);
+			}
 				glBindTexture(GL_TEXTURE_2D, fbo_outline->texture());
 				drawScreenQuad();
 				glBindTexture(GL_TEXTURE_2D, fbo_outline_selected->texture());
@@ -838,6 +950,20 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect) {
 			shader_outline->release();
 		if (fbo_fxaa) fbo_fxaa->release();
 	}
+
+	//Draw schematics
+	/*if (fbo_fxaa) fbo_fxaa->bind();
+		if (schematics_editor) { //Draw schematics page in world
+			viewport->useClipPlane(false);
+				QPainter fbo_painter(fbo_fxaa);
+				if (makingScreenshot) {
+					drawSchematicsPage(painter);
+				} else {
+					drawSchematicsPage(&fbo_painter);
+				}
+			viewport->useClipPlane(true);
+		}
+	if (fbo_fxaa) fbo_fxaa->release();*/
 
 	//Draw controller UI
 	if (!inSelectionMode) {
@@ -877,6 +1003,20 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect) {
 		drawScreenQuad();
 		shader_fxaa->release();
 	}
+
+	//Draw 2D schematics page
+	//if (fbo_fxaa) fbo_fxaa->bind();
+		if (schematics_editor) {
+			viewport->useClipPlane(false);
+				//QPainter fbo_painter(fbo_fxaa);
+				//if (makingScreenshot) {
+					drawSchematicsPage(painter);
+				//} else {
+					//drawSchematicsPage(&fbo_painter);
+				//}
+			viewport->useClipPlane(true);
+		}
+	//if (fbo_fxaa) fbo_fxaa->release();
 
 	//Finish native rendering
 	painter->endNativePainting();

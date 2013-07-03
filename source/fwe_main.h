@@ -72,6 +72,8 @@ private slots:
 	void about();
 	void updateInterface();
 	void updateWindowMenu();
+	void showEVDS();
+	void showSchematics();
 	ChildWindow *createMdiChild();
 	void setActiveSubWindow(QWidget *window);
 
@@ -124,6 +126,9 @@ private:
 	QAction *fileSeparatorAct;
 	QAction *aboutAct;
 
+	QAction *evdsAct;
+	QAction *schematicsAct;
+
 	QAction *recentFiles[FWE_EDITOR_MAX_RECENT_FILES];
 };
 
@@ -152,6 +157,8 @@ public:
 	void cut();
 	void copy();
 	void paste();
+	void showEVDS();
+	void showSchematics();
 
 	void setModified() { isModified = true; updateTitle(); }
 

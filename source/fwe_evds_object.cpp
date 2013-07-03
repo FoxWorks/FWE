@@ -387,7 +387,7 @@ QWidget* Object::getPropertySheet() {
 		if ((getType() != "metadata") && (!schematics_editor)) {
 			property_sheet->setProperties(editor->objectVariables[""]);
 		}
-		if (schematics_editor) {
+		if (schematics_editor && (getType() != "foxworks.schematics.sheet")) {
 			property_sheet->setProperties(editor->objectVariables["foxworks.schematics"]);
 		}
 		if (!getType().isEmpty()) property_sheet->setProperties(editor->objectVariables[getType()]);

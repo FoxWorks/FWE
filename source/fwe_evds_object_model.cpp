@@ -174,31 +174,34 @@ QMimeData* ObjectTreeModel::mimeData(const QModelIndexList &indexes) const
 			free(info.description);
 
 			//Encode reference for schematics editor
-			EVDS_OBJECT* evds_object = object->getEVDSObject();
-			EVDS_OBJECT* reference;
-			EVDS_SYSTEM* system;
-			EVDS_Object_GetSystem(evds_object,&system);
-			EVDS_Object_Create(system,0,&reference);
+			if (object->getType().mid(0,19) != "foxworks.schematics") {
+				EVDS_OBJECT* evds_object = object->getEVDSObject();
+				EVDS_OBJECT* reference;
+				EVDS_SYSTEM* system;
+				EVDS_Object_GetSystem(evds_object,&system);
+				EVDS_Object_Create(system,0,&reference);
 
-			//Get reference
-			char reference_str[8193] = { 0 };
-			EVDS_Object_GetReference(evds_object,editor->getEditRoot()->getEVDSObject(),reference_str,8192);
+				//Get reference
+				char reference_str[8193] = { 0 };
+				EVDS_Object_GetReference(evds_object,editor->getEditRoot()->getEVDSObject(),reference_str,8192);
 
-			//Write it
-			EVDS_VARIABLE* variable;
-			EVDS_Object_SetName(reference,object->getName().toAscii().data());
-			EVDS_Object_SetType(reference,"foxworks.schematics.object");
-			EVDS_Object_AddVariable(reference,"reference",EVDS_VARIABLE_TYPE_STRING,&variable);
-			EVDS_Variable_SetString(variable,reference_str,8193);
-			
-			//Save it and encode
-			EVDS_Object_SaveEx(reference,0,&info);
-			encodedReferenceData = info.description;
-			free(info.description);
+				//Write it
+				EVDS_VARIABLE* variable;
+				EVDS_Object_SetName(reference,object->getName().toAscii().data());
+				EVDS_Object_SetType(reference,"foxworks.schematics.object");
+				EVDS_Object_AddVariable(reference,"reference",EVDS_VARIABLE_TYPE_STRING,&variable);
+				EVDS_Variable_SetString(variable,reference_str,8193);
+				
+				//Save it and encode
+				EVDS_Object_SaveEx(reference,0,&info);
+				encodedReferenceData = info.description;
+				free(info.description);
 
-			//Destroy temporary object
-			EVDS_Object_Destroy(reference);
-			//encodedReferenceData
+				//Destroy temporary object
+				EVDS_Object_Destroy(reference);
+			} else {
+				encodedReferenceData = encodedData;
+			}
 		}
 	}
 

@@ -56,6 +56,7 @@ namespace EVDS {
 	class GLView;
 	class Object;
 	class ObjectTreeModel;
+	class SchematicsRenderingManager;
 	class SchematicsEditor : public QMainWindow
 	{
 		Q_OBJECT
@@ -67,13 +68,17 @@ namespace EVDS {
 		void initializeForFile();
 		void updateInterface(bool isInFront);
 		void setModified();
+		void setEditorHidden(bool isHidden);
 
+		EVDS::Editor* getEVDSEditor() { return editor; }
 		Object* getCurrentSheet() { return sheet; }
+		void setCurrentSheet(Object* new_sheet) { sheet = new_sheet; }
 		Object* getRoot() { return root; }
 		ChildWindow* getWindow() { return window; }
 		GLScene* getGLScene() { return glscene; }
 		Object* getSelected() { return selected; }
 		void clearSelection() { selected = NULL; }
+		SchematicsRenderingManager* getSchematicsRenderingManager() { return rendering_manager; }
 
 		void updateObject(Object* object);
 		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
@@ -164,10 +169,12 @@ namespace EVDS {
 
 		//EVDS objects (editing area)
 		EVDS::Editor* editor;
-		//EVDS::Object* document;
 		EVDS::Object* root;
 		EVDS::Object* selected;
 		EVDS::Object* sheet;
+		EVDS::Object* prev_sheet;
+
+		SchematicsRenderingManager* rendering_manager;
 	};
 }
 

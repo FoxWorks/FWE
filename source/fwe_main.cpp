@@ -260,6 +260,17 @@ void MainWindow::preferences() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+void MainWindow::showEVDS() {
+	if (activeMdiChild()) activeMdiChild()->showEVDS();
+}
+void MainWindow::showSchematics() {
+	if (activeMdiChild()) activeMdiChild()->showSchematics();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 void MainWindow::about() {
 	QString ivss_version = "r1a";
 
@@ -509,6 +520,15 @@ void MainWindow::createActions() {
 	aboutAct = new QAction(QIcon(":/icon/about.png"), tr("&About"), this);
 	aboutAct->setStatusTip(tr("Show the About box"));
 	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+
+
+	evdsAct = new QAction(tr("EVDS Editor"), this);
+	evdsAct->setStatusTip(tr("Show EVDS editor"));
+	connect(evdsAct, SIGNAL(triggered()), this, SLOT(showEVDS()));
+
+	schematicsAct = new QAction(tr("Schematics Editor"), this);
+	schematicsAct->setStatusTip(tr("Show schematics editor"));
+	connect(schematicsAct, SIGNAL(triggered()), this, SLOT(showSchematics()));
 }
 
 
@@ -536,6 +556,9 @@ void MainWindow::createMenus() {
 	editMenu->addAction(cutAct);
 	editMenu->addAction(copyAct);
 	editMenu->addAction(pasteAct);
+	editMenu->addSeparator();
+	editMenu->addAction(evdsAct);
+	editMenu->addAction(schematicsAct);
 	editMenu->addSeparator();
 	editMenu->addAction(preferencesAct);
 
@@ -632,7 +655,7 @@ ChildWindow::ChildWindow(MainWindow* window) {
 
 	SchematicsEditor = new EVDS::SchematicsEditor(this,EVDSEditor);
 	editorsLayout->addWidget(SchematicsEditor);
-	editorsLayout->setCurrentWidget(SchematicsEditor);
+	SchematicsEditor->setHidden(true);
 
 	//Delete child on close
 	setAttribute(Qt::WA_DeleteOnClose);
@@ -641,6 +664,24 @@ ChildWindow::ChildWindow(MainWindow* window) {
 	QTimer *timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(autoSave()));
 	timer->start(fw_editor_settings->value("ui.autosave").toInt());
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ChildWindow::showEVDS() {
+	editorsLayout->setCurrentWidget(EVDSEditor);
+	SchematicsEditor->setHidden(true);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void ChildWindow::showSchematics() {
+	editorsLayout->setCurrentWidget(SchematicsEditor);
+	SchematicsEditor->setHidden(false);
 }
 
 

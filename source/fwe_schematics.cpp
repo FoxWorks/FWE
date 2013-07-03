@@ -36,6 +36,7 @@
 #include <math.h>
 
 #include "fwe_schematics.h"
+#include "fwe_schematics_renderer.h"
 #include "fwe_evds_glscene.h"
 #include "fwe_prop_sheet.h"
 #include "fwe_evds_object.h"
@@ -56,6 +57,7 @@ SchematicsEditor::SchematicsEditor(ChildWindow* in_window, EVDS::Editor* in_edit
 	selected = NULL;
 	root = NULL;
 	sheet = NULL;
+	prev_sheet = NULL;
 
 	//Create parts of main UI (other parts are created later)
 	createMenuToolbar();
@@ -70,8 +72,8 @@ SchematicsEditor::SchematicsEditor(ChildWindow* in_window, EVDS::Editor* in_edit
 	//createInformationDock();
 	//createCommentsDock();
 
-	//Setup initial layout
-	//list_dock->raise();
+	//Create rendering manager
+	rendering_manager = new SchematicsRenderingManager(this);
 
 	//Enable drag and drop
 	setAcceptDrops(true);
@@ -220,6 +222,15 @@ void SchematicsEditor::setModified() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+/// @brief Callback from when object was modified
+////////////////////////////////////////////////////////////////////////////////
+void SchematicsEditor::setEditorHidden(bool isHidden) {
+	if (isHidden) sheet = 0;
+	rendering_manager->updateInstances(); //Clear out all modifier-created instances to avoid crashes
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsEditor::addObject() {
@@ -277,6 +288,10 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 		sheet = sheet->getParent();
 		if (sheet == root) sheet = NULL;
 	}
+	if (sheet != prev_sheet) {
+		glscene->doCenter();
+	}
+	prev_sheet = sheet;
 
 	//Redraw
 	updateObject(NULL);
@@ -290,6 +305,7 @@ void SchematicsEditor::updateObject(Object* object) {
 	if (object) {
 		list_model->updateObject(object);
 	}
+	rendering_manager->updateInstances();
 	glscene->update();
 }
 

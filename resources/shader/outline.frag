@@ -107,7 +107,7 @@ vec4 outline_aa() {
 }
 
 void main(void) {
-  gl_FragColor = outline_aa();
+  gl_FragColor = outline();
   
 //  gl_FragColor = vec4(dx*100.0,dy*100.0,d*100.0,1.0);
 //  gl_FragColor = vec4(c00.a*255.0,c00.a*255.0,c00.a*255.0,1.0);

@@ -1771,6 +1771,14 @@
 			RelativePath="..\..\source\fwe_schematics.h"
 			>
 		</File>
+		<File
+			RelativePath="..\..\source\fwe_schematics_renderer.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_schematics_renderer.h"
+			>
+		</File>
 		<Filter
 			Name="qt-solutions"
 			Filter=""
@@ -2198,6 +2206,10 @@
 			</File>
 			<File
 				RelativePath="..\..\qtmoc\moc_fwe_schematics.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_schematics_renderer.cpp"
 				>
 			</File>
 			<File

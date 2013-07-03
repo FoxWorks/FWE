@@ -107,6 +107,7 @@ QtProperty* FWEPropertySheet::setProperty(const QMap<QString,QString> &data) {
 	QString step_str = data["step"];
 	QString decimals_str = data["digits"];
 	QString units = data["units"];
+	QString prefix = data["prefix"];
 	QString desc = data["description"];
 	QStringList values = data["values"].split("\n",QString::SkipEmptyParts);
 
@@ -119,6 +120,7 @@ QtProperty* FWEPropertySheet::setProperty(const QMap<QString,QString> &data) {
 	if (type == "double") {
 		property = doubleManager->addProperty(name);
 		if (units != "") doubleManager->setSuffix(property, " " + units);
+		if (prefix != "") doubleManager->setPrefix(property, prefix);
 		//doubleManager->setMinimum(property,0.0);
 		doubleManager->setHideZeroes(property,!important);
 
