@@ -375,46 +375,73 @@ void GLScene::saveCurrentSheet(const QString& baseFilename) {
 	int width = paper_width*ppcm;
 	int height = paper_height*ppcm;
 
-	while ((width > 2048) || (height > 2048)) {
-		ppcm = ppcm*0.5;
-		width = paper_width*ppcm;
-		height = paper_height*ppcm;
-	}
+	//Create final image buffer
+	QImage finalImage(width,height,QImage::Format_RGB32);
+	int fbo_width = 128;
+	int fbo_height = 128;
+	int x = 0;
+	int y = 0;
+
+	//Save camera
+	GLC_Camera old_camera = GLC_Camera(*viewport->cameraHandle());
 	
-	//Create FBO and draw into it
-	QGLFramebufferObject renderFbo(width,height);
-	QPainter fboPainter(&renderFbo);
-	fboPainter.setRenderHint(QPainter::Antialiasing);
-	fboPainter.setRenderHint(QPainter::HighQualityAntialiasing);
+	while (x < width) {
+		y = 0;
+		while (y < height) {
+			//Create FBO and draw into it
+			QGLFramebufferObject renderFbo(fbo_width,fbo_height);
+			QPainter fboPainter(&renderFbo);
+			fboPainter.setRenderHint(QPainter::Antialiasing);
+			fboPainter.setRenderHint(QPainter::HighQualityAntialiasing);
 
-		//Save camera
-		GLC_Camera old_camera = GLC_Camera(*viewport->cameraHandle());
-		//Frame image correctly
-		//viewport->reframe(GLC_BoundingBox(GLC_Point3d(0,0,0),GLC_Point3d(paper_width*0.01,paper_height*0.01,0)),1.4);
-		const GLC_Vector3d deltaVector(GLC_Vector3d(paper_width*0.01f*0.5f,paper_height*0.01f*0.5f,0)
-			- viewport->cameraHandle()->target());
-		viewport->cameraHandle()->translate(deltaVector);
-		viewport->cameraHandle()->setDistEyeTarget(paper_height*0.01f*1.430f);
+				//Offsets in meters
+				float xstep = (fbo_width/ppcm)*0.01f;
+				float ystep = (fbo_height/ppcm)*0.01f;
 
-		//Render%
-		QRectF oldRect = sceneRect();
-		setSceneRect(QRectF(0,0,width,height));
-		panel_control->hide();
-		panel_view->hide();
-			makingScreenshot = true;
-			render(&fboPainter);
-			makingScreenshot = false;
-		setSceneRect(oldRect);
-		panel_control->show();
-		panel_view->show();
+				//Calculate proper camera offset
+				GLC_Vector3d targetVector(
+					xstep*0.5f + xstep*(x/((float)fbo_width)),
+					ystep*0.5f + ystep*((height-y)/((float)fbo_height) - 1),
+					0);
 
-		//Restore camera
-		viewport->cameraHandle()->setCam(old_camera);
+				//if (width < fbo_width) targetVector.setX(0.0);
+				//if (height < fbo_height) targetVector.setY(0.0);
 
-	fboPainter.end();
+				//Frame image correctly
+				viewport->cameraHandle()->translate(targetVector-viewport->cameraHandle()->target());
+				viewport->cameraHandle()->setDistEyeTarget(ystep*1.430f);
+
+				//Render
+				QRectF oldRect = sceneRect();
+				setSceneRect(QRectF(0,0,fbo_width,fbo_height));
+				panel_control->hide();
+				panel_view->hide();
+					makingScreenshot = true;
+					render(&fboPainter);
+					//fboPainter.drawText(0,50,tr("POSITION %1x%2").arg(x/2048).arg(0));
+					makingScreenshot = false;
+				setSceneRect(oldRect);
+				panel_control->show();
+				panel_view->show();
+
+			fboPainter.end();
+
+			QPainter painter(&finalImage);
+			painter.drawImage(x, y, renderFbo.toImage());
+			painter.end();
+
+			y += fbo_height;
+		}
+
+		x += fbo_width;
+	}
+
+	//Restore camera
+	viewport->cameraHandle()->setCam(old_camera);
 
 	//Save image
-	renderFbo.toImage().save(baseFilename,0,95);
+	finalImage.save(baseFilename,0,95);
+	//renderFbo.toImage().save(baseFilename,0,95);
 }
 
 
@@ -679,12 +706,12 @@ void GLScene::drawSchematicsPage(QPainter *painter) {
 
 	//Draw all labels
 	for (int i = 0; i < sheet->getChildrenCount(); i++) {
-		if (sheet->getChild(i)->getType() == "foxworks.schematics.label") {
+		if (sheet->getChild(i)->getType() != "foxworks.schematics.object") {
 			EVDS_STATE_VECTOR vector;
 			EVDS_Object_GetStateVector(sheet->getChild(i)->getEVDSObject(),&vector);
 
 			painter->drawText(project(vector.position.x,vector.position.y),
-				sheet->getChild(i)->getString("text"));
+				sheet->getChild(i)->getName());
 		}
 	}
 
