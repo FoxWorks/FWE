@@ -88,6 +88,7 @@ namespace EVDS {
 		int getSelectedCrossSection();
 		void deleteCrossSectionsEditor();
 		void setSchematicsEditor(SchematicsEditor* editor) { schematics_editor = editor; }
+		SchematicsEditor* getSchematicsEditor() { return schematics_editor; }
 
 		Object* getInitializedObject(); //Part of the entirely initialized copy of the vessel
 		ObjectRenderer* getRenderer() { return renderer; }

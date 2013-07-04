@@ -37,6 +37,7 @@
 #include "fwe_evds_modifiers.h"
 #include "fwe_prop_sheet.h"
 #include "fwe_schematics.h"
+#include "fwe_schematics_renderer.h"
 
 using namespace EVDS;
 
@@ -50,6 +51,11 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 	editor = in_editor;
 	parent = in_parent;
 	schematics_editor = NULL;
+
+	//Get editor from parent
+	if (parent) {
+		schematics_editor = parent->getSchematicsEditor();
+	}
 
 	//Is object initialized
 	int initialized;
@@ -91,7 +97,10 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 		renderer->positionChanged();
 
 		//Add to modifiers
-		if (editor) editor->getModifiersManager()->objectAdded(this);
+		if (editor && (!schematics_editor)) editor->getModifiersManager()->objectAdded(this);
+		if (schematics_editor && (!editor->getModifiersManager()->isInitializing())) {
+			schematics_editor->getSchematicsRenderingManager()->updateInstances();
+		}
 	}
 }
 
@@ -100,7 +109,12 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 Object::~Object() {
-	if (editor) editor->getModifiersManager()->objectRemoved(this);
+	if (editor && (!schematics_editor)) {
+		editor->getModifiersManager()->objectRemoved(this);
+	}
+	if (schematics_editor && (!editor->getModifiersManager()->isInitializing())) {
+		schematics_editor->getSchematicsRenderingManager()->updateInstances();
+	}
 	if (editor && (editor->getSelected() == this)) editor->clearSelection();
 	for (int i = 0; i < children.count(); i++) {
 		delete children[i];
@@ -357,6 +371,7 @@ void Object::setType(const QString &type) {
 	update(false);
 
 	editor->getModifiersManager()->modifierChanged(this);
+	if (schematics_editor) schematics_editor->getSchematicsRenderingManager()->updateInstances();
 }
 
 
@@ -512,7 +527,11 @@ void Object::setVariable(const QString &name, const QString &value) {
 		if (EVDS_Object_AddVariable(object,name.toAscii().data(),EVDS_VARIABLE_TYPE_STRING,&variable) == EVDS_OK) {
 			EVDS_Variable_SetString(variable,value.toAscii().data(),value.toAscii().count());
 		}
-		if (name != "comments") update(true);
+		if ((name != "comments") &&
+			(name != "text")) {
+			update(true);
+		}
+		if (name == "text") update(false);
 	}
 	//update(false);
 }
@@ -685,9 +704,11 @@ void Object::update(bool visually) {
 		if (visually) {
 			renderer->meshChanged();
 			if (getType() == "modifier") editor->getModifiersManager()->modifierChanged(this);
+			if (schematics_editor) schematics_editor->getSchematicsRenderingManager()->updateInstances();
 		} else {
 			renderer->positionChanged();
 			editor->getModifiersManager()->objectPositionChanged(this);
+			if (schematics_editor) schematics_editor->getSchematicsRenderingManager()->updatePositions();
 		}
 	}
 	//if (visually && renderer) renderer->meshChanged();

@@ -43,7 +43,8 @@ namespace EVDS {
 		GLC_3DViewInstance* instance; //Instance of the object at schematics
 		GLC_3DViewInstance* base_instance; //Instance of the original object
 		GLC_3DRep* base_representation; //3D representation of the original object
-		GLC_Matrix4x4 transformation; //Additional transformation
+		Object* element; //Element that created this instance
+		bool resetVisibility;
 	};
 	class SchematicsRenderingManager : public QObject
 	{
@@ -62,9 +63,12 @@ namespace EVDS {
 		//Find all elements and update instances for them
 		void processUpdateInstances(Object* element);
 		//Create instance given element description and target object
-		void createInstance(Object* element, Object* object);
+		void createInstance(Object* element, Object* object, bool resetVisibility);
 		//Sets position of the modified instance
 		void setInstancePosition(SchematicsObjectInstance* schematics_instance);
+
+		//Get transformation matrix for element
+		GLC_Matrix4x4 getTransformationMatrix(Object* element);
 
 		//Instances created for schematics
 		QList<SchematicsObjectInstance> schematicsInstances;

@@ -58,6 +58,7 @@ SchematicsEditor::SchematicsEditor(ChildWindow* in_window, EVDS::Editor* in_edit
 	root = NULL;
 	sheet = NULL;
 	prev_sheet = NULL;
+	objectlist_model = NULL;
 
 	//Create parts of main UI (other parts are created later)
 	createMenuToolbar();
@@ -232,9 +233,9 @@ void SchematicsEditor::createCommentsDock() {
 
 void SchematicsEditor::commentsChanged() {
 	if (selected) {
-		selected->setVariable("comments",comments->toPlainText());
+		selected->setVariable("text",comments->toPlainText());
 	} else {
-		editor->getEditDocument()->setVariable("comments",comments->toPlainText());
+		editor->getEditDocument()->setVariable("text",comments->toPlainText());
 	}
 }
 
@@ -253,6 +254,15 @@ void SchematicsEditor::setModified() {
 void SchematicsEditor::setEditorHidden(bool isHidden) {
 	if (isHidden) sheet = 0;
 	rendering_manager->updateInstances(); //Clear out all modifier-created instances to avoid crashes
+	if (!isHidden) { //Invalidate objects tree
+		if (objectlist_model) {
+			delete objectlist_model;
+			
+			objectlist_model = new ObjectTreeModel(editor,editor->getEditRoot(),this);
+			objectlist_model->setAcceptedMimeType("application/vnd.evds.none");
+			objectlist_tree->setModel(objectlist_model);
+		}
+	}
 }
 
 
@@ -292,7 +302,7 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 
 		//Update comments
 		disconnect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
-		comments->setText(editor->getEditDocument()->getString("comments"));
+		comments->setText(editor->getEditDocument()->getString("text"));
 		connect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
 		return;
 	}
@@ -320,13 +330,14 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 		if (sheet == root) sheet = NULL;
 	}
 	if (sheet != prev_sheet) {
+		rendering_manager->updateInstances();
 		glscene->doCenter();
 	}
 	prev_sheet = sheet;
 
 	//Update comments
 	disconnect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
-	comments->setText(object->getString("comments"));
+	comments->setText(object->getString("text"));
 	connect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
 
 	//Redraw
@@ -342,7 +353,7 @@ void SchematicsEditor::updateObject(Object* object) {
 	if (object) {
 		list_model->updateObject(object);
 	}
-	rendering_manager->updateInstances();
+	//rendering_manager->updateInstances();
 	glscene->update();
 }
 

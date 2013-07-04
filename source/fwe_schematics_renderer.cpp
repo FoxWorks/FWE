@@ -122,7 +122,9 @@ void SchematicsRenderingManager::processUpdateInstances(Object* element) {
 			if (evds_object) {
 				Object* object;
 				EVDS_Object_GetUserdata(evds_object,(void**)&object);
-				createInstance(element,object);
+				if (object != schematics_editor->getEVDSEditor()->getEditRoot()) {
+					createInstance(element,object,true);
+				}
 			}
 		}
 	}
@@ -132,6 +134,39 @@ void SchematicsRenderingManager::processUpdateInstances(Object* element) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+GLC_Matrix4x4 SchematicsRenderingManager::getTransformationMatrix(Object* element) {
+	//Calculate scale
+	double scale = element->getVariable("scale");
+	if (scale <= 0.0) {
+		//if (firstRecursive) { //Use default scale for firstmost object
+			scale = schematics_editor->getCurrentSheet()->getVariable("sheet.scale");
+			if (scale <= 0.0) scale = 1.0;
+		//} else { //No scaling change
+			//scale = 1.0;
+		//}
+	}
+
+	//Get state vector
+	EVDS_STATE_VECTOR vector;
+	EVDS_Object_GetStateVector(element->getEVDSObject(),&vector);
+
+	//Calculate transformation
+	GLC_Matrix4x4 scaling;
+	GLC_Matrix4x4 transformation;
+	EVDS_MATRIX rotationMatrix;
+	EVDS_Quaternion_ToMatrix(&vector.orientation,rotationMatrix);
+	scaling.setMatScaling(1/scale,1/scale,1/scale);
+
+	transformation = transformation*GLC_Matrix4x4(vector.position.x,vector.position.y,vector.position.z);
+	transformation = transformation*GLC_Matrix4x4(rotationMatrix);
+	if (element->getParent() && (element->getParent()->getType() != "foxworks.schematics.sheet")) {
+		transformation = transformation*getTransformationMatrix(element->getParent());
+	} else {
+		transformation = transformation*scaling; //First operation is scaling
+	}
+	return transformation;
+}
+
 void SchematicsRenderingManager::setInstancePosition(SchematicsObjectInstance* schematics_instance) {
 	//Copy transformation from original instance and add extra one defined by transformation
 	schematics_instance->instance->resetMatrix();
@@ -139,10 +174,14 @@ void SchematicsRenderingManager::setInstancePosition(SchematicsObjectInstance* s
 	//Start with instances objects own matrix
 	schematics_instance->instance->multMatrix(schematics_instance->base_instance->matrix());
 	//Add transformation for the current modifier
-	schematics_instance->instance->multMatrix(schematics_instance->transformation);
+	schematics_instance->instance->multMatrix(getTransformationMatrix(schematics_instance->element));
 
 	//Update visibility of this object
-	schematics_instance->instance->setVisibility(schematics_instance->base_instance->isVisible());
+	if (schematics_instance->resetVisibility) {
+		schematics_instance->instance->setVisibility(true);
+	} else {
+		schematics_instance->instance->setVisibility(schematics_instance->base_instance->isVisible());
+	}
 
 	//Add/replace to update position
 	GLScene* glview = schematics_editor->getGLScene();
@@ -156,35 +195,14 @@ void SchematicsRenderingManager::setInstancePosition(SchematicsObjectInstance* s
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void SchematicsRenderingManager::createInstance(Object* element, Object* object) {
-	//Calculate scale
-	double scale = element->getVariable("scale");
-	if (scale <= 0.0) {
-		scale = schematics_editor->getCurrentSheet()->getVariable("sheet.scale");
-		if (scale <= 0.0) scale = 1.0;
-	}
-
-	//Calculate transformation matrix
-	EVDS_STATE_VECTOR vector;
-	EVDS_Object_GetStateVector(element->getEVDSObject(),&vector);
-
-	//Apply transformations
-	GLC_Matrix4x4 scaling;
-	GLC_Matrix4x4 transformation;
-	EVDS_MATRIX rotationMatrix;
-	EVDS_Quaternion_ToMatrix(&vector.orientation,rotationMatrix);
-	scaling.setMatScaling(1/scale,1/scale,1/scale);
-
-	transformation = transformation*GLC_Matrix4x4(vector.position.x,vector.position.y,vector.position.z);
-	transformation = transformation*scaling;
-	transformation = transformation*GLC_Matrix4x4(rotationMatrix);
-
+void SchematicsRenderingManager::createInstance(Object* element, Object* object, bool resetVisibility) {
 	//Create instance
 	SchematicsObjectInstance schematics_instance;
 	schematics_instance.base_instance = object->getRenderer()->getInstance();
 	schematics_instance.base_representation = object->getRenderer()->getRepresentation();
 	schematics_instance.instance = new GLC_3DViewInstance(*schematics_instance.base_representation);
-	schematics_instance.transformation = transformation;
+	schematics_instance.element = element;
+	schematics_instance.resetVisibility = resetVisibility;
 
 	//Add instance to scene
 	schematics_editor->getGLScene()->getCollection()->add(*schematics_instance.instance);
@@ -200,7 +218,8 @@ void SchematicsRenderingManager::createInstance(Object* element, Object* object)
 		schematics_instance.base_instance = list[i].instance;
 		schematics_instance.base_representation = list[i].base_representation;
 		schematics_instance.instance = new GLC_3DViewInstance(*schematics_instance.base_representation);
-		schematics_instance.transformation = transformation;
+		schematics_instance.element = element;
+		schematics_instance.resetVisibility = resetVisibility;
 
 		//Add instance to scene
 		schematics_editor->getGLScene()->getCollection()->add(*schematics_instance.instance);
@@ -211,7 +230,7 @@ void SchematicsRenderingManager::createInstance(Object* element, Object* object)
 
 	//Create instances for children
 	for (int i = 0; i < object->getChildrenCount(); i++) {
-		createInstance(element,object->getChild(i));
+		createInstance(element,object->getChild(i),resetVisibility);
 	}
 		
 	//if ((object->getType() == "modifier") && (object != modifier)) {

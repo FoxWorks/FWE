@@ -68,6 +68,8 @@ namespace EVDS {
 
 		//Are the objects initializing? (objectAdded calls are ignored)
 		void setInitializing(bool value) { initializing = value; }
+		//Is initializing
+		bool isInitializing() { return initializing; }
 
 		//Get modifier instances
 		QList<ObjectRendererModifierInstance>& getInstances(Object* object) { return modifierInstances[object]; }

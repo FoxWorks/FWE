@@ -94,6 +94,8 @@ namespace EVDS {
 		void recursiveSelect(Object* object);
 		//Draw schematics page layout
 		void drawSchematicsPage(QPainter *painter);
+		//Draw schematics page element
+		void drawSchematicsElement(QPainter *painter, Object* element, QPointF offset);
 		//Project coordinates
 		QPointF project(float x, float y, float z = 0.0);
 

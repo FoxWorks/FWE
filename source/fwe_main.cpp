@@ -103,6 +103,7 @@ MainWindow::MainWindow() {
 	//resize(size);
 
 	//Create new empty file or load some file right away
+#ifdef _DEBUG
 	if (QFile::exists("bug_test_case.evds")) {
 		ChildWindow *child = createMdiChild();
 		if (child->loadFile("bug_test_case.evds")) {
@@ -113,6 +114,9 @@ MainWindow::MainWindow() {
 	} else {
 		newFile();
 	}
+#else
+	newFile();
+#endif
 }
 
 

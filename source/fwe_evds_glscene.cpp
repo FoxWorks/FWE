@@ -571,6 +571,39 @@ QPointF GLScene::project(float x, float y, float z) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Draw schematics page layout
 ////////////////////////////////////////////////////////////////////////////////
+void GLScene::drawSchematicsElement(QPainter *painter, Object* element, QPointF offset) {
+	for (int i = 0; i < element->getChildrenCount(); i++) {
+		Object* child = element->getChild(i);
+		if (child->getType() == "foxworks.schematics.element") {
+			//Get state vector
+			EVDS_STATE_VECTOR vector;
+			EVDS_Object_GetStateVector(child->getEVDSObject(),&vector);
+
+			//Draw if it's a label
+			if (child->getString("reference") == "") {
+				float font_size = 0.005f; //FIXME
+				QString value = element->getName();
+				if (child->getString("text") != "") value = child->getString("text");
+				
+				//Fake multi-line text
+				QStringList lines = value.split("\n");
+				for (int i = 0; i < lines.count(); i++) {
+					painter->drawText(
+						project(vector.position.x + offset.x(),vector.position.y + offset.y() - (font_size+0.001f)*i),
+						lines[i]);
+				}
+			}
+
+			//Draw children with offset
+			drawSchematicsElement(painter,child,QPointF(vector.position.x,vector.position.y));
+		}
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Draw schematics page layout
+////////////////////////////////////////////////////////////////////////////////
 void GLScene::drawSchematicsPage(QPainter *painter) {
 	Object* sheet = schematics_editor->getCurrentSheet();
 	if (!sheet) return;
@@ -607,15 +640,23 @@ void GLScene::drawSchematicsPage(QPainter *painter) {
 
 
 	//Draw sections
-	float sectionWidth = width / 10.0f;
-	float sectionHeight = height / 10.0f;
-	for (int x = 1; x < 10; x++) {
+	int sectionMulW = 1;
+	int sectionMulH = 1;
+
+	double wm = sheet->getVariable("paper.width_multiplier");
+	double hm = sheet->getVariable("paper.height_multiplier");
+	if (wm > 1.0) sectionMulW = (int)wm;
+	if (hm > 1.0) sectionMulH = (int)hm;
+
+	float sectionWidth = width / (sectionMulW*10.0f);
+	float sectionHeight = height / (sectionMulH*10.0f);
+	for (int x = 1; x < sectionMulW*10; x++) {
 		painter->drawLine(project(sectionWidth*x,0.00f),project(sectionWidth*x,margin));
 		painter->drawLine(project(sectionWidth*x,height-margin),project(sectionWidth*x,height));
 		painter->drawText(project(sectionWidth*(x-0.5f),0.5*(margin-normal_font)),tr("%1").arg(x));
 		painter->drawText(project(sectionWidth*(x-0.5f),height-margin+0.5*(margin-normal_font)),tr("%1").arg(x));
 	}
-	for (int y = 1; y < 10; y++) {
+	for (int y = 1; y < sectionMulH*10; y++) {
 		painter->drawLine(project(0.00f,sectionHeight*y),project(margin,sectionHeight*y));
 		painter->drawLine(project(width-margin,sectionHeight*y),project(width,sectionHeight*y));
 		painter->drawText(
@@ -713,24 +754,7 @@ void GLScene::drawSchematicsPage(QPainter *painter) {
 
 
 	//Draw all labels
-	for (int i = 0; i < sheet->getChildrenCount(); i++) {
-		Object* element = sheet->getChild(i);
-		if (element->getType() == "foxworks.schematics.element") {
-			if (element->getString("reference") == "") {
-				EVDS_STATE_VECTOR vector;
-				EVDS_Object_GetStateVector(element->getEVDSObject(),&vector);
-
-				QString value = element->getName();
-				if (element->getString("comments") != "") value = element->getString("comments");
-				
-				//Fake multi-line text
-				QStringList lines = value.split("\n");
-				for (int i = 0; i < lines.count(); i++) {
-					painter->drawText(project(vector.position.x,vector.position.y - (normal_font+0.001f)*i),lines[i]);
-				}
-			}
-		}
-	}
+	drawSchematicsElement(painter,sheet,QPointF(0,0));
 
 	//drawGOSTText(painter,0.05f,0.05f,normal_font,"1234567890");
 }
