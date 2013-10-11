@@ -77,4 +77,8 @@
     <file>shader/shadow.frag</file>
     <file>shader/shadow.vert</file>
 </qresource>
+<qresource prefix="/GLC_lib_Shaders" >
+    <file alias="default_frag">shader/default.frag</file>
+    <file alias="default_vert">shader/default.vert</file>
+</qresource>
 </RCC>

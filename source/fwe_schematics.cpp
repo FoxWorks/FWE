@@ -64,8 +64,8 @@ SchematicsEditor::SchematicsEditor(ChildWindow* in_window, EVDS::Editor* in_edit
 	createMenuToolbar();
 
 	//Create working area/main 3D widget
-	glscene = new GLScene(0,editor,this,this);
 	glview = new GLView(this);
+	glscene = new GLScene(0,editor,this,this);
 	glview->setScene(glscene);
 	setCentralWidget(glview);
 
@@ -88,6 +88,8 @@ SchematicsEditor::~SchematicsEditor() {
 	for (int i = 0; i < actions.count(); i++) {
 		actions[i]->deleteLater();
 	}
+
+	//delete glview;
 }
 
 

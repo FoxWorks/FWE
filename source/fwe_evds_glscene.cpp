@@ -109,7 +109,7 @@ GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, SchematicsEditor* 
 	viewport->cameraHandle()->setDefaultUpVector(glc::Z_AXIS);
 	viewport->cameraHandle()->setIsoView();
 	world->collection()->setLodUsage(true,viewport);
-	world->collection()->setVboUsage(true);
+	//world->collection()->setVboUsage(true); FIXME
 	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("rendering.min_pixel_culling").toInt());
 	GLC_SelectionMaterial::setUseSelectionMaterial(false);
 

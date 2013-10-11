@@ -113,8 +113,8 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window), activeThreads(0
 	createCSectionDock();
 
 	//Create working area/main 3D widget
-	glscene = new GLScene(0,this,0,this);
 	glview = new GLView(this);
+	glscene = new GLScene(0,this,0,this);
 	glview->setScene(glscene);
 	setCentralWidget(glview);
 	modifiers_manager = new ObjectModifiersManager(this);
