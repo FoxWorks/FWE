@@ -661,7 +661,6 @@ ChildWindow::ChildWindow(MainWindow* window) {
 	//Create schematics editor
 	SchematicsEditor = new EVDS::SchematicsEditor(this,EVDSEditor);
 	editorsLayout->addWidget(SchematicsEditor);
-
 	//showSchematics();
 	//SchematicsEditor->setEditorHidden(true);
 
@@ -717,7 +716,7 @@ bool ChildWindow::loadFile(const QString &fileName) {
 
 	//Load file data
 	if (!EVDSEditor->loadFile(fileName)) return false;
-	//SchematicsEditor->initializeForFile();
+	SchematicsEditor->initializeForFile();
 	return true;
 }
 
@@ -837,7 +836,7 @@ void ChildWindow::updateTitle() {
 ////////////////////////////////////////////////////////////////////////////////
 void ChildWindow::updateInterface(bool isInFront) {
 	EVDSEditor->updateInterface(isInFront);
-	//SchematicsEditor->updateInterface(isInFront);
+	SchematicsEditor->updateInterface(isInFront);
 }
 
 
