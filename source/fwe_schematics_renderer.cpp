@@ -116,7 +116,7 @@ void SchematicsRenderingManager::processUpdateInstances(Object* element) {
 		if (reference != "") {
 			EVDS_SYSTEM* system;
 			EVDS_Object_GetSystem(element->getEVDSObject(),&system);
-			EVDS_System_QueryObject(schematics_editor->getEVDSEditor()->getEditRoot()->getEVDSObject(),
+			EVDS_System_QueryByReference(schematics_editor->getEVDSEditor()->getEditRoot()->getEVDSObject(),
 				reference.toAscii().data(),0,&evds_object);
 
 			if (evds_object) {

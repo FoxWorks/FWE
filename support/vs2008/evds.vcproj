@@ -1343,14 +1343,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\external\evds\include\evds_common.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\external\evds\include\evds_database.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\external\evds\include\evds_internal.h"
 				>
 			</File>
@@ -1360,96 +1352,118 @@
 			Filter=""
 			>
 			<Filter
-				Name="evds_common"
+				Name="core"
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\external\evds\source\evds_common\evds_body.c"
+					RelativePath="..\..\external\evds\source\core\evds_database.inc"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_common\evds_database.c"
+					RelativePath="..\..\external\evds\source\core\evds_database.xml"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_common\evds_database.xml"
+					RelativePath="..\..\external\evds\source\core\evds_function.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_common\evds_engine.c"
+					RelativePath="..\..\external\evds\source\core\evds_load.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_common\evds_fueltank.c"
+					RelativePath="..\..\external\evds\source\core\evds_math.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_common\evds_gimbal.c"
+					RelativePath="..\..\external\evds\source\core\evds_mesh.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_common\evds_planet.c"
+					RelativePath="..\..\external\evds\source\core\evds_object.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_common\evds_prop_euler.c"
+					RelativePath="..\..\external\evds\source\core\evds_save.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_common\evds_prop_heun.c"
+					RelativePath="..\..\external\evds\source\core\evds_system.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_common\evds_prop_rk4.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\external\evds\source\evds_common\evds_wiring.c"
+					RelativePath="..\..\external\evds\source\core\evds_variable.c"
 					>
 				</File>
 			</Filter>
 			<Filter
-				Name="evds_core"
+				Name="models"
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\external\evds\source\evds_core\evds_env.c"
+					RelativePath="..\..\external\evds\source\models\evds_environment.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_core\evds_function.c"
+					RelativePath="..\..\external\evds\source\models\evds_frames.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_core\evds_load.c"
+					RelativePath="..\..\external\evds\source\models\evds_material.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="objects"
+				Filter=""
+				>
+				<File
+					RelativePath="..\..\external\evds\source\objects\evds_body.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_core\evds_math.c"
+					RelativePath="..\..\external\evds\source\objects\evds_engine.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_core\evds_mesh.c"
+					RelativePath="..\..\external\evds\source\objects\evds_fueltank.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_core\evds_modifier.c"
+					RelativePath="..\..\external\evds\source\objects\evds_gimbal.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_core\evds_object.c"
+					RelativePath="..\..\external\evds\source\objects\evds_modifier.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_core\evds_save.c"
+					RelativePath="..\..\external\evds\source\objects\evds_planet.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_core\evds_system.c"
+					RelativePath="..\..\external\evds\source\objects\evds_wing.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\external\evds\source\evds_core\evds_variable.c"
+					RelativePath="..\..\external\evds\source\objects\evds_wiring.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="propagators"
+				Filter=""
+				>
+				<File
+					RelativePath="..\..\external\evds\source\propagators\evds_prop_euler.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\evds\source\propagators\evds_prop_heun.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\external\evds\source\propagators\evds_prop_rk4.c"
 					>
 				</File>
 			</Filter>

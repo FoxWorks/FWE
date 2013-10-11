@@ -593,7 +593,7 @@ A4
 		</var>
 		<var>
 			<type>double</type>
-			<variable>fuel_mass</variable>
+			<variable>fuel.mass</variable>
 			<name>Fuel mass</name>
 			<step>1</step>
 			<units>kg</units>
@@ -601,7 +601,7 @@ A4
 		</var>
 		<var>
 			<type>double</type>
-			<variable>fuel_volume</variable>
+			<variable>fuel.volume</variable>
 			<name>Fuel volume</name>
 			<step>1</step>
 			<units>m³</units>
@@ -609,7 +609,7 @@ A4
 		</var>
 		<var>
 			<type>double</type>
-			<variable>load_ratio_percent</variable>
+			<variable>fuel.load_ratio_percent</variable>
 			<name>Fuel load</name>
 			<step>1</step>
 			<units>%</units>
@@ -617,7 +617,7 @@ A4
 		</var>
 		<var>
 			<type>double</type>
-			<variable>upper_radius</variable>
+			<variable>geometry.upper_radius</variable>
 			<name>Upper cap radius</name>
 			<step>0.1</step>
 			<units>m</units>
@@ -625,7 +625,7 @@ A4
 		</var>
 		<var>
 			<type>double</type>
-			<variable>lower_radius</variable>
+			<variable>geometry.lower_radius</variable>
 			<name>Lower cap radius</name>
 			<step>0.1</step>
 			<units>m</units>
@@ -633,7 +633,7 @@ A4
 		</var>
 		<var>
 			<type>double</type>
-			<variable>middle_length</variable>
+			<variable>geometry.middle_length</variable>
 			<name>Middle section length</name>
 			<step>0.1</step>
 			<units>m</units>
@@ -641,7 +641,7 @@ A4
 		</var>
 		<var>
 			<type>double</type>
-			<variable>outer_radius</variable>
+			<variable>geometry.outer_radius</variable>
 			<name>Outer radius</name>
 			<step>0.1</step>
 			<units>m</units>
@@ -649,7 +649,7 @@ A4
 		</var>
 		<var>
 			<type>double</type>
-			<variable>inner_radius</variable>
+			<variable>geometry.inner_radius</variable>
 			<name>Inner radius</name>
 			<step>0.1</step>
 			<units>m</units>

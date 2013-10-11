@@ -659,7 +659,7 @@ ChildWindow::ChildWindow(MainWindow* window) {
 
 	SchematicsEditor = new EVDS::SchematicsEditor(this,EVDSEditor);
 	editorsLayout->addWidget(SchematicsEditor);
-	showSchematics();
+	//showSchematics();
 	//SchematicsEditor->setEditorHidden(true);
 
 	//Delete child on close

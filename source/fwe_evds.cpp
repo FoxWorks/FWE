@@ -81,8 +81,6 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window), activeThreads(0
 	//EVDS_System_Create(&initialized_system);
 	EVDS_Common_Register(system);
 	//EVDS_Common_Register(initialized_system);
-	EVDS_Common_LoadDatabase(system);
-	//EVDS_Common_LoadDatabase(initialized_system);
 	EVDS_Antenna_Register(system);
 	//EVDS_Antenna_Register(initialized_system);
 	EVDS_Train_WheelsGeometry_Register(system);
