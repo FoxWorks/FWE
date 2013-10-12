@@ -301,6 +301,8 @@ void GLScene::saveScreenshot() {
 	if (!fileName.isEmpty()) {
 		renderFbo.toImage().save(fileName,0,95);
 	}
+
+	editor->getWindow()->getMainWindow()->statusBar()->showMessage("Saved screenshot ("+fileName+")",3000);
 }
 void GLScene::saveSheets() {
 	QString baseFilename = editor->getWindow()->getCurrentFile();
@@ -362,10 +364,6 @@ void GLScene::saveCurrentSheet(const QString& baseFilename) {
 
 	QGLFramebufferObjectFormat format;
 	format.setSamples(16);
-
-	//Disable LODs, culling
-	viewport->setMinimumPixelCullingSize(0);
-	world->collection()->setLodUsage(false,viewport);
 
 	//Get number of pixels per cm
 	float ppcm = schematics_editor->getCurrentSheet()->getVariable("paper.ppcm");
@@ -446,10 +444,6 @@ void GLScene::saveCurrentSheet(const QString& baseFilename) {
 	//Save image
 	finalImage.save(baseFilename,0,95);
 	//renderFbo.toImage().save(baseFilename,0,95);
-
-	//Restore culling/LOD settings
-	viewport->setMinimumPixelCullingSize(fw_editor_settings->value("rendering.min_pixel_culling").toInt());
-	world->collection()->setLodUsage(true,viewport);
 }
 
 
@@ -872,6 +866,15 @@ void GLScene::drawBackground(QPainter *painter, const QRectF& rect) {
 	world->collection()->unselectAll();
 	if (editor->getSelected()) {
 		recursiveSelect(editor->getSelected());
+	}
+
+	//Setup culling and LOD usage
+	if (makingScreenshot) {
+		viewport->setMinimumPixelCullingSize(0);
+		world->collection()->setLodUsage(false,viewport);
+	} else {
+		viewport->setMinimumPixelCullingSize(fw_editor_settings->value("rendering.min_pixel_culling").toInt());
+		world->collection()->setLodUsage(true,viewport);
 	}
 
 
