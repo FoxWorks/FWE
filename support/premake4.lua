@@ -153,6 +153,7 @@ if _ACTION == "moc" then return end
 -- FoxWorks Model Editor
 --------------------------------------------------------------------------------
 project "GLC_lib"
+   uuid "55212504-025F-2D4A-81D3-5355DB38DCF5"
    kind "StaticLib"
    language "C++"
    
