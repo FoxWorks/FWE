@@ -380,6 +380,7 @@ void MainWindow::updateWindowMenu() {
 void MainWindow::updateRecentFiles() {
 	QStringList files = fw_editor_settings->value("ui.recent_files").toStringList();
 	int numRecentFiles = qMin(files.size(), (int)FWE_EDITOR_MAX_RECENT_FILES);
+	bool hasRecentFiles = numRecentFiles > 0;
 
 	for (int i = 0; i < numRecentFiles; ++i) {
 		QString text = tr("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
@@ -392,7 +393,8 @@ void MainWindow::updateRecentFiles() {
 		recentFiles[j]->setVisible(false);
 	}
 
-	fileSeparatorAct->setVisible(numRecentFiles > 0);
+	fileSeparatorAct->setVisible(hasRecentFiles);
+	recentMenu->setEnabled(hasRecentFiles);
 }
 
 
