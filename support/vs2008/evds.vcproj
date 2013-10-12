@@ -1356,6 +1356,10 @@
 				Filter=""
 				>
 				<File
+					RelativePath="..\..\external\evds\source\core\evds_database - Copy.inc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\external\evds\source\core\evds_database.inc"
 					>
 				</File>

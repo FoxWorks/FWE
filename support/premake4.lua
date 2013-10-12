@@ -29,7 +29,7 @@ newaction {
 }
 
 -- Default Qt paths
-local QtDefault = "C:/Qt/4.8.4"
+local QtDefault = "C:/Qt/4.8.5"
 local QtMOCPath = "/bin/moc.exe"
 local QtRCCPath = "/bin/rcc.exe"
 local QtGenPath = "../qtmoc"
@@ -50,6 +50,7 @@ if not os.isfile(QtPath..QtMOCPath) then
   print("",QtDefault)
   if _OPTIONS["qtpath"] then print("",_OPTIONS["qtpath"]) end
   QtPath = nil
+  return
 end
 
 -- Generate MOC files
@@ -260,7 +261,12 @@ project "foxworks_editor"
      QtGenPath.."/moc_qtthumbwheel.cpp",
      QtGenPath.."/moc_qtpropertybrowserutils_p.cpp"
    }
-   configuration { "windows" }
+   
+   configuration { "windows", "Debug*" }
+      links { "QtCored4", "QtGuid4", "QtUiToolsd", "QtOpenGLd4", "opengl32" }
+   configuration { "not windows", "Debug*" }
+      links { "QtCored", "QtGuid", "QtUiToolsd", "QtOpenGLd" }
+   configuration { "windows", "Release*" }
       links { "QtCore4", "QtGui4", "QtUiTools", "QtOpenGL4", "opengl32" }
-   configuration { "not windows" }
+   configuration { "not windows", "Release*" }
       links { "QtCore", "QtGui", "QtUiTools", "QtOpenGL" }
