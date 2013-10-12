@@ -94,13 +94,11 @@ MainWindow::MainWindow() {
 	setWindowIcon(foxworks_icon);
 	setWindowTitle(tr("FoxWorks Editor"));
 	setUnifiedTitleAndToolBarOnMac(true);
-	resize(1024,640);
+	//resize(1024,640);
 
-	//Load settings
-	//QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-	//QSize size = settings.value("size", QSize(400, 400)).toSize();
-	//move(pos);
-	//resize(size);
+	//Load window settings
+	move(fw_editor_settings->value("window.position", QPoint(200, 200)).toPoint());
+	resize(fw_editor_settings->value("window.size", QSize(1024, 640)).toSize());
 
 	//Create new empty file or load some file right away
 #ifdef _DEBUG
