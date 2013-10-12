@@ -45,12 +45,12 @@ using namespace EVDS;
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in_editor) {
+Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in_editor, EVDS::SchematicsEditor* in_schematics_editor) {
 	//Get C pointer
 	object = in_object;
 	editor = in_editor;
 	parent = in_parent;
-	schematics_editor = NULL;
+	schematics_editor = in_schematics_editor;
 
 	//Get editor from parent
 	if (parent) {
@@ -105,7 +105,7 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 }
 
 
-////////////////////////////////////////////////////////////////////////////////d
+////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 Object::~Object() {
@@ -177,8 +177,7 @@ Object* Object::insertNewChild(int index) {
 	if (entry) EVDS_Object_MoveInList(new_object,head);
 
 	//Create object for it and add it to the children
-	Object* new_object_obj = new Object(new_object,this,editor);
-	new_object_obj->setSchematicsEditor(schematics_editor);
+	Object* new_object_obj = new Object(new_object,this,editor,schematics_editor);
 	children.insert(index,new_object_obj);
 
 	//Special logic for schematics editor
@@ -205,8 +204,7 @@ Object* Object::appendHiddenChild() {
 	EVDS_Object_Create(system,object,&new_object);
 
 	//Create object for it
-	Object* new_object_obj = new Object(new_object,this,editor);
-	new_object_obj->setSchematicsEditor(schematics_editor);
+	Object* new_object_obj = new Object(new_object,this,editor,schematics_editor);
 	hidden_children.insert(0,new_object_obj);
 	return new_object_obj;
 }
@@ -280,9 +278,12 @@ Object* Object::insertChild(int index, const QString &description) {
 	if (entry) EVDS_Object_MoveInList(new_object,head);
 
 	//Create object for it and add it to the children
-	Object* new_object_obj = new Object(new_object,this,editor);
-	new_object_obj->setSchematicsEditor(schematics_editor);
+	Object* new_object_obj = new Object(new_object,this,editor,schematics_editor);
 	children.insert(index,new_object_obj);
+	if (schematics_editor) { //FIXME: this is a temporary hack
+		//This stuff must be replaced with "SetEditors" calls for schematics and normal editor (removing them from constructors)
+		schematics_editor->getSchematicsRenderingManager()->updateInstances();
+	}
 	return new_object_obj;
 }
 
@@ -324,7 +325,7 @@ void Object::invalidateChildren() {
 		EVDS_OBJECT* child = (EVDS_OBJECT*)SIMC_List_GetData(list,entry);
 
 		//Create new object for it
-		Object* child_obj = new Object(child,this,editor);
+		Object* child_obj = new Object(child,this,editor,schematics_editor);
 		children.append(child_obj);
 
 		entry = SIMC_List_GetNext(list,entry);

@@ -97,7 +97,7 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window), activeThreads(0
 	EVDS_Object_Create(system,0,&root);
 	EVDS_Object_SetType(root,"rigid_body"); //Allows finding out parameters for the entire file
 	//EVDS_Object_Initialize(root,1);
-	root_obj = new Object(root,0,this);
+	root_obj = new Object(root,0,this,0);
 
 	//Create initializer thread
 	initializer = new ObjectInitializer(root_obj);

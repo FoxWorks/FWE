@@ -114,6 +114,9 @@ void ObjectModifiersManager::doUpdateModifiers() {
 
 	//Process all object starting from root
 	processUpdateModifiers(editor->getEditRoot());
+
+	//Update GL scene
+	editor->getGLScene()->update();
 }
 
 

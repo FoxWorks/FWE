@@ -53,7 +53,7 @@ namespace EVDS {
 		Q_OBJECT
 
 	public:
-		Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in_editor);
+		Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in_editor, EVDS::SchematicsEditor* in_schematics_editor);
 		~Object();
 
 		void setVariable(const QString &name, double value);
@@ -133,7 +133,7 @@ namespace EVDS {
 		Q_OBJECT
 
 	public:
-		TemporaryObject(EVDS_OBJECT* in_object, QMutex* in_unlockMutex) : Object(in_object,0,0) {
+		TemporaryObject(EVDS_OBJECT* in_object, QMutex* in_unlockMutex) : Object(in_object,0,0,0) {
 			unlockMutex = in_unlockMutex;
 		}
 		~TemporaryObject() {

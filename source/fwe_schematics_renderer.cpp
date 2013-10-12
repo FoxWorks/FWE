@@ -85,6 +85,9 @@ void SchematicsRenderingManager::updateInstances() {
 
 	//Set position
 	updatePositions();
+
+	//Update GL scene
+	glview->update();
 }
 
 
