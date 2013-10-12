@@ -85,7 +85,7 @@ void fw_editor_initialize(int flags, int argc, char *argv[]) {
 		fw_application = new QApplication(argc,argv);
 		Q_INIT_RESOURCE(resources);
 
-		fw_editor_settings = new QSettings("FoxWorks", "Editor"); //Load settings
+		fw_editor_settings = new QSettings("settings.ini",QSettings::IniFormat);
 		fw_mainWindow = new MainWindow(); //Show main window
 		fw_mainWindow->show();
 
