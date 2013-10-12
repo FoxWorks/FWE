@@ -6,6 +6,7 @@
 	ProjectGUID="{EE4E6F16-F056-1746-B855-ADA3599F7386}"
 	RootNamespace="evds"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -50,8 +51,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evdsd32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
@@ -68,14 +69,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\evdsd32.lib"
 				AdditionalOptions="/MACHINE:X86"
+				OutputFile="$(OutDir)\evdsd32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -85,12 +83,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -129,8 +121,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evdsd.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -147,14 +139,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\evdsd.lib"
 				AdditionalOptions="/MACHINE:X64"
+				OutputFile="$(OutDir)\evdsd.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -164,12 +153,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -206,8 +189,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evds32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -224,14 +207,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\evds32.lib"
 				AdditionalOptions="/MACHINE:X86"
+				OutputFile="$(OutDir)\evds32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -241,12 +221,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -284,8 +258,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evds.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -302,14 +276,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\evds.lib"
 				AdditionalOptions="/MACHINE:X64"
+				OutputFile="$(OutDir)\evds.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -319,12 +290,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -362,8 +327,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evdsd32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
@@ -385,7 +350,6 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\evdsd32.pdb"
 				SubSystem="2"
 				ImportLibrary="..\..\bin\evdsd32.lib"
 				TargetMachine="1"
@@ -407,9 +371,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -448,8 +409,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evdsd.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -471,7 +432,6 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\evdsd.pdb"
 				SubSystem="2"
 				ImportLibrary="..\..\bin\evdsd.lib"
 				TargetMachine="17"
@@ -493,9 +453,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -532,8 +489,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evds32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -555,7 +512,6 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\evds32.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -579,9 +535,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -619,8 +572,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evds.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -642,7 +595,6 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\evds.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -666,9 +618,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -706,8 +655,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evds_std32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
@@ -724,14 +673,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\evds_std32.lib"
 				AdditionalOptions="/MACHINE:X86"
+				OutputFile="$(OutDir)\evds_std32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -741,12 +687,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -785,8 +725,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evds_std.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -803,14 +743,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\evds_std.lib"
 				AdditionalOptions="/MACHINE:X64"
+				OutputFile="$(OutDir)\evds_std.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -820,12 +757,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -862,8 +793,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evds_st32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -880,14 +811,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\evds_st32.lib"
 				AdditionalOptions="/MACHINE:X86"
+				OutputFile="$(OutDir)\evds_st32.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -897,12 +825,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -940,8 +862,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evds_st.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -958,14 +880,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\evds_st.lib"
 				AdditionalOptions="/MACHINE:X64"
+				OutputFile="$(OutDir)\evds_st.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -975,12 +894,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1018,8 +931,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evds_std32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
@@ -1041,7 +954,6 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\evds_std32.pdb"
 				SubSystem="2"
 				ImportLibrary="..\..\bin\evds_std32.lib"
 				TargetMachine="1"
@@ -1063,9 +975,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1104,8 +1013,8 @@
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evds_std.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -1127,7 +1036,6 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\evds_std.pdb"
 				SubSystem="2"
 				ImportLibrary="..\..\bin\evds_std.lib"
 				TargetMachine="17"
@@ -1149,9 +1057,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1188,8 +1093,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evds_st32.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -1211,7 +1116,6 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\evds_st32.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -1235,9 +1139,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1275,8 +1176,8 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\evds_st.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -1298,7 +1199,6 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\evds_st.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -1324,9 +1224,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -1336,7 +1233,6 @@
 	<Files>
 		<Filter
 			Name="include"
-			Filter=""
 			>
 			<File
 				RelativePath="..\..\external\evds\include\evds.h"
@@ -1349,11 +1245,9 @@
 		</Filter>
 		<Filter
 			Name="source"
-			Filter=""
 			>
 			<Filter
 				Name="core"
-				Filter=""
 				>
 				<File
 					RelativePath="..\..\external\evds\source\core\evds_database.inc"
@@ -1392,13 +1286,16 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\external\evds\source\core\evds_util.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\external\evds\source\core\evds_variable.c"
 					>
 				</File>
 			</Filter>
 			<Filter
 				Name="models"
-				Filter=""
 				>
 				<File
 					RelativePath="..\..\external\evds\source\models\evds_environment.c"
@@ -1415,7 +1312,6 @@
 			</Filter>
 			<Filter
 				Name="objects"
-				Filter=""
 				>
 				<File
 					RelativePath="..\..\external\evds\source\objects\evds_body.c"
@@ -1452,7 +1348,6 @@
 			</Filter>
 			<Filter
 				Name="propagators"
-				Filter=""
 				>
 				<File
 					RelativePath="..\..\external\evds\source\propagators\evds_prop_euler.c"
