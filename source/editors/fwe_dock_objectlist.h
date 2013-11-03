@@ -47,6 +47,9 @@ namespace Dock {
 		QModelIndex currentIndex() { return object_tree->selectionModel()->currentIndex(); }
 		EVDS::ObjectTreeModel* getModel() { return model; }
 
+		void showButtons();
+		void hideButtons();
+
 	signals:
 		void addObject();
 		void removeObject();

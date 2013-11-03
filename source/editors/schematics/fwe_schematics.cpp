@@ -130,6 +130,7 @@ void SchematicsEditor::createObjectListDock() {
 
 	//Make sure the object list does not accept any mime types
 	object_list->getModel()->setAcceptedMimeType("application/vnd.evds.none");
+	object_list->hideButtons();
 
 	//Setup initial layout (a bit late but still)
 	addDockWidget(Qt::RightDockWidgetArea, object_list);
