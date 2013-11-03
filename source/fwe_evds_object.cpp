@@ -148,11 +148,9 @@ Object* Object::insertNewChild(int index) {
 	static int object_number = 1;
 
 	//Create new object
-	EVDS_SYSTEM* system;
 	EVDS_OBJECT* new_object;
 
-	EVDS_Object_GetSystem(object,&system);
-	EVDS_Object_Create(system,object,&new_object);
+	EVDS_Object_Create(object,&new_object);
 	EVDS_Object_SetName(new_object,tr("New object %1").arg(object_number++).toAscii().data());
 
 	//Find head for this new object
@@ -197,11 +195,8 @@ Object* Object::insertNewChild(int index) {
 ////////////////////////////////////////////////////////////////////////////////
 Object* Object::appendHiddenChild() {
 	//Create new object
-	EVDS_SYSTEM* system;
 	EVDS_OBJECT* new_object;
-
-	EVDS_Object_GetSystem(object,&system);
-	EVDS_Object_Create(system,object,&new_object);
+	EVDS_Object_Create(object,&new_object);
 
 	//Create object for it
 	Object* new_object_obj = new Object(new_object,this,editor,schematics_editor);

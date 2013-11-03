@@ -94,7 +94,9 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window), activeThreads(0
 	timer->start(1000);
 
 	//Create empty root object
-	EVDS_Object_Create(system,0,&root);
+	EVDS_OBJECT* inertial_root;
+	EVDS_System_GetRootInertialSpace(system,&inertial_root);
+	EVDS_Object_Create(inertial_root,&root);
 	EVDS_Object_SetType(root,"rigid_body"); //Allows finding out parameters for the entire file
 	//EVDS_Object_Initialize(root,1);
 	root_obj = new Object(root,0,this,0);

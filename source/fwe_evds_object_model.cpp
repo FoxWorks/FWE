@@ -178,8 +178,10 @@ QMimeData* ObjectTreeModel::mimeData(const QModelIndexList &indexes) const
 				EVDS_OBJECT* evds_object = object->getEVDSObject();
 				EVDS_OBJECT* reference;
 				EVDS_SYSTEM* system;
+				EVDS_OBJECT* inertial_root;
 				EVDS_Object_GetSystem(evds_object,&system);
-				EVDS_Object_Create(system,0,&reference);
+				EVDS_System_GetRootInertialSpace(system,&inertial_root);
+				EVDS_Object_Create(inertial_root,&reference);
 
 				//Get reference
 				char reference_str[8193] = { 0 };

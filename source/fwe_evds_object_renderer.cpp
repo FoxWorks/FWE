@@ -142,7 +142,11 @@ void ObjectRenderer::meshChanged() {
 
 		//Create temporary object
 		EVDS_OBJECT* temp_object;
-		EVDS_Object_CopySingle(object->getEVDSObject(),0,&temp_object);
+		EVDS_OBJECT* inertial_root;
+		EVDS_SYSTEM* system;
+		EVDS_Object_GetSystem(object->getEVDSObject(),&system);
+		EVDS_System_GetRootInertialSpace(system,&inertial_root);
+		EVDS_Object_CopySingle(object->getEVDSObject(),inertial_root,&temp_object);
 		EVDS_Object_Initialize(temp_object,1);
 
 		//Ask dear generator LOD thing to generate LODs
@@ -336,7 +340,11 @@ void ObjectLODGenerator::doUpdateMesh() {
 	readingLock.lock();
 		needMesh = true;
 		if (this->isRunning()) {
-			EVDS_Object_CopySingle(object->getEVDSObject(),0,&object_copy);
+			EVDS_OBJECT* inertial_root;
+			EVDS_SYSTEM* system;
+			EVDS_Object_GetSystem(object->getEVDSObject(),&system);
+			EVDS_System_GetRootInertialSpace(system,&inertial_root);
+			EVDS_Object_CopySingle(object->getEVDSObject(),inertial_root,&object_copy);
 		}
 	readingLock.unlock();
 }
