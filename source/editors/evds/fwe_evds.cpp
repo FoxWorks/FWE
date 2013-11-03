@@ -61,7 +61,7 @@
 #include "fwe_evds_object_model.h"
 #include "fwe_evds_object_renderer.h"
 #include "fwe_evds_modifiers.h"
-#include "fwe_evds_glscene.h"
+#include "fwe_glscene.h"
 #include "fwe_prop_sheet.h"
 
 using namespace EVDS;

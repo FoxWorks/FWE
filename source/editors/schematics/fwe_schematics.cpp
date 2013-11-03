@@ -37,7 +37,7 @@
 
 #include "fwe_schematics.h"
 #include "fwe_schematics_renderer.h"
-#include "fwe_evds_glscene.h"
+#include "fwe_glscene.h"
 #include "fwe_prop_sheet.h"
 #include "fwe_evds_object.h"
 #include "fwe_evds_object_model.h"

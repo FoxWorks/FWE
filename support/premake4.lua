@@ -142,7 +142,7 @@ if QtPath and (_ACTION ~= "clean") then
   generate_rcc("../external/GLC_lib/src/*.qrc","/glc")
 
   -- Foxworks editor
-  generate_moc("../source/fwe_**.h",true)
+  generate_moc("../source/**.h",true)
   generate_rcc("../resources/**.qrc")
 end
 
@@ -212,6 +212,8 @@ project "GLC_lib"
    }
    
 
+
+
 project "foxworks_editor"
    uuid "C84AD4D2-2D63-1842-871E-30B7C71BEA58"
    kind "ConsoleApp"
@@ -225,7 +227,15 @@ project "foxworks_editor"
 --     "../external/nrlmsise-00",
      "../external/qt-solutions/qtpropertybrowser/src",
      "../external/qt-thumbwheel",
-     "../external/GLC_lib/src"
+     "../external/GLC_lib/src",
+     
+     "../source",
+     "../source/dialogs",
+     "../source/editors",
+     "../source/editors/evds",
+     "../source/editors/ivss",
+     "../source/editors/schematics",
+     "../source/prop_sheet",
    }
    files {
      "../source/**.cpp",
