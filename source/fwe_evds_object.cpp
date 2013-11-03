@@ -829,7 +829,11 @@ void ObjectInitializer::doUpdateObject() {
 			//Destroy old copy of initialized object
 			if (object_copy) EVDS_Object_Destroy(object_copy);
 			//Create new one
-			EVDS_Object_Copy(object->getEVDSObject(),0,&object_copy);
+			EVDS_OBJECT* inertial_root;
+			EVDS_SYSTEM* system;
+			EVDS_Object_GetSystem(object->getEVDSObject(),&system);
+			EVDS_System_GetRootInertialSpace(system,&inertial_root);
+			EVDS_Object_Copy(object->getEVDSObject(),inertial_root,&object_copy);
 			//Object not completed
 			objectCompleted = false;
 		readingLock.unlock();
