@@ -50,6 +50,9 @@ QT_END_NAMESPACE
 class GLC_3DViewInstance;
 class FWEPropertySheet;
 class ChildWindow;
+namespace Dock {
+	class ObjectList;
+}
 namespace EVDS {
 	class GLScene;
 	class GLView;
@@ -130,13 +133,7 @@ namespace EVDS {
 		void loadObjectData();
 
 		//List of objects
-		ObjectTreeModel*	list_model;
-		QDockWidget*		list_dock;
-		QWidget*			list;
-		QTreeView*			list_tree;
-		QPushButton*		list_add;
-		QPushButton*		list_remove;
-		QVBoxLayout*		list_layout;
+		Dock::ObjectList*	object_list;
 
 		//Object properties
 		QDockWidget*		properties_dock;

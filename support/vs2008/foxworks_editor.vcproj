@@ -1730,6 +1730,14 @@
 				</File>
 			</Filter>
 			<File
+				RelativePath="..\..\source\editors\fwe_dock_objectlist.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\editors\fwe_dock_objectlist.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\source\editors\fwe_glscene.cpp"
 				>
 			</File>
@@ -2187,6 +2195,10 @@
 			</File>
 			<File
 				RelativePath="..\..\qtmoc\moc_fwe_dialog_preferences.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_dock_objectlist.cpp"
 				>
 			</File>
 			<File

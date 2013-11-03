@@ -34,6 +34,7 @@
 /*#include "fwe_evds.h"
 #include "fwe_evds_object_renderer.h"
 #include "fwe_evds_modifiers.h"*/
+#include "fwe_dock_objectlist.h"
 
 using namespace EVDS;
 
@@ -48,7 +49,6 @@ SchematicsEditor::SchematicsEditor(ChildWindow* in_window, EVDS::Editor* in_edit
 	root = NULL;
 	sheet = NULL;
 	prev_sheet = NULL;
-	objectlist_model = NULL;
 
 	//Create parts of main UI (other parts are created later)
 	createMenuToolbar();
@@ -100,47 +100,20 @@ void SchematicsEditor::createMenuToolbar() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsEditor::createListDock() {
-	list = new QWidget();
-	list->setMinimumWidth(250);
-	list->setMinimumHeight(100);
+	//Create list of objects
+	elements_list = new Dock::ObjectList(root,this);
+	elements_list->setWindowTitle(tr("Schematics Elements"));
+	connect(elements_list, SIGNAL(addObject()), this, SLOT(addObject()));
+	connect(elements_list, SIGNAL(removeObject()), this, SLOT(removeObject()));
+	connect(elements_list, SIGNAL(selectObject(const QModelIndex&)), this, SLOT(selectObject(const QModelIndex&)));
+	addDockWidget(Qt::LeftDockWidgetArea, object_list);
 
-	//Create object hierarchy window and dock
-	list_dock = new QDockWidget(tr("Schematics Elements"), this);
-	list_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-	list_dock->setAllowedAreas(Qt::AllDockWidgetAreas);
-	list_dock->setWidget(list);
-	addDockWidget(Qt::LeftDockWidgetArea, list_dock);
-
-	//Create remaining interface
-	list_model = new ObjectTreeModel(editor,root,this);
-	list_model->setAcceptedMimeType("application/vnd.evds.ref+xml");
-	list_tree = new QTreeView(this);
-	list_tree->setModel(list_model);
-	list_tree->expandAll();
-	list_tree->setColumnWidth(0,150);
-
-	list_tree->viewport()->setAcceptDrops(true);
-	list_tree->setDragDropMode(QAbstractItemView::DragDrop);
-	list_tree->setDragEnabled(true);
-	list_tree->setDropIndicatorShown(true);
-	list_tree->setDragDropOverwriteMode(false);
-	list_tree->setDefaultDropAction(Qt::MoveAction);
-
-	list_add = new QPushButton(QIcon(":/icon/add.png"),"Add object",this);
-	list_remove = new QPushButton(QIcon(":/icon/remove.png"),"Remove selected",this);
-	connect(list_add, SIGNAL(released()), this, SLOT(addObject()));
-	connect(list_remove, SIGNAL(released()), this, SLOT(removeObject()));
-	connect(list_tree, SIGNAL(clicked(const QModelIndex&)), this, SLOT(selectObject(const QModelIndex&)));
-
-	//Create layout
-	list_layout = new QVBoxLayout;
-	list_layout->addWidget(list_add);
-	list_layout->addWidget(list_tree);
-	list_layout->addWidget(list_remove);
-	list->setLayout(list_layout);
+	//Make sure the object list does not accept any mime types
+	elements_list->getModel()->setAcceptedMimeType("application/vnd.evds.ref+xml");
 
 	//Setup initial layout (a bit late but still)
-	list_dock->raise();
+	addDockWidget(Qt::RightDockWidgetArea, elements_list);
+	elements_list->raise();
 }
 
 
@@ -148,39 +121,19 @@ void SchematicsEditor::createListDock() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsEditor::createObjectListDock() {
-	objectlist = new QWidget();
-	objectlist->setMinimumWidth(250);
-	objectlist->setMinimumHeight(100);
+	//Create list of objects
+	object_list = new Dock::ObjectList(editor->getEditRoot(),this);
+	//connect(object_list, SIGNAL(addObject()), this, SLOT(addObject()));
+	//connect(object_list, SIGNAL(removeObject()), this, SLOT(removeObject()));
+	//connect(object_list, SIGNAL(selectObject(const QModelIndex&)), this, SLOT(selectObject(const QModelIndex&)));
+	addDockWidget(Qt::LeftDockWidgetArea, object_list);
 
-	//Create object hierarchy window and dock
-	objectlist_dock = new QDockWidget(tr("Objects Hierarchy"), this);
-	objectlist_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-	objectlist_dock->setAllowedAreas(Qt::AllDockWidgetAreas);
-	objectlist_dock->setWidget(objectlist);
-	addDockWidget(Qt::RightDockWidgetArea, objectlist_dock);
-
-	//Create remaining interface
-	objectlist_model = new ObjectTreeModel(editor,editor->getEditRoot(),this);
-	objectlist_model->setAcceptedMimeType("application/vnd.evds.none");
-	objectlist_tree = new QTreeView(this);
-	objectlist_tree->setModel(objectlist_model);
-	objectlist_tree->expandAll();
-	objectlist_tree->setColumnWidth(0,150);
-
-	//objectlist_tree->viewport()->setAcceptDrops(true);
-	objectlist_tree->setDragDropMode(QAbstractItemView::DragDrop);
-	objectlist_tree->setDragEnabled(true);
-	//objectlist_tree->setDropIndicatorShown(true);
-	//objectlist_tree->setDragDropOverwriteMode(false);
-	//objectlist_tree->setDefaultDropAction(Qt::MoveAction);
-
-	//Create layout
-	objectlist_layout = new QVBoxLayout;
-	objectlist_layout->addWidget(objectlist_tree);
-	objectlist->setLayout(objectlist_layout);
+	//Make sure the object list does not accept any mime types
+	object_list->getModel()->setAcceptedMimeType("application/vnd.evds.none");
 
 	//Setup initial layout (a bit late but still)
-	objectlist_dock->raise();
+	addDockWidget(Qt::RightDockWidgetArea, object_list);
+	object_list->raise();
 }
 
 
@@ -246,7 +199,7 @@ void SchematicsEditor::setModified() {
 void SchematicsEditor::setEditorHidden(bool isHidden) {
 	if (isHidden) sheet = 0;
 	rendering_manager->updateInstances(); //Clear out all modifier-created instances to avoid crashes
-	if (!isHidden) { //Invalidate objects tree
+	/*if (!isHidden) { //Invalidate objects tree FIXME
 		if (objectlist_model) {
 			delete objectlist_model;
 			
@@ -254,7 +207,7 @@ void SchematicsEditor::setEditorHidden(bool isHidden) {
 			objectlist_model->setAcceptedMimeType("application/vnd.evds.none");
 			objectlist_tree->setModel(objectlist_model);
 		}
-	}
+	}*/
 }
 
 
@@ -262,8 +215,8 @@ void SchematicsEditor::setEditorHidden(bool isHidden) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsEditor::addObject() {
-	QModelIndex index = list_tree->selectionModel()->currentIndex();
-	static_cast<EVDS::ObjectTreeModel*>(list_tree->model())->insertRow(0,index);
+	QModelIndex index = elements_list->currentIndex();
+	elements_list->getModel()->insertRow(0,index);
 }
 
 
@@ -271,8 +224,8 @@ void SchematicsEditor::addObject() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsEditor::removeObject() {
-	QModelIndex index = list_tree->selectionModel()->currentIndex();
-	static_cast<EVDS::ObjectTreeModel*>(list_tree->model())->removeRow(index.row(),index.parent());
+	QModelIndex index = elements_list->currentIndex();
+	elements_list->getModel()->removeRow(index.row(),index.parent());
 }
 
 
@@ -302,7 +255,7 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 	//Check if selection must be cleared
 	Object* object = (Object*)index.internalPointer();
 	if (selected == object) {
-		list_tree->setCurrentIndex(QModelIndex());
+		elements_list->setCurrentIndex(QModelIndex());
 		selectObject(QModelIndex());
 		return;
 	}
@@ -343,7 +296,7 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 void SchematicsEditor::updateObject(Object* object) {
 	invalidateChildren(root);
 	if (object) {
-		list_model->updateObject(object);
+		elements_list->getModel()->updateObject(object);
 	}
 	//rendering_manager->updateInstances();
 	glscene->update();
