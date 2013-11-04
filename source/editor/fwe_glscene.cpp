@@ -31,6 +31,7 @@
 #include <GLC_CuttingPlane>
 
 #include <math.h>
+#include "fwe_main.h"
 #include "fwe_evds.h"
 #include "fwe_evds_object.h"
 #include "fwe_evds_object_renderer.h"
@@ -292,10 +293,10 @@ void GLScene::saveScreenshot() {
 		renderFbo.toImage().save(fileName,0,95);
 	}
 
-	editor->getWindow()->getMainWindow()->statusBar()->showMessage("Saved screenshot ("+fileName+")",3000);
+	editor->getEditorWindow()->getMainWindow()->statusBar()->showMessage("Saved screenshot ("+fileName+")",3000);
 }
 void GLScene::saveSheets() {
-	QString baseFilename = editor->getWindow()->getCurrentFile();
+	QString baseFilename = editor->getEditorWindow()->getCurrentFile();
 	QFileInfo baseInfo = QFileInfo(baseFilename);
 
 	Object* old_sheet = schematics_editor->getCurrentSheet();
@@ -315,13 +316,13 @@ void GLScene::saveSheets() {
 				.arg(code)
 				.arg(sheet_no));
 
-			editor->getWindow()->getMainWindow()->statusBar()->showMessage(tr("Exported sheet %1..").arg(sheet_no),2000);
+			editor->getEditorWindow()->getMainWindow()->statusBar()->showMessage(tr("Exported sheet %1..").arg(sheet_no),2000);
 			sheet_no++;
 		}
 	}
 	schematics_editor->setCurrentSheet(old_sheet);
 	schematics_editor->getSchematicsRenderingManager()->updateInstances();
-	editor->getWindow()->getMainWindow()->statusBar()->showMessage("Finished exporting sheets!",3000);
+	editor->getEditorWindow()->getMainWindow()->statusBar()->showMessage("Finished exporting sheets!",3000);
 }
 void GLScene::setIsoView() {
 	viewport->cameraHandle()->setIsoView();

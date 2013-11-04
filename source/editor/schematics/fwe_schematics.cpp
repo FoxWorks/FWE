@@ -238,7 +238,7 @@ void SchematicsEditor::propertySheetUpdated(QWidget* old_sheet, QWidget* new_she
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsEditor::invalidateChildren(Object* object) {
-	object->setSchematicsEditor(this);
+	//object->setSchematicsEditor(this);
 	for (int i = 0; i < object->getChildrenCount(); i++) {
 		invalidateChildren(object->getChild(i));
 	}

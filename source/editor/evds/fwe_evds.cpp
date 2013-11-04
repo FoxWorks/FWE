@@ -71,14 +71,13 @@ Editor::Editor(FWE::EditorWindow* in_window) : FWE::Editor(in_window) {
 	setAcceptDrops(true);
 
 	//Create initializer thread
-	initializer = new ObjectInitializer(getEditorWindow()->getEditRoot());
-	connect(initializer, SIGNAL(signalObjectReady()), this, SLOT(rootInitialized()), Qt::QueuedConnection);
-	initializer->start();
-	initializer->updateObject(); //Must be called before first call to getObject
+	//initializer = new ObjectInitializer(getEditorWindow()->getEditRoot());
+	//connect(initializer, SIGNAL(signalObjectReady()), this, SLOT(rootInitialized()), Qt::QueuedConnection);
+	//initializer->start();
+	//initializer->updateObject(); //Must be called before first call to getObject
    
 	//Create parts of main UI
 	createMenuToolbar();
-
 
 	//Create list of objects
 	object_list = new Dock::ObjectList(getEditorWindow()->getEditRoot(),this);
@@ -93,6 +92,7 @@ Editor::Editor(FWE::EditorWindow* in_window) : FWE::Editor(in_window) {
 
 	//Create properties sheet for cross-sections
 	csection_properties = new Dock::Properties(this);
+	csection_properties->setWindowTitle("Cross-section Properties");
 	addDockWidget(Qt::RightDockWidgetArea, csection_properties);
 
 	//Setup initial layout
@@ -285,7 +285,7 @@ void Editor::selectObject(const QModelIndex& index) {
 
 		//Update information
 		updateInformation(true);
-		updateObject(NULL);
+		getEditorWindow()->updateObject(NULL);
 
 		//Update comments
 		//disconnect(comments, SIGNAL(textChanged()), this, SLOT(commentChanged()));
@@ -307,7 +307,7 @@ void Editor::selectObject(const QModelIndex& index) {
 	object_properties->setPropertySheet(object->getPropertySheet());
 
 	//Show cross-sections editor
-	object_properties->setPropertySheet(object->getCrossSectionsEditor());
+	csection_properties->setPropertySheet(object->getCrossSectionsEditor());
 
 	//Update comments
 	//disconnect(comments, SIGNAL(textChanged()), this, SLOT(commentChanged()));
@@ -318,18 +318,7 @@ void Editor::selectObject(const QModelIndex& index) {
 	updateInformation(true);
 
 	//Redraw
-	updateObject(NULL);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void Editor::updateObject(Object* object) {
-	if (object) {
-		object_list->getModel()->updateObject(object);
-	}
-	glscene->update();
+	getEditorWindow()->updateObject(NULL);
 }
 
 

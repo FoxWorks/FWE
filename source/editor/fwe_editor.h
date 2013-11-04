@@ -93,8 +93,9 @@ namespace FWE {
 		EVDS::SchematicsEditor* getSchematicsEditor() { return SchematicsEditor; }
 
 		//Update interface
-		void showLoadingError(const QString& errorMessage);
 		void updateInterface(bool isInFront);
+		void updateObject(EVDS::Object* object);
+		void showLoadingError(const QString& errorMessage);
 		void addEditorAction(Editor* editor, QAction* action);
 
 		//List of object variables, cross-section variables by object type

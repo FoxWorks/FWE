@@ -246,8 +246,8 @@ void CrossSection::createPropertySheet() {
 			this, SLOT(propertyUpdate(const QString&)));
 
 	//Create default set of properties
-	property_sheet->setProperties(editor->getEVDSEditor()->csectionVariables[""]);
-	property_sheet->setProperties(editor->getEVDSEditor()->csectionVariables[getType()]);
+	property_sheet->setProperties(editor->getEVDSEditor()->getEditorWindow()->csectionVariables[""]);
+	property_sheet->setProperties(editor->getEVDSEditor()->getEditorWindow()->csectionVariables[getType()]);
 }
 
 

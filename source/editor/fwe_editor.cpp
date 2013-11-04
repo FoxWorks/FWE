@@ -19,6 +19,7 @@
 #include <QtGui>
 
 #include "fwe_main.h"
+#include "fwe_glscene.h"
 #include "fwe_evds.h"
 #include "fwe_evds_object.h"
 #include "fwe_schematics.h"
@@ -37,15 +38,15 @@ EditorWindow::EditorWindow(MainWindow* window) : activeThreads(0) {
 	editorsLayout = new QStackedLayout(editorsWidget);
 	setCentralWidget(editorsWidget);
 
-	//Load object types
-	loadObjectVariablesData();
-
 	//Create EVDS system. Use flag that lists all children, even uninitialized ones to make sure
 	// tree controls list all objects while they are messed around with.
 	EVDS_System_Create(&system);
 	EVDS_Common_Register(system);
 	EVDS_Antenna_Register(system);
 	EVDS_Train_WheelsGeometry_Register(system);
+
+	//Load object types
+	loadObjectVariablesData();
 
 	//Create empty root object
 	EVDS_OBJECT* inertial_root;
@@ -54,14 +55,13 @@ EditorWindow::EditorWindow(MainWindow* window) : activeThreads(0) {
 	EVDS_Object_SetType(root,"rigid_body"); //Allows finding out parameters for the entire file
 	root_object = new EVDS::Object(root,0,this);
 
-
 	//Create EVDS editor
-	/*EVDSEditor = new EVDS::Editor(this);
+	EVDSEditor = new EVDS::Editor(this);
 	editorsLayout->addWidget(EVDSEditor);
 	EVDSEditor->setActive(true);
 
 	//Create schematics editor
-	SchematicsEditor = new EVDS::SchematicsEditor(this,EVDSEditor);
+	/*SchematicsEditor = new EVDS::SchematicsEditor(this,EVDSEditor);
 	editorsLayout->addWidget(SchematicsEditor);
 	SchematicsEditor->setActive(false);*/
 
@@ -216,11 +216,7 @@ void EditorWindow::newFile() {
 	document->setName("");
 
 	//Editor-specific stuff
-	EVDSEditor->finishInitializing();
-
-	//EVDSEditor->newFile();
-	//SchematicsEditor->initializeForFile();
-	
+	//EVDSEditor->finishInitializing();
 }
 
 
@@ -268,6 +264,7 @@ bool EditorWindow::loadFile(const QString &fileName) {
 
 	//Initialize the root object
 	root_object->invalidateChildren();
+	printf("ROOT %d",root_object->getChildrenCount());
 
 	//Find the "document" object, or create it
 	document = 0;
@@ -287,10 +284,7 @@ bool EditorWindow::loadFile(const QString &fileName) {
 	QApplication::restoreOverrideCursor();
 
 	//Finish initializing
-	EVDSEditor->finishInitializing();
-
-	//if (!EVDSEditor->loadFile(fileName)) return false;
-	//SchematicsEditor->initializeForFile();
+	//EVDSEditor->finishInitializing();
 	return true;
 }
 
@@ -323,6 +317,19 @@ void EditorWindow::updateInterface(bool isInFront) {
 		i.value()->setVisible(isInFront && i.key()->getActive());
 	}
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void EditorWindow::updateObject(EVDS::Object* object) {
+	if (object) {
+		//object_list->getModel()->updateObject(object); FIXME
+	}
+	//EVDSEditor->getGLScene()->update();
+	//glscene->update();
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief

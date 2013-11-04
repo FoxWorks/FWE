@@ -23,6 +23,9 @@
 #include <QModelIndex>
 #include <QVariant>
 
+namespace FWE {
+	class EditorWindow;
+}
 namespace EVDS {
 	class Editor;
 	class Object;
@@ -31,7 +34,7 @@ namespace EVDS {
 		Q_OBJECT
 
 	public:
-		ObjectTreeModel(EVDS::Editor* in_editor, EVDS::Object* in_root, QWidget* parent);
+		ObjectTreeModel(FWE::EditorWindow* in_window, EVDS::Object* in_root, QWidget* parent);
 		~ObjectTreeModel();
 
 		QVariant data(const QModelIndex &index, int role) const;
@@ -57,7 +60,7 @@ namespace EVDS {
 
 	private:
 		QString acceptedMimeType;
-		EVDS::Editor* editor;
+		FWE::EditorWindow* window;
 		EVDS::Object* root;
 	};
 }

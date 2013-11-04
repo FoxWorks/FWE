@@ -37,7 +37,7 @@ ObjectList::ObjectList(Object* root, QWidget* parent) : QDockWidget(tr("Objects 
 	setAllowedAreas(Qt::AllDockWidgetAreas);
 
 	//The model and the list
-	model = new ObjectTreeModel(root->getEVDSEditor(),root,this);
+	model = new ObjectTreeModel(root->getEditorWindow(),root,this);
 	object_tree = new QTreeView(this);
 	object_tree->setModel(model);
 	object_tree->expandAll();

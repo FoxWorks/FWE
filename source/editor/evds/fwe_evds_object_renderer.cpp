@@ -17,6 +17,7 @@
 /// along with this program.  If not, see http://www.gnu.org/licenses/.
 ////////////////////////////////////////////////////////////////////////////////
 #include <evds.h>
+#include "fwe_main.h"
 #include "fwe_evds.h"
 #include "fwe_evds_object.h"
 #include "fwe_evds_object_renderer.h"
@@ -188,10 +189,10 @@ void ObjectRenderer::lodMeshesGenerated() {
 		glcMesh->finish();
 
 		glcInstance->setMatrix(glcInstance->matrix()); //This causes bounding box to be updated
-		object->getEVDSEditor()->updateObject(NULL); //Force into repaint
+		object->getEditorWindow()->updateObject(NULL); //Force into repaint
 	lodMeshGenerator->readingLock.unlock();
 
-	object->getEVDSEditor()->getWindow()->getMainWindow()->statusBar()->showMessage("Generating LODs...",1000);
+	object->getEditorWindow()->getMainWindow()->statusBar()->showMessage("Generating LODs...",1000);
 }
 
 
@@ -353,7 +354,7 @@ void ObjectLODGenerator::stopWork() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectLODGenerator::run() {
-	editor->activeThreads.release(1);
+	editor->getEditorWindow()->activeThreads.release(1);
 	//msleep(1000 + (qrand() % 5000)); //Give enough time for the rest of application to initialize
 	while (!doStopWork) {
 		readingLock.lock();
@@ -408,7 +409,7 @@ void ObjectLODGenerator::run() {
 
 	//Finish thread work and destroy HQ mesh
 	//qDebug("ObjectLODGenerator::run: stopped");
-	editor->activeThreads.acquire(1);
+	editor->getEditorWindow()->activeThreads.acquire(1);
 }
 
 QSemaphore ObjectLODGenerator::threadsSemaphore(QThread::idealThreadCount());

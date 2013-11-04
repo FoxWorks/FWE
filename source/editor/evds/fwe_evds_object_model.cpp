@@ -27,10 +27,9 @@ using namespace EVDS;
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-ObjectTreeModel::ObjectTreeModel(EVDS::Editor* in_editor, EVDS::Object* in_root, QWidget* parent) 
-	: QAbstractItemModel(parent) 
-{
-	editor = in_editor;
+ObjectTreeModel::ObjectTreeModel(FWE::EditorWindow* in_window, EVDS::Object* in_root, QWidget* parent) 
+	: QAbstractItemModel(parent) {
+	window = in_window;
 	root = in_root;
 	acceptedMimeType = "application/vnd.evds+xml";
 }
@@ -129,8 +128,7 @@ Qt::ItemFlags ObjectTreeModel::flags(const QModelIndex &index) const {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-QStringList ObjectTreeModel::mimeTypes() const
-{
+QStringList ObjectTreeModel::mimeTypes() const {
 	 QStringList types;
 	 types << acceptedMimeType;//"application/vnd.evds+xml";
 	 //types << "application/vnd.evds.ref+xml";
@@ -141,8 +139,7 @@ QStringList ObjectTreeModel::mimeTypes() const
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-QMimeData* ObjectTreeModel::mimeData(const QModelIndexList &indexes) const
-{
+QMimeData* ObjectTreeModel::mimeData(const QModelIndexList &indexes) const {
 	QMimeData *mimeData = new QMimeData();
 	QString encodedData = "";
 	QString encodedReferenceData = "";
@@ -175,7 +172,7 @@ QMimeData* ObjectTreeModel::mimeData(const QModelIndexList &indexes) const
 
 				//Get reference
 				char reference_str[8193] = { 0 };
-				EVDS_Object_GetReference(evds_object,editor->getEditRoot()->getEVDSObject(),reference_str,8192);
+				EVDS_Object_GetReference(evds_object,window->getEditRoot()->getEVDSObject(),reference_str,8192);
 
 				//Write it
 				EVDS_VARIABLE* variable;
@@ -234,11 +231,11 @@ bool ObjectTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 	beginInsertRows(parent,beginRow,beginRow);
-	object->insertChild(beginRow,QString(data->data(acceptedMimeType)));
+		object->insertChild(beginRow,QString(data->data(acceptedMimeType)));
 	endInsertRows();
 	QApplication::restoreOverrideCursor();
 
-	editor->setModified();
+	window->setModified();
 	return true;
 }
 
@@ -273,24 +270,26 @@ QModelIndex ObjectTreeModel::index(int row, int column, const QModelIndex &paren
 	}
 
 	Object* child = object->getChild(row);
-	if (child)
+	if (child) {
 		return createIndex(row, column, child);
-	else
+	} else {
 		return QModelIndex();
+	}
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-QModelIndex ObjectTreeModel::parent(const QModelIndex &index) const
-{
+QModelIndex ObjectTreeModel::parent(const QModelIndex &index) const {
 	if (!index.isValid()) return QModelIndex();
 
 	Object* object = (Object*)(index.internalPointer());
 	Object* parent = object->getParent();
 
-	if (parent == root) return QModelIndex();
+	if (parent == root) {
+		return QModelIndex();
+	}
 
 	Object* parent_parent = parent->getParent();
 	int idx = parent_parent->getChildIndex(parent);
@@ -301,8 +300,7 @@ QModelIndex ObjectTreeModel::parent(const QModelIndex &index) const
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-int ObjectTreeModel::rowCount(const QModelIndex &parent) const
-{
+int ObjectTreeModel::rowCount(const QModelIndex &parent) const {
 	if (parent.column() > 0) return 0;
 
 	Object* object;
@@ -318,8 +316,6 @@ int ObjectTreeModel::rowCount(const QModelIndex &parent) const
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-//Object* ObjectTreeModel::appendRow(const QModelIndex& parent) {
-//bool ObjectTreeModel::insertRow(int row, const QModelIndex& parent) {
 bool ObjectTreeModel::insertRows(int row, int count, const QModelIndex &parent) {
 	Object* object;
 	if (!parent.isValid()) {
@@ -329,11 +325,11 @@ bool ObjectTreeModel::insertRows(int row, int count, const QModelIndex &parent) 
 	}
 
 	beginInsertRows(parent,row,row+count-1);
-	for (int r=row;r<row+count;r++) {
-		object->insertNewChild(r);
-	}
+		for (int r=row;r<row+count;r++) {
+			object->insertNewChild(r);
+		}
 	endInsertRows();
-	editor->setModified();
+	window->setModified();
 	return true;
 }
 
@@ -350,11 +346,11 @@ bool ObjectTreeModel::removeRows(int row, int count, const QModelIndex &parent) 
 	}
 
 	beginRemoveRows(parent,row,row+count-1);
-	for (int r=row;r<row+count;r++) {
-		object->removeChild(r);
-	}
+		for (int r=row;r<row+count;r++) {
+			object->removeChild(r);
+		}
 	endRemoveRows();
-	editor->setModified();
+	window->setModified();
 	return true;
 }
 

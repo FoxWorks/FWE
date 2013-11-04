@@ -48,18 +48,17 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, FWE::EditorWindo
 	//Store the CPP object as EVDS userdata
 	if (!initialized) EVDS_Object_SetUserdata(object,(void*)this);
 
-
 	//Create a renderer for the object before children are created
 	renderer = 0;
-	if ((!initialized) && (in_parent)) {
+	/*if ((!initialized) && (in_parent)) {
 		QTime time; time.start();
 			renderer = new ObjectRenderer(this);
-			getEVDSEditor()->updateObject(this);
+			window->updateObject(this);
 		int elapsed = time.elapsed();
 		if (elapsed > 40) {
 			qDebug("Object::Object: Long generation: %s (%d msec)",getName().toAscii().data(),elapsed);
 		}
-	}
+	}*/
 
 	//Enumerate and store all children
 	if (!initialized) invalidateChildren();
@@ -279,11 +278,7 @@ void Object::removeChild(int index) {
 	delete child;
 
 	if (window) {
-		if (isSchematicsElement()) {
-			getSchematicsEditor()->updateObject(NULL);
-		} else {
-			getEVDSEditor()->updateObject(NULL);
-		}
+		window->updateObject(NULL);
 	}
 }
 
@@ -309,7 +304,6 @@ void Object::invalidateChildren() {
 		entry = SIMC_List_GetNext(list,entry);
 	}
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
@@ -699,11 +693,7 @@ void Object::update(bool visually) {
 		}
 	}
 	//if (visually && renderer) renderer->meshChanged();
-	if (isSchematicsElement()) {
-		getSchematicsEditor()->updateObject(this);
-	} else {
-		getEVDSEditor()->updateObject(this);
-	}
+	window->updateObject(this);
 }
 
 
