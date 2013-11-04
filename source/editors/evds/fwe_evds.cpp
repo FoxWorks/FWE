@@ -71,20 +71,18 @@ Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window), activeThreads(0
 	//Create EVDS system. Use flag that lists all children, even uninitialized ones to make sure
 	// tree controls list all objects while they are messed around with.
 	EVDS_System_Create(&system);
-	//EVDS_System_Create(&initialized_system);
 	EVDS_Common_Register(system);
-	//EVDS_Common_Register(initialized_system);
 	EVDS_Antenna_Register(system);
-	//EVDS_Antenna_Register(initialized_system);
 	EVDS_Train_WheelsGeometry_Register(system);
-
-	//Load object types
-	loadObjectData();
 
 	//Clear EVDS objects no longer used in other threads
 	QTimer *timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(cleanupTimer()));
 	timer->start(1000);
+
+	//Load object types
+	loadObjectVariablesData();
+
 
 	//Create empty root object
 	EVDS_OBJECT* inertial_root;
@@ -149,7 +147,7 @@ Editor::~Editor() {
 	qDebug("Editor::~Editor: cleaning up EVDS objects");
 	delete root_obj;
 	qDebug("Editor::~Editor: waiting for remaining threads");
-	waitForThreads();
+	while (activeThreads.available()) ;
 
 	//Destroy EVDS system
 	qDebug("Editor::~Editor: destroying system");
@@ -159,32 +157,6 @@ Editor::~Editor() {
 		actions[i]->deleteLater();
 	}
 	cutsection_menu->deleteLater();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void Editor::addActiveThread() {
-	activeThreads.fetchAndAddOrdered(1);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void Editor::removeActiveThread() {
-	activeThreads.fetchAndAddOrdered(-1);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void Editor::waitForThreads() {
-	while (activeThreads > 0) ; //FIXME: sleep somehow
-		//QApplication::processEvents();
-	//}
 }
 
 
@@ -615,7 +587,7 @@ void Editor::propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void Editor::loadObjectData() {
+void Editor::loadObjectVariablesData() {
 	//Create special mapping from materials databases
 	QMap<QString,QString> special_mapping;
 	

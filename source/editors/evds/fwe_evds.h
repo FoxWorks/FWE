@@ -23,7 +23,8 @@
 #include <QFileInfo>
 #include <QMap>
 #include <QList>
-#include <QAtomicInt>
+#include <QSemaphore>
+
 #include "evds.h"
 #include "evds_antenna.h"
 #include "evds_train_wheels.h"
@@ -88,17 +89,12 @@ namespace EVDS {
 		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
 		void loadError(const QString& error);
 
-	public:
+		//List of object variables, cross-section variables by object type
 		QMap<QString,QList<QMap<QString,QString> > > objectVariables;
 		QMap<QString,QList<QMap<QString,QString> > > csectionVariables;
 
-	private:
-		QAtomicInt activeThreads;
-
-	public:
-		void addActiveThread();
-		void removeActiveThread();
-		void waitForThreads();
+		//Counter for active working threads
+		QSemaphore activeThreads;
 
 	protected:
 		void dropEvent(QDropEvent *event);
@@ -129,7 +125,7 @@ namespace EVDS {
 		void createCommentsDock();
 
 		//Object types
-		void loadObjectData();
+		void loadObjectVariablesData();
 
 		//List of objects
 		Dock::ObjectList*	object_list;
@@ -173,8 +169,6 @@ namespace EVDS {
 
 		//EVDS objects (initialized/simulation area)
 		ObjectInitializer* initializer;
-		EVDS_SYSTEM* initialized_system;
-		EVDS_OBJECT* initialized_root;
 	};
 }
 

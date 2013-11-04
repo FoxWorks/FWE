@@ -236,6 +236,7 @@ project "foxworks_editor"
      "../source/editors/ivss",
      "../source/editors/schematics",
      "../source/prop_sheet",
+     "../source/util",
    }
    files {
      "../source/**.cpp",

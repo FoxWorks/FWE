@@ -353,7 +353,7 @@ void ObjectLODGenerator::stopWork() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectLODGenerator::run() {
-	editor->addActiveThread();
+	editor->activeThreads.release(1);
 	//msleep(1000 + (qrand() % 5000)); //Give enough time for the rest of application to initialize
 	while (!doStopWork) {
 		readingLock.lock();
@@ -408,7 +408,7 @@ void ObjectLODGenerator::run() {
 
 	//Finish thread work and destroy HQ mesh
 	//qDebug("ObjectLODGenerator::run: stopped");
-	editor->removeActiveThread();
+	editor->activeThreads.acquire(1);
 }
 
 QSemaphore ObjectLODGenerator::threadsSemaphore(QThread::idealThreadCount());
