@@ -2211,6 +2211,10 @@
 			RelativePath="..\..\source\fwe_main_actions.cpp"
 			>
 		</File>
+		<File
+			RelativePath="..\..\source\fwe_main_child.cpp"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

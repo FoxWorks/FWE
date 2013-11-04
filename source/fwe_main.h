@@ -46,6 +46,12 @@ class MainWindow : public QMainWindow {
 public:
 	MainWindow();
 
+	//Get various public menus
+	QMenu* getFileMenu() { return fileMenu; }
+	QMenu* getEditMenu() { return editMenu; }
+	QMenu* getViewMenu() { return viewMenu; }
+	QMenu* getHelpMenu() { return helpMenu; }
+
 protected:
 	void closeEvent(QCloseEvent *event);
 
@@ -63,28 +69,23 @@ private slots:
 	void editShowVME();
 	void editShowSchematics();
 
-	void updateInterface();
-	void updateWindowMenu();
 	ChildWindow *createMdiChild();
 	void setActiveSubWindow(QWidget *window);
 
-public:
-	QMenu* getFileMenu() { return fileMenu; }
-	QMenu* getEditMenu() { return editMenu; }
-	QMenu* getViewMenu() { return viewMenu; }
-	QMenu* getHelpMenu() { return helpMenu; }
+	//Update interfaces or menus
+	void updateInterface();
+	void updateWindowMenu();
+	void updateRecentFiles();
+	void addRecentFile(const QString &fileName);
 
 private:
+	//Create elements of UI
 	void createActionsMenus();
 	void createToolBars();
-	void updateRecentFiles();
-
-	void addRecentFile(const QString &fileName);
 
 	//MDI area management
 	ChildWindow *activeMdiChild();
 	QMdiSubWindow *findMdiChild(const QString &fileName);
-
 	QMdiArea *mdiArea;
 	QSignalMapper *windowMapper;
 

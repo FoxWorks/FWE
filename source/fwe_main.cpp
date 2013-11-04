@@ -34,12 +34,14 @@ MainWindow::MainWindow() {
 	mdiArea = new QMdiArea;
 	mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 	mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-	setCentralWidget(mdiArea);
 	connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(updateInterface()));
+	setCentralWidget(mdiArea);
+
 	windowMapper = new QSignalMapper(this);
 	connect(windowMapper, SIGNAL(mapped(QWidget*)), this, SLOT(setActiveSubWindow(QWidget*)));
 
-	//Define default preferences
+
+	//Define default preferences (FIXME)
 	fw_editor_settings->setValue ("rendering.lod_count",			
 		fw_editor_settings->value("rendering.lod_count",			6));
 	fw_editor_settings->setValue ("rendering.lod_quality",		
@@ -61,17 +63,19 @@ MainWindow::MainWindow() {
 	fw_editor_settings->setValue ("screenshot.height",			
 		fw_editor_settings->value("screenshot.heght",				0));
 
-	//No preferences dialog
-	preferencesDialog = 0;
 
-	//Create everything
+	//Create and refresh GUI elements
 	createActionsMenus();
-
 	//createToolBars();
+	updateWindowMenu();
 	updateInterface();
 	updateRecentFiles();
 
-	//Set default title and size
+	//No global dialogs by defaults
+	preferencesDialog = 0;
+
+
+	//Set default window title and icon, load window settings
 	QIcon foxworks_icon = QIcon();
 	foxworks_icon.addFile(":/icon/foxworks.png");
 	foxworks_icon.addFile(":/icon/foxworks256.png",QSize(32,32));
@@ -83,11 +87,10 @@ MainWindow::MainWindow() {
 	setWindowIcon(foxworks_icon);
 	setWindowTitle(tr("FoxWorks Editor"));
 	setUnifiedTitleAndToolBarOnMac(true);
-	//resize(1024,640);
 
-	//Load window settings
 	move(fw_editor_settings->value("window.position", QPoint(200, 200)).toPoint());
 	resize(fw_editor_settings->value("window.size", QSize(1024, 640)).toSize());
+
 
 	//Create new empty file or load some file right away
 #ifdef _DEBUG
@@ -110,6 +113,216 @@ MainWindow::MainWindow() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+void MainWindow::createActionsMenus() {
+	QAction* action;
+
+
+	//--------------------------------------------------------------------------
+	// File menu
+	//--------------------------------------------------------------------------
+	fileMenu = menuBar()->addMenu(tr("&File"));
+
+	action = new QAction(QIcon(":/icon/new.png"), tr("&New"), this);
+	action->setShortcuts(QKeySequence::New);
+	action->setStatusTip(tr("Create a new file"));
+	connect(action, SIGNAL(triggered()), this, SLOT(fileNew()));
+	fileMenu->addAction(action);
+	globalActions["file.new"] = action;
+
+	action = new QAction(QIcon(":/icon/open.png"), tr("&Open..."), this);
+	action->setShortcuts(QKeySequence::Open);
+	action->setStatusTip(tr("Open an existing file"));
+	connect(action, SIGNAL(triggered()), this, SLOT(fileOpen()));
+	fileMenu->addAction(action);
+	globalActions["file.open"] = action;
+
+	//Recent menu and menu items
+	recentMenu = fileMenu->addMenu(tr("&Open Recent"));
+	for (int i = 0; i < FWE_EDITOR_MAX_RECENT_FILES; ++i) {
+		action = new QAction(this);
+		action->setVisible(false);
+		connect(action, SIGNAL(triggered()), this, SLOT(fileOpenRecent()));
+
+		recentFiles.append(action);
+		recentMenu->addAction(action);
+	}
+
+	action = new QAction(QIcon(":/icon/save.png"), tr("&Save"), this);
+	action->setShortcuts(QKeySequence::Save);
+	action->setStatusTip(tr("Save the document to disk"));
+	connect(action, SIGNAL(triggered()), this, SLOT(fileSave()));
+	fileMenu->addAction(action);
+	globalActions["file.save"] = action;
+	childActions["file.save"] = action;
+
+	action = new QAction(QIcon(":/icon/save_as.png"), tr("Save &As..."), this);
+	action->setShortcuts(QKeySequence::SaveAs);
+	action->setStatusTip(tr("Save the document under a new name"));
+	connect(action, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
+	fileMenu->addAction(action);
+	globalActions["file.saveAs"] = action;
+	childActions["file.saveAs"] = action;
+
+	fileMenu->addSeparator(); //------------------------------------------------
+
+	action = new QAction(QIcon(":/icon/close.png"), tr("Cl&ose"), this);
+	action->setStatusTip(tr("Close the active window"));
+	connect(action, SIGNAL(triggered()), mdiArea, SLOT(closeActiveSubWindow()));
+	fileMenu->addAction(action);
+	globalActions["file.close"] = action;
+	childActions["file.close"] = action;
+
+	action = new QAction(tr("Close &All"), this);
+	action->setStatusTip(tr("Close all the windows"));
+	connect(action, SIGNAL(triggered()), mdiArea, SLOT(closeAllSubWindows()));
+	fileMenu->addAction(action);
+	globalActions["file.closeall"] = action;
+	
+	fileMenu->addSeparator(); //------------------------------------------------
+
+	action = new QAction(QIcon(":/icon/exit.png"), tr("E&xit"), this);
+	action->setShortcuts(QKeySequence::Quit);
+	action->setStatusTip(tr("Exit the application"));
+	connect(action, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
+	fileMenu->addAction(action);
+	globalActions["file.exit"] = action;
+
+
+	//--------------------------------------------------------------------------
+	// Edit menu
+	//--------------------------------------------------------------------------
+	editMenu = menuBar()->addMenu(tr("&Edit"));
+
+	action = new QAction(QIcon(":/icon/cut.png"), tr("Cu&t"), this);
+	action->setShortcuts(QKeySequence::Cut);
+	action->setStatusTip(tr("Cut the current selection's contents to the clipboard"));
+	connect(action, SIGNAL(triggered()), this, SLOT(editCut()));
+	editMenu->addAction(action);
+	globalActions["edit.cut"] = action;
+	childActions["edit.cut"] = action;
+
+	action = new QAction(QIcon(":/icon/copy.png"), tr("&Copy"), this);
+	action->setShortcuts(QKeySequence::Copy);
+	action->setStatusTip(tr("Copy the current selection's contents to the clipboard"));
+	connect(action, SIGNAL(triggered()), this, SLOT(editCopy()));
+	editMenu->addAction(action);
+	globalActions["edit.copy"] = action;
+	childActions["edit.copy"] = action;
+
+	action = new QAction(QIcon(":/icon/paste.png"), tr("&Paste"), this);
+	action->setShortcuts(QKeySequence::Paste);
+	action->setStatusTip(tr("Paste the clipboard's contents into the current selection"));
+	connect(action, SIGNAL(triggered()), this, SLOT(editPaste()));
+	editMenu->addAction(action);
+	globalActions["edit.paste"] = action;
+	childActions["edit.paste"] = action;
+
+	editMenu->addSeparator(); //------------------------------------------------
+
+	action = new QAction(tr("Vessel Model"), this);
+	action->setStatusTip(tr("Show vessel model editor"));
+	action->setCheckable(true);
+	connect(action, SIGNAL(triggered()), this, SLOT(editShowVME()));
+	editMenu->addAction(action);
+	globalActions["edit.vessel_model"] = action;
+
+	action = new QAction(tr("Schematics"), this);
+	action->setStatusTip(tr("Show schematics editor"));
+	action->setCheckable(true);
+	connect(action, SIGNAL(triggered()), this, SLOT(editShowSchematics()));
+	editMenu->addAction(action);
+	globalActions["edit.schematics"] = action;
+
+	editShowVME(); //FIXME
+
+	editMenu->addSeparator(); //------------------------------------------------
+
+	action = new QAction(QIcon(":/icon/preferences.png"), tr("&Preferences..."), this);
+	action->setStatusTip(tr("Edit FoxWorks Editor preferences and configuration"));
+	connect(action, SIGNAL(triggered()), this, SLOT(editPreferences()));
+	editMenu->addAction(action);
+	globalActions["edit.preferences"] = action;
+
+
+	//--------------------------------------------------------------------------
+	// View menu
+	//--------------------------------------------------------------------------
+	viewMenu = menuBar()->addMenu(tr("&View"));
+
+
+	//--------------------------------------------------------------------------
+	// Window menu
+	//--------------------------------------------------------------------------
+	windowMenu = menuBar()->addMenu(tr("&Window"));
+	connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
+
+	action = new QAction(tr("&Tile"), this);
+	action->setStatusTip(tr("Tile the windows"));
+	connect(action, SIGNAL(triggered()), mdiArea, SLOT(tileSubWindows()));
+	globalActions["window.tile"] = action;
+
+	action = new QAction(tr("&Cascade"), this);
+	action->setStatusTip(tr("Cascade the windows"));
+	connect(action, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
+	globalActions["window.cascade"] = action;
+
+	action = new QAction(QIcon(":/icon/next.png"), tr("Ne&xt"), this);
+	action->setShortcuts(QKeySequence::NextChild);
+	action->setStatusTip(tr("Move the focus to the next window"));
+	connect(action, SIGNAL(triggered()), mdiArea, SLOT(activateNextSubWindow()));
+	globalActions["window.next"] = action;
+
+	action = new QAction(QIcon(":/icon/previous.png"), tr("Pre&vious"), this);
+	action->setShortcuts(QKeySequence::PreviousChild);
+	action->setStatusTip(tr("Move the focus to the previous window"));
+	connect(action, SIGNAL(triggered()), mdiArea, SLOT(activatePreviousSubWindow()));
+	globalActions["window.previous"] = action;
+
+	action = new QAction(this);
+	action->setSeparator(true);
+	globalActions["window.list_separator"] = action;
+
+
+	//--------------------------------------------------------------------------
+	// Help menu
+	//--------------------------------------------------------------------------
+	helpMenu = menuBar()->addMenu(tr("&Window"));
+
+	action = new QAction(QIcon(":/icon/about.png"), tr("&About"), this);
+	action->setStatusTip(tr("Show the About box"));
+	connect(action, SIGNAL(triggered()), this, SLOT(helpAbout()));
+	helpMenu->addAction(action);
+	globalActions["help.about"] = action;
+
+
+	///....
+	
+
+	menuBar()->addSeparator();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void MainWindow::createToolBars() {
+	fileToolBar = addToolBar(tr("File"));
+	fileToolBar->addAction(globalActions["file.new"]);
+	fileToolBar->addAction(globalActions["file.open"]);
+	fileToolBar->addAction(globalActions["file.save"]);
+
+	editToolBar = addToolBar(tr("Edit"));
+	editToolBar->addAction(globalActions["file.cut"]);
+	editToolBar->addAction(globalActions["file.copy"]);
+	editToolBar->addAction(globalActions["file.paste"]);
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 void MainWindow::closeEvent(QCloseEvent *event) {
 	mdiArea->closeAllSubWindows();
 	if (mdiArea->currentSubWindow()) {
@@ -119,6 +332,44 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 		fw_editor_settings->setValue("window.size", size());
 		event->accept();
 	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+ChildWindow *MainWindow::activeMdiChild() {
+	if (QMdiSubWindow* activeSubWindow = mdiArea->activeSubWindow()) {
+		return qobject_cast<ChildWindow*>(activeSubWindow->widget());
+	}
+	return 0;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName) {
+	QString canonicalFilePath = fileName; //FIXME //QFileInfo(fileName).canonicalFilePath();
+
+	foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
+		ChildWindow *mdiChild = qobject_cast<ChildWindow*>(window->widget());
+		if (!mdiChild) continue;
+
+		if (mdiChild->getCurrentFile() == canonicalFilePath) {
+			return window;
+		}
+	}
+	return 0;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+void MainWindow::setActiveSubWindow(QWidget *window) {
+	if (!window) return;
+	mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow*>(window));
 }
 
 
@@ -236,464 +487,4 @@ ChildWindow *MainWindow::createMdiChild() {
 
 	updateInterface();
 	return child;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::createActionsMenus() {
-	QAction* action;
-
-
-	//--------------------------------------------------------------------------
-	// File menu
-	//--------------------------------------------------------------------------
-	fileMenu = menuBar()->addMenu(tr("&File"));
-
-	action = new QAction(QIcon(":/icon/new.png"), tr("&New"), this);
-	action->setShortcuts(QKeySequence::New);
-	action->setStatusTip(tr("Create a new file"));
-	connect(action, SIGNAL(triggered()), this, SLOT(fileNew()));
-	fileMenu->addAction(action);
-	globalActions["file.new"] = action;
-
-	action = new QAction(QIcon(":/icon/open.png"), tr("&Open..."), this);
-	action->setShortcuts(QKeySequence::Open);
-	action->setStatusTip(tr("Open an existing file"));
-	connect(action, SIGNAL(triggered()), this, SLOT(fileOpen()));
-	fileMenu->addAction(action);
-	globalActions["file.open"] = action;
-
-	//Recent menu and menu items
-	recentMenu = fileMenu->addMenu(tr("&Open Recent"));
-	for (int i = 0; i < FWE_EDITOR_MAX_RECENT_FILES; ++i) {
-		action = new QAction(this);
-		action->setVisible(false);
-		connect(action, SIGNAL(triggered()), this, SLOT(fileOpenRecent()));
-
-		recentFiles.append(action);
-		recentMenu->addAction(action);
-	}
-
-	action = new QAction(QIcon(":/icon/save.png"), tr("&Save"), this);
-	action->setShortcuts(QKeySequence::Save);
-	action->setStatusTip(tr("Save the document to disk"));
-	connect(action, SIGNAL(triggered()), this, SLOT(fileSave()));
-	fileMenu->addAction(action);
-	globalActions["file.save"] = action;
-
-	action = new QAction(QIcon(":/icon/save_as.png"), tr("Save &As..."), this);
-	action->setShortcuts(QKeySequence::SaveAs);
-	action->setStatusTip(tr("Save the document under a new name"));
-	connect(action, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
-	fileMenu->addAction(action);
-	globalActions["file.saveAs"] = action;
-
-	fileMenu->addSeparator(); //------------------------------------------------
-
-	action = new QAction(QIcon(":/icon/close.png"), tr("Cl&ose"), this);
-	action->setStatusTip(tr("Close the active window"));
-	connect(action, SIGNAL(triggered()), mdiArea, SLOT(closeActiveSubWindow()));
-	fileMenu->addAction(action);
-	globalActions["file.close"] = action;
-
-	action = new QAction(tr("Close &All"), this);
-	action->setStatusTip(tr("Close all the windows"));
-	connect(action, SIGNAL(triggered()), mdiArea, SLOT(closeAllSubWindows()));
-	fileMenu->addAction(action);
-	globalActions["file.closeall"] = action;
-	
-	fileMenu->addSeparator(); //------------------------------------------------
-
-	action = new QAction(QIcon(":/icon/exit.png"), tr("E&xit"), this);
-	action->setShortcuts(QKeySequence::Quit);
-	action->setStatusTip(tr("Exit the application"));
-	connect(action, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
-	fileMenu->addAction(action);
-	globalActions["file.exit"] = action;
-
-
-	//--------------------------------------------------------------------------
-	// Edit menu
-	//--------------------------------------------------------------------------
-	editMenu = menuBar()->addMenu(tr("&Edit"));
-
-	action = new QAction(QIcon(":/icon/cut.png"), tr("Cu&t"), this);
-	action->setShortcuts(QKeySequence::Cut);
-	action->setStatusTip(tr("Cut the current selection's contents to the clipboard"));
-	connect(action, SIGNAL(triggered()), this, SLOT(editCut()));
-	editMenu->addAction(action);
-	globalActions["edit.cut"] = action;
-
-	action = new QAction(QIcon(":/icon/copy.png"), tr("&Copy"), this);
-	action->setShortcuts(QKeySequence::Copy);
-	action->setStatusTip(tr("Copy the current selection's contents to the clipboard"));
-	connect(action, SIGNAL(triggered()), this, SLOT(editCopy()));
-	editMenu->addAction(action);
-	globalActions["edit.copy"] = action;
-
-	action = new QAction(QIcon(":/icon/paste.png"), tr("&Paste"), this);
-	action->setShortcuts(QKeySequence::Paste);
-	action->setStatusTip(tr("Paste the clipboard's contents into the current selection"));
-	connect(action, SIGNAL(triggered()), this, SLOT(editPaste()));
-	editMenu->addAction(action);
-	globalActions["edit.paste"] = action;
-
-	editMenu->addSeparator(); //------------------------------------------------
-
-	action = new QAction(tr("Vessel Model"), this);
-	action->setStatusTip(tr("Show vessel model editor"));
-	action->setCheckable(true);
-	connect(action, SIGNAL(triggered()), this, SLOT(editShowVME()));
-	editMenu->addAction(action);
-	globalActions["edit.vessel_model"] = action;
-
-	action = new QAction(tr("Schematics"), this);
-	action->setStatusTip(tr("Show schematics editor"));
-	action->setCheckable(true);
-	connect(action, SIGNAL(triggered()), this, SLOT(editShowSchematics()));
-	editMenu->addAction(action);
-	globalActions["edit.schematics"] = action;
-
-	editShowVME(); //FIXME
-
-	editMenu->addSeparator(); //------------------------------------------------
-
-	action = new QAction(QIcon(":/icon/preferences.png"), tr("&Preferences..."), this);
-	action->setStatusTip(tr("Edit FoxWorks Editor preferences and configuration"));
-	connect(action, SIGNAL(triggered()), this, SLOT(editPreferences()));
-	editMenu->addAction(action);
-	globalActions["edit.preferences"] = action;
-
-
-	//--------------------------------------------------------------------------
-	// View menu
-	//--------------------------------------------------------------------------
-	viewMenu = menuBar()->addMenu(tr("&View"));
-
-
-	//--------------------------------------------------------------------------
-	// Window menu
-	//--------------------------------------------------------------------------
-	windowMenu = menuBar()->addMenu(tr("&Window"));
-
-	action = new QAction(tr("&Tile"), this);
-	action->setStatusTip(tr("Tile the windows"));
-	connect(action, SIGNAL(triggered()), mdiArea, SLOT(tileSubWindows()));
-	globalActions["window.tile"] = action;
-
-	action = new QAction(tr("&Cascade"), this);
-	action->setStatusTip(tr("Cascade the windows"));
-	connect(action, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
-	globalActions["window.cascade"] = action;
-
-	action = new QAction(QIcon(":/icon/next.png"), tr("Ne&xt"), this);
-	action->setShortcuts(QKeySequence::NextChild);
-	action->setStatusTip(tr("Move the focus to the next window"));
-	connect(action, SIGNAL(triggered()), mdiArea, SLOT(activateNextSubWindow()));
-	globalActions["window.next"] = action;
-
-	action = new QAction(QIcon(":/icon/previous.png"), tr("Pre&vious"), this);
-	action->setShortcuts(QKeySequence::PreviousChild);
-	action->setStatusTip(tr("Move the focus to the previous window"));
-	connect(action, SIGNAL(triggered()), mdiArea, SLOT(activatePreviousSubWindow()));
-	globalActions["window.previous"] = action;
-
-	action = new QAction(this);
-	action->setSeparator(true);
-	globalActions["window.list_separator"] = action;
-
-
-	//--------------------------------------------------------------------------
-	// Help menu
-	//--------------------------------------------------------------------------
-	helpMenu = menuBar()->addMenu(tr("&Window"));
-
-	action = new QAction(QIcon(":/icon/about.png"), tr("&About"), this);
-	action->setStatusTip(tr("Show the About box"));
-	connect(action, SIGNAL(triggered()), this, SLOT(helpAbout()));
-	helpMenu->addAction(action);
-	globalActions["help.about"] = action;
-
-
-	///....
-	updateWindowMenu();
-	connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
-
-	menuBar()->addSeparator();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::createToolBars() {
-	fileToolBar = addToolBar(tr("File"));
-	fileToolBar->addAction(globalActions["file.new"]);
-	fileToolBar->addAction(globalActions["file.open"]);
-	fileToolBar->addAction(globalActions["file.save"]);
-
-	editToolBar = addToolBar(tr("Edit"));
-	editToolBar->addAction(globalActions["file.cut"]);
-	editToolBar->addAction(globalActions["file.copy"]);
-	editToolBar->addAction(globalActions["file.paste"]);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-ChildWindow *MainWindow::activeMdiChild() {
-	if (QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow())
-		return qobject_cast<ChildWindow *>(activeSubWindow->widget());
-	return 0;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName) {
-	QString canonicalFilePath = fileName; //FIXME //QFileInfo(fileName).canonicalFilePath();
-
-	foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
-		ChildWindow *mdiChild = qobject_cast<ChildWindow *>(window->widget());
-		if (!mdiChild) continue; //FIXME: what is this
-		if (mdiChild->getCurrentFile() == canonicalFilePath)
-			return window;
-	}
-	return 0;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::setActiveSubWindow(QWidget *window) {
-	if (!window)
-		return;
-	mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
-}
-
-
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-ChildWindow::ChildWindow(MainWindow* window) { 
-	mainWindow = window;
-	editorsWidget = new QWidget(this);
-	editorsLayout = new QStackedLayout(editorsWidget);
-	setCentralWidget(editorsWidget);
-
-	//Create EVDS editor
-	EVDSEditor = new EVDS::Editor(this);
-	editorsLayout->addWidget(EVDSEditor);
-
-	//Create schematics editor
-	SchematicsEditor = new EVDS::SchematicsEditor(this,EVDSEditor);
-	editorsLayout->addWidget(SchematicsEditor);
-	//showSchematics();
-	//SchematicsEditor->setEditorHidden(true);
-
-	//Delete child on close
-	setAttribute(Qt::WA_DeleteOnClose);
-
-	//Enable autosave for this window
-	QTimer *timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(autoSave()));
-	timer->start(fw_editor_settings->value("ui.autosave").toInt());
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::showEVDS() {
-	editorsLayout->setCurrentWidget(EVDSEditor);
-	SchematicsEditor->setEditorHidden(true);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::showSchematics() {
-	editorsLayout->setCurrentWidget(SchematicsEditor);
-	SchematicsEditor->setEditorHidden(false);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::newFile() {
-	EVDSEditor->newFile();
-	SchematicsEditor->initializeForFile();
-
-	isModified = false;
-	currentFile = "";
-	updateTitle();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-bool ChildWindow::loadFile(const QString &fileName) {
-	//Setup window
-	isModified = false;
-	currentFile = fileName;
-	updateTitle();
-
-	//Load file data
-	if (!EVDSEditor->loadFile(fileName)) return false;
-	SchematicsEditor->initializeForFile();
-	return true;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-bool ChildWindow::saveFile(const QString &fileName, bool autoSave) {
-	if (!EVDSEditor->saveFile(fileName)) return false;
-
-	if (!autoSave) {
-		isModified = false;
-		currentFile = fileName;
-		updateTitle();
-	}
-	return true;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-bool ChildWindow::save() {
-	if (currentFile == "") {
-		return saveAs();
-	} else {
-		return saveFile(currentFile);
-	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::autoSave() {
-	if (currentFile != "") {
-		saveFile("_auto_" + QFileInfo(currentFile).fileName(),true);
-		mainWindow->statusBar()->showMessage(tr("Autosaved..."), 2000);
-	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-bool ChildWindow::saveAs() {
-	QString fileName = QFileDialog::getSaveFileName(this, "Save As", currentFile,
-		//"FoxWorks Data Files (*.evds *.ivss);;"
-		//"External Vessel Dynamics Simulator (*.evds);;"
-		//"Internal Vessel Systems Simulator (*.ivss);;"
-		"External Vessel Dynamics Simulator Model (*.evds);;"
-		"All files (*.*)");
-
-	if (fileName.isEmpty())	return false;
-	return saveFile(fileName);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-bool ChildWindow::trySave() {
-	if (isModified) {
-		QMessageBox::StandardButton ret;
-		QString fileName = QFileInfo(currentFile).fileName();
-		if (currentFile == "") fileName = "New vessel";
-
-		ret = QMessageBox::warning(this, tr("EVDS Editor"),
-					 tr("'%1' has been modified.\n"
-						"Do you want to save pending changes?")
-						.arg(fileName),
-					 QMessageBox::Save | QMessageBox::Discard
-			 | QMessageBox::Cancel);
-		if (ret == QMessageBox::Save)
-			return save();
-		else if (ret == QMessageBox::Cancel)
-			return false;
-	}
-	return true;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::closeEvent(QCloseEvent *event) {
-	if (trySave()) {
-		event->accept();
-	} else {
-		event->ignore();
-	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::updateTitle() {
-	if (currentFile == "") {
-		if (isModified) {
-			setWindowTitle("New vessel*");
-		} else {
-			setWindowTitle("New vessel");
-		}
-	} else {
-		if (isModified) {
-			setWindowTitle(QFileInfo(currentFile).fileName() + "*");
-		} else {
-			setWindowTitle(QFileInfo(currentFile).fileName());
-		}
-	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::updateInterface(bool isInFront) {
-	EVDSEditor->updateInterface(isInFront);
-	SchematicsEditor->updateInterface(isInFront);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::cut() {
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::copy() {
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void ChildWindow::paste() {
 }
