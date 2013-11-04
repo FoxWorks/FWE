@@ -63,7 +63,7 @@ using namespace EVDS;
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-Editor::Editor(ChildWindow* in_window) : QMainWindow(in_window), activeThreads(0) {
+Editor::Editor(ChildWindow* in_window) : FWEEditor(in_window), activeThreads(0) {
 	window = in_window;
 	selected = NULL;
 	document = NULL;

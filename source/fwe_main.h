@@ -35,11 +35,17 @@ QT_END_NAMESPACE
 ////////////////////////////////////////////////////////////////////////////////
 extern QSettings* fw_editor_settings; //See fwe.cpp
 
-
-////////////////////////////////////////////////////////////////////////////////
 #define FWE_EDITOR_MAX_RECENT_FILES	10
+
 class ChildWindow;
 class PreferencesDialog;
+namespace EVDS {
+	class Editor;
+	class SchematicsEditor;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 class MainWindow : public QMainWindow {
 	Q_OBJECT
 
@@ -110,13 +116,22 @@ private:
 
 
 ////////////////////////////////////////////////////////////////////////////////
-namespace EVDS {
-	class Editor;
-	class SchematicsEditor;
-}
+class FWEEditor : public QMainWindow {
+	Q_OBJECT
 
-class ChildWindow : public QMainWindow
-{
+public:
+	FWEEditor(ChildWindow* parent) : QMainWindow() { editorWindow = parent; }
+
+	ChildWindow* getEditorWindow() { return editorWindow; }
+	void setModified();
+
+private:
+	ChildWindow* editorWindow;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+class ChildWindow : public QMainWindow {
 	Q_OBJECT
 
 public:

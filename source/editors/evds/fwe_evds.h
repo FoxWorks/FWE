@@ -62,8 +62,7 @@ namespace EVDS {
 	class ObjectInitializer;
 	class ObjectTreeModel;
 	class ObjectModifiersManager;
-	class Editor : public QMainWindow
-	{
+	class Editor : public FWEEditor {
 		Q_OBJECT
 
 	public:

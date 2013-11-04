@@ -286,7 +286,7 @@ void MainWindow::createActionsMenus() {
 	//--------------------------------------------------------------------------
 	// Help menu
 	//--------------------------------------------------------------------------
-	helpMenu = menuBar()->addMenu(tr("&Window"));
+	helpMenu = menuBar()->addMenu(tr("&Help"));
 
 	action = new QAction(QIcon(":/icon/about.png"), tr("&About"), this);
 	action->setStatusTip(tr("Show the About box"));
@@ -385,8 +385,11 @@ void MainWindow::updateInterface() {
 		i.value()->setEnabled(hasMdiChild);
 	}
 
+	//Enable or disable the menu window
+	windowMenu->setEnabled(hasMdiChild);
+
 	//Update menu items for all windows
-	QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
+	QList<QMdiSubWindow*> windows = mdiArea->subWindowList();
 	for (int i = 0; i < windows.size(); ++i) {
 		ChildWindow *child = qobject_cast<ChildWindow *>(windows.at(i)->widget());
 		if (!child) continue;
@@ -420,7 +423,7 @@ void MainWindow::updateWindowMenu() {
 
 	for (int i = 0; i < windows.size(); ++i) {
 		ChildWindow *child = qobject_cast<ChildWindow *>(windows.at(i)->widget());
-		if (!child) continue; //FIXME: what is this
+		if (!child) continue;
 
 		QString text;
 		if (i < 9) {
