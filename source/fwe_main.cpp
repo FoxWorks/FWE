@@ -253,9 +253,13 @@ void MainWindow::preferences() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::showEVDS() {
+	evdsAct->setChecked(true);
+	schematicsAct->setChecked(false);
 	if (activeMdiChild()) activeMdiChild()->showEVDS();
 }
 void MainWindow::showSchematics() {
+	evdsAct->setChecked(false);
+	schematicsAct->setChecked(true);
 	if (activeMdiChild()) activeMdiChild()->showSchematics();
 }
 
@@ -516,13 +520,17 @@ void MainWindow::createActions() {
 	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
 
-	evdsAct = new QAction(tr("EVDS Editor"), this);
-	evdsAct->setStatusTip(tr("Show EVDS editor"));
+	evdsAct = new QAction(tr("Vessel Model"), this);
+	evdsAct->setStatusTip(tr("Show vessel model editor"));
+	evdsAct->setCheckable(true);
 	connect(evdsAct, SIGNAL(triggered()), this, SLOT(showEVDS()));
 
-	schematicsAct = new QAction(tr("Schematics Editor"), this);
+	schematicsAct = new QAction(tr("Schematics"), this);
 	schematicsAct->setStatusTip(tr("Show schematics editor"));
+	schematicsAct->setCheckable(true);
 	connect(schematicsAct, SIGNAL(triggered()), this, SLOT(showSchematics()));
+
+	showEVDS();
 }
 
 
