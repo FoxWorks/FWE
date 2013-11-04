@@ -26,7 +26,9 @@
 #include <QMutex>
 #include <QHash>
 #include <QTimer>
+
 #include "evds.h"
+#include "fwe_editor.h"
 
 QT_BEGIN_NAMESPACE
 class QtProperty;
@@ -43,55 +45,61 @@ namespace EVDS {
 		Q_OBJECT
 
 	public:
-		Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in_editor, EVDS::SchematicsEditor* in_schematics_editor);
+		Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, FWE::EditorWindow* in_window);
 		~Object();
 
-		void setVariable(const QString &name, double value);
-		void setVariable(const QString &name, const QString &value);
-		double getVariable(const QString &name);
-		QString getString(const QString &name);
-		QVector3D getVector(const QString &name);
-		bool isVariableDefined(const QString &name);
-		QString getName();
-		void setName(const QString &name);
-		QString getType();
-		void setType(const QString &type);
+		//Variable reading/writing
+		bool		isVariableDefined(const QString &name);
+		void		setVariable(const QString &name, double value);
+		void		setVariable(const QString &name, const QString &value);
+		double		getVariable(const QString &name);
+		QString		getString(const QString &name);
+		QVector3D	getVector(const QString &name);
+		QString		getName();
+		void		setName(const QString &name);
+		QString		getType();
+		void		setType(const QString &type);
 
-		int getChildrenCount() { return children.count(); }
-		Object* getChild(int index) { return children.at(index); }
-		int getChildIndex(Object* child) { return children.indexOf(child); }
-		Object* getParent() { return parent; }
-		Object* insertNewChild(int index);
-		Object* appendHiddenChild();
-		void hideChild(int index);
-		Object* insertChild(int index, const QString &description);
-		void removeChild(int index);
-		void invalidateChildren();
+		//Children management
+		Object*	getParent() { return parent; }
+		int		getChildrenCount() { return children.count(); }
+		Object*	getChild(int index) { return children.at(index); }
+		int		getChildIndex(Object* child) { return children.indexOf(child); }
+		Object*	insertNewChild(int index);
+		Object*	appendHiddenChild();
+		Object*	insertChild(int index, const QString &description);
+		void	removeChild(int index);
+		void	hideChild(int index);
+		void	invalidateChildren();
 
+		//Object-specific functions
+		bool isSchematicsElement();
 		bool isOxidizerTank();
 		void getSheetPaperSizeInCM(float* width, float* height);
 
-		QWidget* getPropertySheet();
-		QWidget* getCrossSectionsEditor();
-		EVDS::Editor* getEVDSEditor() { return editor; }
-		EVDS_OBJECT* getEVDSObject() { return object; }
+		//Get various objects
+		QWidget*			getPropertySheet();
+		QWidget*			getCrossSectionsEditor();
+		FWE::EditorWindow*	getEditorWindow() { return window; }
+		EVDS_OBJECT*		getEVDSObject() { return object; }
+		Editor*				getEVDSEditor() { return window->getEVDSEditor(); }
+		SchematicsEditor*	getSchematicsEditor() { return window->getSchematicsEditor(); }
+		Object*				getInitializedObject(); //Part of the entirely initialized copy of the vessel
+		ObjectRenderer*		getRenderer() { return renderer; }
+		int					getEditorUID() { return editor_uid; }
+
+		//Cross-sections editor related
 		int getSelectedCrossSection();
 		void deleteCrossSectionsEditor();
-		void setSchematicsEditor(SchematicsEditor* editor) { schematics_editor = editor; }
-		SchematicsEditor* getSchematicsEditor() { return schematics_editor; }
 
-		Object* getInitializedObject(); //Part of the entirely initialized copy of the vessel
-		ObjectRenderer* getRenderer() { return renderer; }
-		int getEditorUID() { return editor_uid; }
-
-		void update(bool visually);
-		//void draw(bool objectSelected);
+		//Update model or parameters
+		void update(bool visually); 
 
 		//Information
-		void recursiveUpdateInformation(ObjectInitializer* initializer);
-		double getInformationVariable(const QString &name);
-		QVector3D getInformationVector(const QString &name);
-		bool isInformationDefined(const QString &name);
+		void		recursiveUpdateInformation(ObjectInitializer* initializer);
+		double		getInformationVariable(const QString &name);
+		QVector3D	getInformationVector(const QString &name);
+		bool		isInformationDefined(const QString &name);
 
 	private slots:
 		void doubleChanged(const QString& name, double value);
@@ -106,9 +114,8 @@ namespace EVDS {
 		QHash<QString,bool> info_defined;
 
 		EVDS_OBJECT* object;
-		EVDS::Editor* editor;
-		EVDS::SchematicsEditor* schematics_editor;
-
+		FWE::EditorWindow* window;
+		
 		EVDS::Object* parent;
 		QList<Object*> children;
 		QList<Object*> hidden_children;
@@ -123,7 +130,7 @@ namespace EVDS {
 		Q_OBJECT
 
 	public:
-		TemporaryObject(EVDS_OBJECT* in_object, QMutex* in_unlockMutex) : Object(in_object,0,0,0) {
+		TemporaryObject(EVDS_OBJECT* in_object, QMutex* in_unlockMutex) : Object(in_object,0,0) {
 			unlockMutex = in_unlockMutex;
 		}
 		~TemporaryObject() {

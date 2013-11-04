@@ -35,33 +35,26 @@ using namespace EVDS;
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in_editor, EVDS::SchematicsEditor* in_schematics_editor) {
+Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, FWE::EditorWindow* in_window) {
 	//Get C pointer
 	object = in_object;
-	editor = in_editor;
+	window = in_window;
 	parent = in_parent;
-	schematics_editor = in_schematics_editor;
-
-	//Get editor from parent
-	if (parent) {
-		schematics_editor = parent->getSchematicsEditor();
-	}
 
 	//Is object initialized
 	int initialized;
 	EVDS_Object_IsInitialized(object,&initialized);
 
-	//Store this object as EVDS userdata
+	//Store the CPP object as EVDS userdata
 	if (!initialized) EVDS_Object_SetUserdata(object,(void*)this);
+
 
 	//Create a renderer for the object before children are created
 	renderer = 0;
 	if ((!initialized) && (in_parent)) {
 		QTime time; time.start();
-
-		renderer = new ObjectRenderer(this);
-		editor->updateObject(this);
-
+			renderer = new ObjectRenderer(this);
+			getEVDSEditor()->updateObject(this);
 		int elapsed = time.elapsed();
 		if (elapsed > 40) {
 			qDebug("Object::Object: Long generation: %s (%d msec)",getName().toAscii().data(),elapsed);
@@ -71,14 +64,12 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 	//Enumerate and store all children
 	if (!initialized) invalidateChildren();
 
-	//No property sheet by default
+	//No property sheet by default, no cross-sections editor
 	property_sheet = 0;
-
-	//No cross-sections editor
 	csection_editor = 0;
 
 	//Create editor-wide unique identifier
-	static int editor_uid_counter = 0;
+	static int editor_uid_counter = 0xFFFF;
 	editor_uid = editor_uid_counter++;
 
 	//Create initial renderer data
@@ -87,10 +78,10 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 		renderer->positionChanged();
 
 		//Add to modifiers
-		if (editor && (!schematics_editor)) editor->getModifiersManager()->objectAdded(this);
+		/*if (editor && (!schematics_editor)) editor->getModifiersManager()->objectAdded(this);
 		if (schematics_editor && (!editor->getModifiersManager()->isInitializing())) {
 			schematics_editor->getSchematicsRenderingManager()->updateInstances();
-		}
+		}*/ //FIXME
 	}
 }
 
@@ -99,13 +90,13 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, EVDS::Editor* in
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 Object::~Object() {
-	if (editor && (!schematics_editor)) {
+	/*if (editor && (!schematics_editor)) {
 		editor->getModifiersManager()->objectRemoved(this);
 	}
 	if (schematics_editor && (!editor->getModifiersManager()->isInitializing())) {
 		schematics_editor->getSchematicsRenderingManager()->updateInstances();
-	}
-	if (editor && (editor->getSelected() == this)) editor->clearSelection();
+	}*/
+	if (window && (getEVDSEditor()->getSelected() == this)) getEVDSEditor()->clearSelection();
 	for (int i = 0; i < children.count(); i++) {
 		delete children[i];
 	}
@@ -165,17 +156,17 @@ Object* Object::insertNewChild(int index) {
 	if (entry) EVDS_Object_MoveInList(new_object,head);
 
 	//Create object for it and add it to the children
-	Object* new_object_obj = new Object(new_object,this,editor,schematics_editor);
+	Object* new_object_obj = new Object(new_object,this,window);
 	children.insert(index,new_object_obj);
 
 	//Special logic for schematics editor
-	if (schematics_editor) {
+	/*if () {
 		if (this == schematics_editor->getRoot()) {
 			new_object_obj->setType("foxworks.schematics.sheet");
 		} else {
 			new_object_obj->setType("foxworks.schematics.element");
 		}
-	}
+	}*/
 	return new_object_obj;
 }
 
@@ -189,7 +180,7 @@ Object* Object::appendHiddenChild() {
 	EVDS_Object_Create(object,&new_object);
 
 	//Create object for it
-	Object* new_object_obj = new Object(new_object,this,editor,schematics_editor);
+	Object* new_object_obj = new Object(new_object,this,window);
 	hidden_children.insert(0,new_object_obj);
 	return new_object_obj;
 }
@@ -263,12 +254,12 @@ Object* Object::insertChild(int index, const QString &description) {
 	if (entry) EVDS_Object_MoveInList(new_object,head);
 
 	//Create object for it and add it to the children
-	Object* new_object_obj = new Object(new_object,this,editor,schematics_editor);
+	Object* new_object_obj = new Object(new_object,this,window);
 	children.insert(index,new_object_obj);
-	if (schematics_editor) { //FIXME: this is a temporary hack
+	//if (schematics_editor) { //FIXME: this is a temporary hack
 		//This stuff must be replaced with "SetEditors" calls for schematics and normal editor (removing them from constructors)
-		schematics_editor->getSchematicsRenderingManager()->updateInstances();
-	}
+		//schematics_editor->getSchematicsRenderingManager()->updateInstances();
+	//}
 	return new_object_obj;
 }
 
@@ -287,10 +278,12 @@ void Object::removeChild(int index) {
 	children.removeAt(index);
 	delete child;
 
-	if (schematics_editor) {
-		schematics_editor->updateObject(NULL);
-	} else {
-		editor->updateObject(NULL);
+	if (window) {
+		if (isSchematicsElement()) {
+			getSchematicsEditor()->updateObject(NULL);
+		} else {
+			getEVDSEditor()->updateObject(NULL);
+		}
 	}
 }
 
@@ -310,7 +303,7 @@ void Object::invalidateChildren() {
 		EVDS_OBJECT* child = (EVDS_OBJECT*)SIMC_List_GetData(list,entry);
 
 		//Create new object for it
-		Object* child_obj = new Object(child,this,editor,schematics_editor);
+		Object* child_obj = new Object(child,this,window);
 		children.append(child_obj);
 
 		entry = SIMC_List_GetNext(list,entry);
@@ -332,7 +325,7 @@ QString Object::getName() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Object::setName(const QString &name) {
-	editor->setModified();
+	window->setModified();
 	EVDS_Object_SetName(object,name.toUtf8().data());
 	update(false);
 }
@@ -352,12 +345,12 @@ QString Object::getType() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Object::setType(const QString &type) {
-	editor->setModified();
+	window->setModified();
 	EVDS_Object_SetType(object,type.toUtf8().data());
 	update(false);
 
-	editor->getModifiersManager()->modifierChanged(this);
-	if (schematics_editor) schematics_editor->getSchematicsRenderingManager()->updateInstances();
+	/*editor->getModifiersManager()->modifierChanged(this);
+	if (schematics_editor) schematics_editor->getSchematicsRenderingManager()->updateInstances();*/
 }
 
 
@@ -395,13 +388,13 @@ QWidget* Object::getPropertySheet() {
 				this, SLOT(propertyUpdate(const QString&)));
 
 		//Create default set of properties FIXME: make it less of a hack
-		if ((getType() != "metadata") && (!schematics_editor)) {
-			property_sheet->setProperties(editor->objectVariables[""]);
+		if ((getType() != "metadata") && (!isSchematicsElement())) {
+			property_sheet->setProperties(window->objectVariables[""]);
 		}
-		if (schematics_editor && (getType() != "foxworks.schematics.sheet")) {
-			property_sheet->setProperties(editor->objectVariables["foxworks.schematics"]);
+		if (isSchematicsElement() && (getType() != "foxworks.schematics.sheet")) {
+			property_sheet->setProperties(window->objectVariables["foxworks.schematics"]);
 		}
-		if (!getType().isEmpty()) property_sheet->setProperties(editor->objectVariables[getType()]);
+		if (!getType().isEmpty()) property_sheet->setProperties(window->objectVariables[getType()]);
 		return property_sheet;
 	}
 }
@@ -440,7 +433,7 @@ void Object::propertyUpdate(const QString& name) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Object::setVariable(const QString &name, double value) {
-	editor->setModified();
+	window->setModified();
 
 	if (name[0] == '@') {
 		int specialIndex = name.right(1).toInt();
@@ -489,7 +482,7 @@ void Object::setVariable(const QString &name, double value) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Object::setVariable(const QString &name, const QString &value) {
-	editor->setModified(name != "comments");
+	getEVDSEditor()->setModified(name != "comments");
 
 	if (name[0] == '@') {
 		int specialIndex = name.right(1).toInt();
@@ -498,10 +491,10 @@ void Object::setVariable(const QString &name, const QString &value) {
 			if (property_sheet) { //Update property sheet
 				QWidget* prev_sheet = property_sheet;
 				property_sheet = 0;
-				if (schematics_editor) {
-					schematics_editor->propertySheetUpdated(prev_sheet,getPropertySheet());
+				if (isSchematicsElement()) {
+					getSchematicsEditor()->propertySheetUpdated(prev_sheet,getPropertySheet());
 				} else {
-					editor->propertySheetUpdated(prev_sheet,getPropertySheet());
+					getEVDSEditor()->objectPropertySheetUpdated(prev_sheet,getPropertySheet());
 				}
 				prev_sheet->deleteLater();
 			}
@@ -621,6 +614,14 @@ bool Object::isOxidizerTank() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+bool Object::isSchematicsElement() { 
+	return getType().left(18) == "foxworks.schematic";
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 void Object::getSheetPaperSizeInCM(float* width, float* height) {
 	QString format = getString("paper.format");
 	if (format == "") format = "a4";
@@ -689,19 +690,19 @@ void Object::update(bool visually) {
 	if (renderer) {
 		if (visually) {
 			renderer->meshChanged();
-			if (getType() == "modifier") editor->getModifiersManager()->modifierChanged(this);
-			if (schematics_editor) schematics_editor->getSchematicsRenderingManager()->updateInstances();
+			//if (getType() == "modifier") editor->getModifiersManager()->modifierChanged(this);
+			//if (schematics_editor) schematics_editor->getSchematicsRenderingManager()->updateInstances();
 		} else {
 			renderer->positionChanged();
-			editor->getModifiersManager()->objectPositionChanged(this);
-			if (schematics_editor) schematics_editor->getSchematicsRenderingManager()->updatePositions();
+			//editor->getModifiersManager()->objectPositionChanged(this);
+			//if (schematics_editor) schematics_editor->getSchematicsRenderingManager()->updatePositions();
 		}
 	}
 	//if (visually && renderer) renderer->meshChanged();
-	if (schematics_editor) {
-		schematics_editor->updateObject(this);
+	if (isSchematicsElement()) {
+		getSchematicsEditor()->updateObject(this);
 	} else {
-		editor->updateObject(this);
+		getEVDSEditor()->updateObject(this);
 	}
 }
 

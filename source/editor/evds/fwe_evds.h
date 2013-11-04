@@ -25,10 +25,6 @@
 #include <QList>
 #include <QSemaphore>
 
-#include "evds.h"
-#include "evds_antenna.h"
-#include "evds_train_wheels.h"
-
 #include "fwe_editor.h"
 
 QT_BEGIN_NAMESPACE
@@ -71,35 +67,22 @@ namespace EVDS {
 		Editor(FWE::EditorWindow* in_window);
 		~Editor();
 
-		//General editor functions
-		void newFile();
-		bool loadFile(const QString &fileName);
-		bool saveFile(const QString &fileName);
-		void setModified(bool informationUpdate = true);
-
 		//EVDS-editor specific
+		void setModified(bool informationUpdate = true);
+		void objectPropertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
+		void csectionPropertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
+		void finishInitializing();
+
 		void updateInformation(bool ready);
 		void updateObject(Object* object);
-		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
-		void loadError(const QString& error);
-
-		//Various references to other objects
-		FWE::EditorWindow* getWindow() { return window; }
-		GLScene* getGLScene() { return glscene; }
-		Object* getEditRoot() { return root_obj; }
-		Object* getEditDocument() { return document; }
-		ObjectModifiersManager* getModifiersManager() { return modifiers_manager; }
 
 		//Object selection
 		Object* getSelected() { return selected; }
 		void clearSelection() { selected = NULL; }
 
-		//List of object variables, cross-section variables by object type
-		QMap<QString,QList<QMap<QString,QString> > > objectVariables;
-		QMap<QString,QList<QMap<QString,QString> > > csectionVariables;
-
-		//Counter for active working threads
-		QSemaphore activeThreads;
+		//Various references to other objects
+		GLScene* getGLScene() { return glscene; }
+		ObjectModifiersManager* getModifiersManager() { return modifiers_manager; }
 
 	protected:
 		void dropEvent(QDropEvent *event);
@@ -107,43 +90,35 @@ namespace EVDS {
 		void dragEnterEvent(QDragEnterEvent *event);
 
 	private slots:
+		void rootInitialized(); //Information about initialized object is available
+		void commentChanged();
+
 		void addObject();
 		void removeObject();
 		void selectObject(const QModelIndex& index);
-		void commentsChanged();
-		void cleanupTimer();
-		void rootInitialized();
 
+		void showCutsection();
 		void showProperties();
 		void showCrossSections();
 		void showHierarchy();
 		void showInformation();
-		void showCutsection();
 		void showComments();
 
 	private:
-		QString currentFile;
-
-		void createMenuToolbar();
-		void createCSectionDock();
-		void createInformationDock();
-		void createCommentsDock();
-
-		//Load different object types
-		void loadObjectVariablesData();
+		void createMenuToolbar(); // Create menu and toolbar
+		//void createInformationDock();
+		//void createCommentsDock();
 
 		//Dock windows
-		Dock::ObjectList*	object_list;		//List of objects
-		Dock::Properties*	object_properties;	//Property sheets for objects
+		Dock::ObjectList*	object_list;			//List of objects
+		Dock::Properties*	object_properties;		//Property sheets for objects
+		Dock::Properties*	csection_properties;	//Property sheets for cross-sections
 
-		//Object cross-sections
-		QDockWidget*		csection_dock;
-		QWidget*			csection;
-		QStackedLayout*		csection_layout;
-		QLabel*				csection_none;
+		//Selected object
+		EVDS::Object* selected;
 
 		//Rigid body information
-		QDockWidget*		bodyinfo_dock;
+		/*QDockWidget*		bodyinfo_dock;
 		QTextEdit*			bodyinfo;
 
 		//Comments dock
@@ -151,25 +126,18 @@ namespace EVDS {
 		QTextEdit*			comments;
 
 		//Main workspace
-		GLScene*			glscene;
-		GLView*				glview;
-		ObjectModifiersManager* modifiers_manager;
+		
 
 		//Menus and actions
 		QMenu*				cutsection_menu;
 		QAction*			cutsection_x;
 		QAction*			cutsection_y;
-		QAction*			cutsection_z;
+		QAction*			cutsection_z;*/
 
-		//Parent window
-		FWE::EditorWindow*	window;
-
-		//EVDS objects (editing area)
-		EVDS_SYSTEM* system;
-		EVDS_OBJECT* root;
-		EVDS::Object* root_obj;
-		EVDS::Object* selected;
-		EVDS::Object* document;
+		//Rendering-related (OpenGL scene and modifiers manager)
+		GLScene*			glscene;
+		GLView*				glview;
+		ObjectModifiersManager* modifiers_manager;
 
 		//EVDS objects (initialized/simulation area)
 		ObjectInitializer* initializer;

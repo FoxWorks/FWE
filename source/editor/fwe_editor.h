@@ -21,6 +21,12 @@
 
 #include <QMainWindow>
 #include <QHash>
+#include <QMap>
+#include <QSemaphore>
+
+#include "evds.h"
+#include "evds_antenna.h"
+#include "evds_train_wheels.h"
 
 QT_BEGIN_NAMESPACE
 class QWidget;
@@ -31,6 +37,7 @@ QT_END_NAMESPACE
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace EVDS {
+	class Object;
 	class Editor;
 	class SchematicsEditor;
 }
@@ -43,8 +50,13 @@ namespace FWE {
 	public:
 		Editor(EditorWindow* parent) : QMainWindow() { editorWindow = parent; }
 
-		EditorWindow* getChildWindow() { return editorWindow; }
+		EditorWindow* getEditorWindow() { return editorWindow; }
 		MainWindow* getMainWindow();
+		EVDS::Object* getEditRoot();
+		EVDS::Object* getEditDocument();
+		EVDS::Editor* getEVDSEditor();
+		EVDS::SchematicsEditor* getSchematicsEditor();
+
 		void setModified();
 		void addAction(QAction* action);
 
@@ -73,12 +85,24 @@ namespace FWE {
 		bool save();
 		bool saveAs();
 
-		//Return main window pointer
+		//Return interesting things
 		MainWindow* getMainWindow() { return mainWindow; }
+		EVDS::Object* getEditRoot() { return root_object; }
+		EVDS::Object* getEditDocument() { return document; }
+		EVDS::Editor* getEVDSEditor() { return EVDSEditor; }
+		EVDS::SchematicsEditor* getSchematicsEditor() { return SchematicsEditor; }
 
 		//Update interface
+		void showLoadingError(const QString& errorMessage);
 		void updateInterface(bool isInFront);
 		void addEditorAction(Editor* editor, QAction* action);
+
+		//List of object variables, cross-section variables by object type
+		QMap<QString,QList<QMap<QString,QString> > > objectVariables;
+		QMap<QString,QList<QMap<QString,QString> > > csectionVariables;
+
+		//Counter for active working threads
+		QSemaphore activeThreads;
 
 	protected:
 		void closeEvent(QCloseEvent *event);
@@ -95,9 +119,16 @@ namespace FWE {
 		//Set global project modified flag
 		void setModified() { isModified = true; updateTitle(); }
 
+	private slots:
+		void cleanupTimer();
+
 	private:
+		MainWindow* mainWindow;
 		bool isModified;
 		bool trySave();
+
+		//Load different object types
+		void loadObjectVariablesData();
 
 		//Current opened file
 		QString currentFile;
@@ -112,8 +143,11 @@ namespace FWE {
 		QStackedLayout* editorsLayout;
 		QHash<Editor*, QAction*> editorsActions;
 
-		//Main editor window
-		MainWindow* mainWindow;
+		//EVDS objects (editing area)
+		EVDS_SYSTEM* system;
+		EVDS_OBJECT* root;
+		EVDS::Object* root_object;
+		EVDS::Object* document;
 	};
 }
 
