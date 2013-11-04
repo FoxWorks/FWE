@@ -61,9 +61,9 @@ EditorWindow::EditorWindow(MainWindow* window) : activeThreads(0) {
 	EVDSEditor->setActive(true);
 
 	//Create schematics editor
-	/*SchematicsEditor = new EVDS::SchematicsEditor(this,EVDSEditor);
+	SchematicsEditor = new EVDS::SchematicsEditor(this,EVDSEditor);
 	editorsLayout->addWidget(SchematicsEditor);
-	SchematicsEditor->setActive(false);*/
+	SchematicsEditor->setActive(false);
 
 
 	//Delete child on close
@@ -217,6 +217,7 @@ void EditorWindow::newFile() {
 
 	//Editor-specific stuff
 	EVDSEditor->finishInitializing();
+	SchematicsEditor->finishInitializing();
 }
 
 
@@ -285,6 +286,7 @@ bool EditorWindow::loadFile(const QString &fileName) {
 
 	//Finish initializing
 	EVDSEditor->finishInitializing();
+	SchematicsEditor->finishInitializing();
 	return true;
 }
 

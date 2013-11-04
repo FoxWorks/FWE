@@ -363,51 +363,7 @@ void Editor::finishInitializing() {
 
 
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-/*void Editor::createCSectionDock() {
-	csection = new QWidget();
-	csection->setMinimumWidth(250);
-	csection->setMinimumHeight(80);
-
-	//Create cross-sections editor interface
-	csection_dock = new QDockWidget(tr("Cross Sections Editor"), this);
-	csection_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-	csection_dock->setAllowedAreas(Qt::AllDockWidgetAreas);	
-	csection_dock->setWidget(csection);
-	addDockWidget(Qt::RightDockWidgetArea, csection_dock);
-	//csection_dock->hide();
-	//tabifyDockWidget(list_dock,csection_dock);
-
-	//No cross-sections
-	csection_none = new QLabel(csection);
-	//csection_none->setText("Ain't no cross-sections to edit");
-	//csection_none->setPixmap(QPixmap(":/none.png"));
-	csection_none->setText("No object selected");
-	csection_none->setAlignment(Qt::AlignCenter);
-
-	//Create layout
-	csection->setLayout(new QVBoxLayout);
-	csection->layout()->setSpacing(0);
-	csection->layout()->setMargin(0);
-
-	//QLabel* geometry_editor_test = new QLabel(csection);
-	//geometry_editor_test->setText("Cross-section geometry editor here");
-
-	QWidget* csection_properties = new QWidget(csection);
-	csection->layout()->addWidget(csection_properties);
-	//csection->layout()->addWidget(geometry_editor_test);
-
-	csection_layout = new QStackedLayout;
-	csection_layout->setSpacing(0);
-	csection_layout->setMargin(0);
-	csection_layout->addWidget(csection_none);
-	csection_properties->setLayout(csection_layout);
-}
-
+/*
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief 

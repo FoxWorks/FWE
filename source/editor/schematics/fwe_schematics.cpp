@@ -220,7 +220,7 @@ void SchematicsEditor::updateObject(Object* object) {
 	if (object) {
 		elements_list->getModel()->updateObject(object);
 	}
-	//rendering_manager->updateInstances();
+	rendering_manager->updateInstances();
 	glscene->update();
 }
 
@@ -244,7 +244,7 @@ void SchematicsEditor::invalidateChildren(Object* object) {
 	}
 }
 
-void SchematicsEditor::initializeForFile() {
+void SchematicsEditor::finishInitializing() {
 	//Read schematics
 	Object* document = editor->getEditDocument();
 	root = NULL;

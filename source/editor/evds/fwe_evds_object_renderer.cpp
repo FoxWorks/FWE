@@ -247,12 +247,6 @@ void ObjectLODGeneratorResult::appendMesh(EVDS_MESH* mesh, int lod) {
 	}
 }
 
-//#include "C:\\Program Files\\Intel\\VTune Amplifier XE 2011\\include\\ittnotify.h"
-//#pragma comment(lib, "C:\\Program Files\\Intel\\VTune Amplifier XE 2011\\lib32\\libittnotify.lib")
-//__itt_frame pD = __itt_frame_create("Custom Domain");
-//__itt_frame_begin(pD);
-//__itt_frame_end(pD);
-
 void ObjectLODGeneratorResult::setGLCMesh(GLC_Mesh* glcMesh, Object* object) {
 	//QApplication::setOverrideCursor(Qt::WaitCursor);
 	glcMesh->addVertice(verticesVector);

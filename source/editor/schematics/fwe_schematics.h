@@ -62,7 +62,7 @@ namespace EVDS {
 		~SchematicsEditor();
 
 		//General editor functions
-		void initializeForFile();
+		void finishInitializing();
 		void updateInterface(bool isInFront);
 		void setEditorHidden(bool isHidden);
 

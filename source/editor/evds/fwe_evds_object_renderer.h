@@ -22,18 +22,18 @@
 #include <QThread>
 #include <QMutex>
 #include <QSemaphore>
-
 #include <GLC_Mesh>
 #include <GLC_3DViewInstance>
 
 #include "evds.h"
 
+
+////////////////////////////////////////////////////////////////////////////////
 namespace EVDS {
 	class Editor;
 	class Object;
 	class ObjectLODGenerator;
-	class ObjectRenderer : public QObject
-	{
+	class ObjectRenderer : public QObject {
 		Q_OBJECT
 
 	public:
@@ -94,7 +94,7 @@ namespace EVDS {
 		//Get number of lods
 		int getNumLODs() { return numLods; }
 
-	public:
+		//Number of threads (for limiting total number of threads running at the same time)
 		static QSemaphore threadsSemaphore;
 
 	public slots:
