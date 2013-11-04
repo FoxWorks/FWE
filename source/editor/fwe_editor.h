@@ -25,6 +25,7 @@
 QT_BEGIN_NAMESPACE
 class QWidget;
 class QStackedLayout;
+class QAction;
 QT_END_NAMESPACE
 
 
@@ -43,9 +44,15 @@ namespace FWE {
 		Editor(EditorWindow* parent) : QMainWindow() { editorWindow = parent; }
 
 		EditorWindow* getChildWindow() { return editorWindow; }
+		MainWindow* getMainWindow();
 		void setModified();
+		void addAction(QAction* action);
+
+		bool getActive() { return isActive; }
+		void setActive(bool active) { isActive = active; }
 
 	private:
+		bool isActive;
 		EditorWindow* editorWindow;
 	};
 
@@ -71,6 +78,7 @@ namespace FWE {
 
 		//Update interface
 		void updateInterface(bool isInFront);
+		void addEditorAction(Editor* editor, QAction* action);
 
 	protected:
 		void closeEvent(QCloseEvent *event);
@@ -102,7 +110,9 @@ namespace FWE {
 		//List of editor widgets
 		QWidget* editorsWidget;
 		QStackedLayout* editorsLayout;
+		QHash<Editor*, QAction*> editorsActions;
 
+		//Main editor window
 		MainWindow* mainWindow;
 	};
 }

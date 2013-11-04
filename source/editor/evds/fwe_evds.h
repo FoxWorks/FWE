@@ -75,7 +75,6 @@ namespace EVDS {
 		void newFile();
 		bool loadFile(const QString &fileName);
 		bool saveFile(const QString &fileName);
-		void updateInterface(bool isInFront);
 		void setModified(bool informationUpdate = true);
 
 		//EVDS-editor specific
@@ -157,7 +156,6 @@ namespace EVDS {
 		ObjectModifiersManager* modifiers_manager;
 
 		//Menus and actions
-		QList<QAction*>		actions;
 		QMenu*				cutsection_menu;
 		QAction*			cutsection_x;
 		QAction*			cutsection_y;

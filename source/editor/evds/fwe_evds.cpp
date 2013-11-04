@@ -46,6 +46,9 @@
 
 #include <math.h>
 
+#include "fwe_main.h"
+#include "fwe_editor.h"
+
 #include "fwe_evds.h"
 #include "fwe_evds_object.h"
 #include "fwe_evds_object_model.h"
@@ -153,9 +156,6 @@ Editor::~Editor() {
 	qDebug("Editor::~Editor: destroying system");
 	EVDS_System_Destroy(system);
 
-	for (int i = 0; i < actions.count(); i++) {
-		actions[i]->deleteLater();
-	}
 	cutsection_menu->deleteLater();
 }
 
@@ -164,39 +164,41 @@ Editor::~Editor() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void Editor::createMenuToolbar() {
-	//View menu structure
 	QAction* action;
+
+	//--------------------------------------------------------------------------
+	// View menu
 	action = new QAction(QIcon(":/icon/evds/hierarchy.png"), tr("Objects &Hierarchy"), this);
 	action->setStatusTip("Show hierarchy of objects in the EVDS file");
 	connect(action, SIGNAL(triggered()), this, SLOT(showHierarchy()));
-	actions.append(action);
-	window->getMainWindow()->getViewMenu()->addAction(action);
+	getMainWindow()->getViewMenu()->addAction(action);
+	addAction(action);
 
 	action = new QAction(QIcon(":/icon/evds/properties.png"), tr("Object &Properties"), this);
 	action->setStatusTip("Show properties sheet of the object or current EVDS file");
 	connect(action, SIGNAL(triggered()), this, SLOT(showProperties()));
-	actions.append(action);
-	window->getMainWindow()->getViewMenu()->addAction(action);
+	getMainWindow()->getViewMenu()->addAction(action);
+	addAction(action);
 
 	action = new QAction(QIcon(":/icon/evds/csections.png"), tr("&Cross Sections Editor"), this);
 	action->setStatusTip("Show cross sections editor");
 	connect(action, SIGNAL(triggered()), this, SLOT(showCrossSections()));
-	actions.append(action);
-	window->getMainWindow()->getViewMenu()->addAction(action);
+	getMainWindow()->getViewMenu()->addAction(action);
+	addAction(action);
 
-	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
+	addAction(getMainWindow()->getViewMenu()->addSeparator());
 
 	action = new QAction(tr("Object &Information"), this);
 	action->setStatusTip("Show information about selected object or the current EVDS file");
 	connect(action, SIGNAL(triggered()), this, SLOT(showInformation()));
-	actions.append(action);
-	window->getMainWindow()->getViewMenu()->addAction(action);
+	getMainWindow()->getViewMenu()->addAction(action);
+	addAction(action);
 
 	action = new QAction(tr("Object &Comments"), this);
 	action->setStatusTip("Show comments associated with the selected object");
 	connect(action, SIGNAL(triggered()), this, SLOT(showComments()));
-	actions.append(action);
-	window->getMainWindow()->getViewMenu()->addAction(action);
+	getMainWindow()->getViewMenu()->addAction(action);
+	addAction(action);
 
 	//action = new QAction(QIcon(":/icon/evds/cutsection.png"), tr("Show Cut&section"), this);
 	//action->setStatusTip("Show cutsection by an primary plane");
@@ -216,14 +218,15 @@ void Editor::createMenuToolbar() {
 	connect(cutsection_y, SIGNAL(triggered()), this, SLOT(showCutsection()));
 	connect(cutsection_z, SIGNAL(triggered()), this, SLOT(showCutsection()));
 
-	cutsection_menu = window->getMainWindow()->getViewMenu()->
+	cutsection_menu = getMainWindow()->getViewMenu()->
 		addMenu(QIcon(":/icon/evds/cutsection.png"), tr("Show Cut&section"));
 	cutsection_menu->setStatusTip("Show cutsection by an primary plane");
 	cutsection_menu->addAction(cutsection_x);
 	cutsection_menu->addAction(cutsection_y);
 	cutsection_menu->addAction(cutsection_z);
 
-	actions.append(window->getMainWindow()->getViewMenu()->addSeparator());
+	addAction(cutsection_menu->menuAction());
+	addAction(window->getMainWindow()->getViewMenu()->addSeparator());
 
 	//action = new QAction(tr("&Rocket Engine Designer..."), this);
 	//action->setStatusTip("Define rocket engine using graphical UI dialog");
@@ -236,8 +239,8 @@ void Editor::createMenuToolbar() {
 	action->setStatusTip("Display list of materials and their physical properties");
 	//connect(action, SIGNAL(triggered()), this, SLOT(showCrossSections()));
 	action->setEnabled(false);
-	actions.append(action);
-	window->getMainWindow()->getViewMenu()->addAction(action);
+	getMainWindow()->getViewMenu()->addAction(action);
+	addAction(action);
 }
 
 
@@ -897,17 +900,6 @@ void Editor::dragMoveEvent(QDragMoveEvent *event) {
 
 void Editor::dragEnterEvent(QDragEnterEvent *event) {
 	event->acceptProposedAction();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void Editor::updateInterface(bool isInFront) {
-	for (int i = 0; i < actions.count(); i++) {
-		actions[i]->setVisible(isInFront);
-	}
-	cutsection_menu->menuAction()->setVisible(isInFront);
 }
 
 
