@@ -117,7 +117,7 @@ void EditorWindow::loadObjectVariablesData() {
 				if (class_str[0]) {
 					special_mapping["@materials."+QString(class_str)] += QString(name) + "\n" + QString(print_name) + "\n";
 				} else {
-					EVDS_BREAKPOINT();
+					//EVDS_BREAKPOINT();
 				}
 			}
 			entry = SIMC_List_GetNext(entries,entry);

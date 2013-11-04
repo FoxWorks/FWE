@@ -2282,10 +2282,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\qtmoc\moc_fwe_threadcounter.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\qtmoc\moc_qtpropertybrowserutils_p.cpp"
 				>
 			</File>

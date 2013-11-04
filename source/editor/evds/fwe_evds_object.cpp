@@ -772,7 +772,7 @@ TemporaryObject* ObjectInitializer::getObject(Object* object) {
 	EVDS_OBJECT* found_object = 0;
 	EVDS_SYSTEM* system;
 	EVDS_Object_GetSystem(object_copy,&system);
-	if (EVDS_System_GetObjectByUID(system,object->getEditorUID(),object_copy,&found_object) != EVDS_OK) {
+	if (EVDS_System_GetObjectByUID(system,object_copy,object->getEditorUID(),&found_object) != EVDS_OK) {
 		qWarning("ObjectInitializer::getObject: could not find object");
 		return new TemporaryObject(object_copy,0);
 	}
