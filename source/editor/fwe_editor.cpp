@@ -216,7 +216,7 @@ void EditorWindow::newFile() {
 	document->setName("");
 
 	//Editor-specific stuff
-	//EVDSEditor->finishInitializing();
+	EVDSEditor->finishInitializing();
 }
 
 
@@ -284,7 +284,7 @@ bool EditorWindow::loadFile(const QString &fileName) {
 	QApplication::restoreOverrideCursor();
 
 	//Finish initializing
-	//EVDSEditor->finishInitializing();
+	EVDSEditor->finishInitializing();
 	return true;
 }
 
@@ -323,11 +323,7 @@ void EditorWindow::updateInterface(bool isInFront) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void EditorWindow::updateObject(EVDS::Object* object) {
-	if (object) {
-		//object_list->getModel()->updateObject(object); FIXME
-	}
-	//EVDSEditor->getGLScene()->update();
-	//glscene->update();
+	EVDSEditor->updateObject(object);
 }
 
 

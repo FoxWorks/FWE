@@ -71,10 +71,10 @@ Editor::Editor(FWE::EditorWindow* in_window) : FWE::Editor(in_window) {
 	setAcceptDrops(true);
 
 	//Create initializer thread
-	//initializer = new ObjectInitializer(getEditorWindow()->getEditRoot());
-	//connect(initializer, SIGNAL(signalObjectReady()), this, SLOT(rootInitialized()), Qt::QueuedConnection);
-	//initializer->start();
-	//initializer->updateObject(); //Must be called before first call to getObject
+	initializer = new ObjectInitializer(getEditorWindow()->getEditRoot());
+	connect(initializer, SIGNAL(signalObjectReady()), this, SLOT(rootInitialized()), Qt::QueuedConnection);
+	initializer->start();
+	initializer->updateObject(); //Must be called before first call to getObject
    
 	//Create parts of main UI
 	createMenuToolbar();
@@ -250,6 +250,17 @@ void Editor::commentChanged() {
 	} else {
 		//document->setVariable("comments",comments->toPlainText());
 	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief 
+////////////////////////////////////////////////////////////////////////////////
+void Editor::updateObject(Object* object) {
+	if (object) {
+		object_list->getModel()->updateObject(object);
+	}
+	glscene->update();
 }
 
 

@@ -50,7 +50,7 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, FWE::EditorWindo
 
 	//Create a renderer for the object before children are created
 	renderer = 0;
-	/*if ((!initialized) && (in_parent)) {
+	if ((!initialized) && (in_parent)) {
 		QTime time; time.start();
 			renderer = new ObjectRenderer(this);
 			window->updateObject(this);
@@ -58,7 +58,7 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, FWE::EditorWindo
 		if (elapsed > 40) {
 			qDebug("Object::Object: Long generation: %s (%d msec)",getName().toAscii().data(),elapsed);
 		}
-	}*/
+	}
 
 	//Enumerate and store all children
 	if (!initialized) invalidateChildren();
@@ -77,10 +77,12 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, FWE::EditorWindo
 		renderer->positionChanged();
 
 		//Add to modifiers
-		/*if (editor && (!schematics_editor)) editor->getModifiersManager()->objectAdded(this);
-		if (schematics_editor && (!editor->getModifiersManager()->isInitializing())) {
-			schematics_editor->getSchematicsRenderingManager()->updateInstances();
-		}*/ //FIXME
+		if (window) {
+			getEVDSEditor()->getModifiersManager()->objectAdded(this);
+			if (isSchematicsElement() && (!getEVDSEditor()->getModifiersManager()->isInitializing())) {
+				getSchematicsEditor()->getSchematicsRenderingManager()->updateInstances();
+			}
+		}
 	}
 }
 
@@ -343,8 +345,10 @@ void Object::setType(const QString &type) {
 	EVDS_Object_SetType(object,type.toUtf8().data());
 	update(false);
 
-	/*editor->getModifiersManager()->modifierChanged(this);
-	if (schematics_editor) schematics_editor->getSchematicsRenderingManager()->updateInstances();*/
+	getEVDSEditor()->getModifiersManager()->modifierChanged(this);
+	if (isSchematicsElement()) {
+		getSchematicsEditor()->getSchematicsRenderingManager()->updateInstances();
+	}
 }
 
 
@@ -354,14 +358,6 @@ void Object::setType(const QString &type) {
 void Object::meshReady() {
 	update(false);
 }
-
-/*void Object::draw(bool objectSelected) {
-	if (!renderer) {
-		renderer = new ObjectRenderer(this);
-		connect(renderer, SIGNAL(signalHQMeshReady()), this, SLOT(meshReady()));
-	}
-	renderer->drawMesh(objectSelected);
-}*/
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -684,15 +680,19 @@ void Object::update(bool visually) {
 	if (renderer) {
 		if (visually) {
 			renderer->meshChanged();
-			//if (getType() == "modifier") editor->getModifiersManager()->modifierChanged(this);
-			//if (schematics_editor) schematics_editor->getSchematicsRenderingManager()->updateInstances();
+			getEVDSEditor()->getModifiersManager()->modifierChanged(this);
+			if (isSchematicsElement()) {
+				getSchematicsEditor()->getSchematicsRenderingManager()->updateInstances();
+			}
 		} else {
 			renderer->positionChanged();
-			//editor->getModifiersManager()->objectPositionChanged(this);
-			//if (schematics_editor) schematics_editor->getSchematicsRenderingManager()->updatePositions();
+			getEVDSEditor()->getModifiersManager()->objectPositionChanged(this);
+			if (isSchematicsElement()) {
+				getSchematicsEditor()->getSchematicsRenderingManager()->updatePositions();
+			}
 		}
 	}
-	//if (visually && renderer) renderer->meshChanged();
+	if (visually && renderer) renderer->meshChanged();
 	window->updateObject(this);
 }
 

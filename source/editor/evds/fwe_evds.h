@@ -73,6 +73,7 @@ namespace EVDS {
 		void csectionPropertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
 		void finishInitializing();
 		void updateInformation(bool ready);
+		void updateObject(Object* object);
 
 		//Object selection
 		Object* getSelected() { return selected; }
