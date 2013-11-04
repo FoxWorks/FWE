@@ -35,6 +35,7 @@
 #include "fwe_evds_object_renderer.h"
 #include "fwe_evds_modifiers.h"*/
 #include "fwe_dock_objectlist.h"
+#include "fwe_dock_properties.h"
 
 using namespace EVDS;
 
@@ -93,69 +94,6 @@ void SchematicsEditor::createMenuToolbar() {
 	//action->setEnabled(false);
 	//actions.append(action);
 	//window->getMainWindow()->getViewMenu()->addAction(action);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void SchematicsEditor::createListDock() {
-	//Create list of objects
-	elements_list = new Dock::ObjectList(root,this);
-	elements_list->setWindowTitle(tr("Schematics Elements"));
-	connect(elements_list, SIGNAL(addObject()), this, SLOT(addObject()));
-	connect(elements_list, SIGNAL(removeObject()), this, SLOT(removeObject()));
-	connect(elements_list, SIGNAL(selectObject(const QModelIndex&)), this, SLOT(selectObject(const QModelIndex&)));
-	addDockWidget(Qt::LeftDockWidgetArea, object_list);
-
-	//Make sure the object list does not accept any mime types
-	elements_list->getModel()->setAcceptedMimeType("application/vnd.evds.ref+xml");
-
-	//Setup initial layout (a bit late but still)
-	addDockWidget(Qt::RightDockWidgetArea, elements_list);
-	elements_list->raise();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void SchematicsEditor::createObjectListDock() {
-	//Create list of objects
-	object_list = new Dock::ObjectList(editor->getEditRoot(),this);
-	//connect(object_list, SIGNAL(addObject()), this, SLOT(addObject()));
-	//connect(object_list, SIGNAL(removeObject()), this, SLOT(removeObject()));
-	//connect(object_list, SIGNAL(selectObject(const QModelIndex&)), this, SLOT(selectObject(const QModelIndex&)));
-	addDockWidget(Qt::LeftDockWidgetArea, object_list);
-
-	//Make sure the object list does not accept any mime types
-	object_list->getModel()->setAcceptedMimeType("application/vnd.evds.none");
-	object_list->hideButtons();
-
-	//Setup initial layout (a bit late but still)
-	addDockWidget(Qt::RightDockWidgetArea, object_list);
-	object_list->raise();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void SchematicsEditor::createPropertiesDock() {
-	properties = new QWidget();
-	properties->setMinimumWidth(250);
-	properties->setMinimumHeight(80);
-
-	//Create properties interface
-	properties_dock = new QDockWidget(tr("Element Properties"), this);
-	properties_dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-	properties_dock->setAllowedAreas(Qt::AllDockWidgetAreas);
-	properties_dock->setWidget(properties);
-	addDockWidget(Qt::LeftDockWidgetArea, properties_dock);
-
-	//Create layout
-	properties_layout = new QStackedLayout;
-	properties->setLayout(properties_layout);
 }
 
 
@@ -236,11 +174,7 @@ void SchematicsEditor::removeObject() {
 void SchematicsEditor::selectObject(const QModelIndex& index) {
 	//Should selection be cleared
 	if (!index.isValid()) {
-		QWidget* property_sheet = editor->getEditDocument()->getPropertySheet();
-		if (properties_layout->indexOf(property_sheet) < 0) {
-			properties_layout->addWidget(property_sheet);
-		}
-		properties_layout->setCurrentWidget(property_sheet);
+		element_properties->setPropertySheet(editor->getEditDocument()->getPropertySheet());
 		selected = NULL;
 
 		//Update information
@@ -263,11 +197,7 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 	selected = object;
 
 	//Show proper properties sheet
-	QWidget* property_sheet = object->getPropertySheet();
-	if (properties_layout->indexOf(property_sheet) < 0) {
-		properties_layout->addWidget(property_sheet);
-	}
-	properties_layout->setCurrentWidget(property_sheet);
+	element_properties->setPropertySheet(object->getPropertySheet());
 
 	//Get currently selected schematics sheet
 	sheet = object;
@@ -308,13 +238,8 @@ void SchematicsEditor::updateObject(Object* object) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsEditor::propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet) {
-	bool resetCurrent = true; //FIXME
-	//if (properties_layout->widget() == old_sheet) resetCurrent = true;
-	properties_layout->removeWidget(old_sheet);
-	properties_layout->addWidget(new_sheet);
-	if (resetCurrent) {	
-		properties_layout->setCurrentWidget(new_sheet);
-	}
+	element_properties->removePropertySheet(old_sheet);
+	element_properties->setPropertySheet(new_sheet);
 }
 
 
@@ -348,9 +273,44 @@ void SchematicsEditor::initializeForFile() {
 	invalidateChildren(root);
 
 	//Create schematics editor itself
-	createObjectListDock();
-	createListDock();
-	createPropertiesDock();
+	//createObjectListDock();
+	//createListDock();
+	//createPropertiesDock();
+
+	//Object list
+	object_list = new Dock::ObjectList(editor->getEditRoot(),this);
+	addDockWidget(Qt::LeftDockWidgetArea, object_list);
+
+	//Make sure the object list does not accept any mime types
+	object_list->getModel()->setAcceptedMimeType("application/vnd.evds.none");
+	object_list->hideButtons();
+
+	//Setup initial layout
+	addDockWidget(Qt::RightDockWidgetArea, object_list);
+	object_list->raise();
+
+
+	//Element list
+	elements_list = new Dock::ObjectList(root,this);
+	elements_list->setWindowTitle(tr("Schematics Elements"));
+	connect(elements_list, SIGNAL(addObject()), this, SLOT(addObject()));
+	connect(elements_list, SIGNAL(removeObject()), this, SLOT(removeObject()));
+	connect(elements_list, SIGNAL(selectObject(const QModelIndex&)), this, SLOT(selectObject(const QModelIndex&)));
+	addDockWidget(Qt::LeftDockWidgetArea, object_list);
+
+	//Make sure the element list only accepts references
+	elements_list->getModel()->setAcceptedMimeType("application/vnd.evds.ref+xml");
+
+	//Setup initial layout (a bit late but still)
+	addDockWidget(Qt::RightDockWidgetArea, elements_list);
+	elements_list->raise();
+
+
+	//Element properties
+	element_properties = new Dock::Properties(this);
+	element_properties->setWindowTitle(tr("Element Properties"));
+	addDockWidget(Qt::LeftDockWidgetArea, element_properties);
+
 	createCommentsDock();
 	selectObject(QModelIndex());
 }

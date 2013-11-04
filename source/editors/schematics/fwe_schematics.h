@@ -101,9 +101,6 @@ namespace EVDS {
 
 		void invalidateChildren(Object* object);
 		void createMenuToolbar();
-		void createListDock();
-		void createObjectListDock();
-		void createPropertiesDock();
 		//void createCSectionDock();
 		//void createInformationDock();
 		void createCommentsDock();
@@ -114,11 +111,7 @@ namespace EVDS {
 		//List of schematics elements
 		Dock::ObjectList*	elements_list;
 		Dock::ObjectList*	object_list;
-
-		//Object properties
-		QDockWidget*		properties_dock;
-		QWidget*			properties;
-		QStackedLayout*		properties_layout;
+		Dock::Properties*	element_properties;
 
 		//Object cross-sections
 		/*QDockWidget*		csection_dock;

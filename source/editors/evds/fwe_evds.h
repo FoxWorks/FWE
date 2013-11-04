@@ -52,6 +52,7 @@ class FWEPropertySheet;
 class ChildWindow;
 namespace Dock {
 	class ObjectList;
+	class Properties;
 }
 namespace EVDS {
 	class GLScene;
@@ -123,8 +124,6 @@ namespace EVDS {
 		QString currentFile;
 
 		void createMenuToolbar();
-		void createListDock();
-		void createPropertiesDock();
 		void createCSectionDock();
 		void createInformationDock();
 		void createCommentsDock();
@@ -134,11 +133,7 @@ namespace EVDS {
 
 		//List of objects
 		Dock::ObjectList*	object_list;
-
-		//Object properties
-		QDockWidget*		properties_dock;
-		QWidget*			properties;
-		QStackedLayout*		properties_layout;
+		Dock::Properties*	object_properties;
 
 		//Object cross-sections
 		QDockWidget*		csection_dock;

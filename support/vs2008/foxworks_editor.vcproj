@@ -1738,6 +1738,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\source\editors\fwe_dock_properties.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\editors\fwe_dock_properties.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\source\editors\fwe_glscene.cpp"
 				>
 			</File>
@@ -2199,6 +2207,10 @@
 			</File>
 			<File
 				RelativePath="..\..\qtmoc\moc_fwe_dock_objectlist.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_dock_properties.cpp"
 				>
 			</File>
 			<File
