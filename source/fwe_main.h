@@ -37,6 +37,8 @@ extern QSettings* fw_editor_settings; //See fwe.cpp
 
 #define FWE_EDITOR_MAX_RECENT_FILES	10
 
+
+////////////////////////////////////////////////////////////////////////////////
 class PreferencesDialog;
 namespace EVDS {
 	class Editor;
@@ -44,150 +46,73 @@ namespace EVDS {
 }
 namespace FWE {
 	class EditorWindow;
+	class MainWindow : public QMainWindow {
+		Q_OBJECT
 
+	public:
+		MainWindow();
 
-////////////////////////////////////////////////////////////////////////////////
-class MainWindow : public QMainWindow {
-	Q_OBJECT
+		//Get various public menus
+		QMenu* getFileMenu() { return fileMenu; }
+		QMenu* getEditMenu() { return editMenu; }
+		QMenu* getViewMenu() { return viewMenu; }
+		QMenu* getHelpMenu() { return helpMenu; }
 
-public:
-	MainWindow();
+	protected:
+		void closeEvent(QCloseEvent *event);
 
-	//Get various public menus
-	QMenu* getFileMenu() { return fileMenu; }
-	QMenu* getEditMenu() { return editMenu; }
-	QMenu* getViewMenu() { return viewMenu; }
-	QMenu* getHelpMenu() { return helpMenu; }
+	private slots:
+		void fileNew();
+		void fileOpen();
+		void fileOpenRecent();
+		void fileSave();
+		void fileSaveAs();
+		void editCut();
+		void editCopy();
+		void editPaste();
+		void editPreferences();
+		void helpAbout();
+		void editShowVME();
+		void editShowSchematics();
 
-protected:
-	void closeEvent(QCloseEvent *event);
+		EditorWindow *createMdiChild();
+		void setActiveSubWindow(QWidget *window);
 
-private slots:
-	void fileNew();
-	void fileOpen();
-	void fileOpenRecent();
-	void fileSave();
-	void fileSaveAs();
-	void editCut();
-	void editCopy();
-	void editPaste();
-	void editPreferences();
-	void helpAbout();
-	void editShowVME();
-	void editShowSchematics();
+		//Update interfaces or menus
+		void updateInterface();
+		void updateWindowMenu();
+		void updateRecentFiles();
+		void addRecentFile(const QString &fileName);
 
-	EditorWindow *createMdiChild();
-	void setActiveSubWindow(QWidget *window);
+	private:
+		//Create elements of UI
+		void createActionsMenus();
+		void createToolBars();
 
-	//Update interfaces or menus
-	void updateInterface();
-	void updateWindowMenu();
-	void updateRecentFiles();
-	void addRecentFile(const QString &fileName);
+		//MDI area management
+		EditorWindow *activeMdiChild();
+		QMdiSubWindow *findMdiChild(const QString &fileName);
+		QMdiArea *mdiArea;
+		QSignalMapper *windowMapper;
 
-private:
-	//Create elements of UI
-	void createActionsMenus();
-	void createToolBars();
+		//Global dialogs
+		PreferencesDialog* preferencesDialog;
 
-	//MDI area management
-	EditorWindow *activeMdiChild();
-	QMdiSubWindow *findMdiChild(const QString &fileName);
-	QMdiArea *mdiArea;
-	QSignalMapper *windowMapper;
+		//Main menu bars
+		QMenu *fileMenu;
+		QMenu *recentMenu;
+		QMenu *editMenu;
+		QMenu *viewMenu;
+		QMenu *windowMenu;
+		QMenu *helpMenu;
+		QToolBar *fileToolBar;
+		QToolBar *editToolBar;
 
-	//Global dialogs
-	PreferencesDialog* preferencesDialog;
-
-	//Main menu bars
-	QMenu *fileMenu;
-	QMenu *recentMenu;
-	QMenu *editMenu;
-	QMenu *viewMenu;
-	QMenu *windowMenu;
-	QMenu *helpMenu;
-	QToolBar *fileToolBar;
-	QToolBar *editToolBar;
-
-	//Actions
-	QHash<QString,QAction*> globalActions;	//List of global actions
-	QHash<QString,QAction*> childActions;	//List of actions specific to children
-	QList<QAction*> recentFiles;			//List of actions for recent files
-};
-
-
-////////////////////////////////////////////////////////////////////////////////
-class Editor : public QMainWindow {
-	Q_OBJECT
-
-public:
-	Editor(EditorWindow* parent) : QMainWindow() { editorWindow = parent; }
-
-	EditorWindow* getChildWindow() { return editorWindow; }
-	void setModified();
-
-private:
-	EditorWindow* editorWindow;
-};
-
-
-////////////////////////////////////////////////////////////////////////////////
-class EditorWindow : public QMainWindow {
-	Q_OBJECT
-
-public:
-	EditorWindow(MainWindow* window);
-
-	//File operations
-	void newFile();
-	bool saveFile(const QString &fileName, bool autoSave = false);
-	bool loadFile(const QString &fileName);
-
-	//Shorthands for working with the current file
-	QString getCurrentFile() { return currentFile; }
-	bool save();
-	bool saveAs();
-
-	//Return main window pointer
-	MainWindow* getMainWindow() { return mainWindow; }
-
-	//Update interface
-	void updateInterface(bool isInFront);
-
-protected:
-	void closeEvent(QCloseEvent *event);
-
-public slots:
-	//General operations
-	void autoSave();
-	void showVME();
-	void showSchematics();
-	void cut();
-	void copy();
-	void paste();
-
-	//Set global project modified flag
-	void setModified() { isModified = true; updateTitle(); }
-
-private:
-	bool isModified;
-	bool trySave();
-	
-	//Current opened file
-	QString currentFile;
-	void updateTitle();
-	
-	//Editors
-	EVDS::Editor* EVDSEditor;
-	EVDS::SchematicsEditor* SchematicsEditor;
-
-	//List of editor widgets
-	QWidget* editorsWidget;
-	QStackedLayout* editorsLayout;
-
-	MainWindow* mainWindow;
-};
-
+		//Actions
+		QHash<QString,QAction*> globalActions;	//List of global actions
+		QHash<QString,QAction*> childActions;	//List of actions specific to children
+		QList<QAction*> recentFiles;			//List of actions for recent files
+	};
 }
 
 #endif

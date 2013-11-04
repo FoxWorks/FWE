@@ -20,6 +20,7 @@
 #include <QIcon>
 
 #include "fwe_main.h"
+#include "fwe_editor.h"
 #include "fwe_evds.h"
 #include "fwe_schematics.h"
 #include "fwe_dialog_preferences.h"

@@ -6,7 +6,6 @@
 	ProjectGUID="{C84AD4D2-2D63-1842-871E-30B7C71BEA58}"
 	RootNamespace="foxworks_editor"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -44,15 +43,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -61,7 +60,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -73,6 +72,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
@@ -94,6 +94,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -125,15 +128,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -142,7 +145,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -154,6 +157,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="17"
@@ -175,6 +179,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -205,14 +212,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -221,7 +228,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -233,6 +240,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -256,6 +264,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -287,14 +298,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -303,7 +314,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -315,6 +326,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -338,6 +350,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -368,15 +383,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -385,7 +400,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -397,6 +412,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord32.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
@@ -418,6 +434,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -449,15 +468,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -466,7 +485,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -478,6 +497,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editord.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="17"
@@ -499,6 +519,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -529,14 +552,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -545,7 +568,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -557,6 +580,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor32.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -580,6 +604,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -611,14 +638,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -627,7 +654,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -639,6 +666,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -662,6 +690,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -692,15 +723,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="DEBUG;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -709,7 +740,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -721,6 +752,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
@@ -742,6 +774,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -773,15 +808,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="DEBUG;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -790,7 +825,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -802,6 +837,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="17"
@@ -823,6 +859,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -853,14 +892,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -869,7 +908,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -881,6 +920,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -904,6 +944,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -935,14 +978,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -951,7 +994,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -963,6 +1006,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -986,6 +1030,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1016,15 +1063,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -1033,7 +1080,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -1045,6 +1092,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std32.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
@@ -1066,6 +1114,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1097,15 +1148,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -1114,7 +1165,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -1126,6 +1177,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_std.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="17"
@@ -1147,6 +1199,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1177,14 +1232,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -1193,7 +1248,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -1205,6 +1260,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st32.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -1228,6 +1284,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1259,14 +1318,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -1275,7 +1334,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="EVDS_DYNAMIC;IVSS_DYNAMIC;RDRS_DYNAMIC;SIMC_DYNAMIC;EVDS_SINGLETHREADED;IVSS_SINGLETHREADED;RDRS_SINGLETHREADED;SIMC_SINGLETHREADED;_CRT_SECURE_NO_WARNINGS;WIN32;WIN64;GLC_LIB_STATIC"
-				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editors;..\..\source\editors\evds;..\..\source\editors\ivss;..\..\source\editors\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
+				AdditionalIncludeDirectories="..\..\external\simc\include;..\..\external\evds\include;..\..\external\rdrs\include;..\..\external\evds\addons;..\..\external\qt-solutions\qtpropertybrowser\src;..\..\external\qt-thumbwheel;..\..\external\GLC_lib\src;..\..\source;..\..\source\dialogs;..\..\source\editor;..\..\source\editor\evds;..\..\source\editor\ivss;..\..\source\editor\schematics;..\..\source\prop_sheet;..\..\source\util;C:\Qt\4.8.5\include;C:\Qt\4.8.5\include\QtCore;C:\Qt\4.8.5\include\QtGui;C:\Qt\4.8.5\include\QtUiTools;C:\Qt\4.8.5\include\QtOpenGL;..\..\qtmoc"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -1287,6 +1346,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Qt\4.8.5\lib"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\foxworks_editor_st.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -1312,6 +1372,9 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -1321,6 +1384,7 @@
 	<Files>
 		<Filter
 			Name="addons"
+			Filter=""
 			>
 			<File
 				RelativePath="..\..\external\evds\addons\evds_antenna.c"
@@ -1597,6 +1661,7 @@
 		</Filter>
 		<Filter
 			Name="dialogs"
+			Filter=""
 			>
 			<File
 				RelativePath="..\..\source\dialogs\fwe_dialog_preferences.cpp"
@@ -1608,107 +1673,139 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="editors"
+			Name="editor"
+			Filter=""
 			>
-			<File
-				RelativePath="..\..\source\editors\fwe_dock_objectlist.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\source\editors\fwe_dock_objectlist.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\source\editors\fwe_dock_properties.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\source\editors\fwe_dock_properties.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\source\editors\fwe_glscene.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\source\editors\fwe_glscene.h"
-				>
-			</File>
 			<Filter
 				Name="evds"
+				Filter=""
 				>
 				<File
-					RelativePath="..\..\source\editors\evds\fwe_evds.cpp"
+					RelativePath="..\..\source\editor\evds\fwe_evds.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\evds\fwe_evds.h"
+					RelativePath="..\..\source\editor\evds\fwe_evds.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\evds\fwe_evds_modifiers.cpp"
+					RelativePath="..\..\source\editor\evds\fwe_evds_modifiers.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\evds\fwe_evds_modifiers.h"
+					RelativePath="..\..\source\editor\evds\fwe_evds_modifiers.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\evds\fwe_evds_object.cpp"
+					RelativePath="..\..\source\editor\evds\fwe_evds_object.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\evds\fwe_evds_object.h"
+					RelativePath="..\..\source\editor\evds\fwe_evds_object.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\evds\fwe_evds_object_csection.cpp"
+					RelativePath="..\..\source\editor\evds\fwe_evds_object_csection.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\evds\fwe_evds_object_csection.h"
+					RelativePath="..\..\source\editor\evds\fwe_evds_object_csection.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\evds\fwe_evds_object_model.cpp"
+					RelativePath="..\..\source\editor\evds\fwe_evds_object_model.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\evds\fwe_evds_object_model.h"
+					RelativePath="..\..\source\editor\evds\fwe_evds_object_model.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\evds\fwe_evds_object_renderer.cpp"
+					RelativePath="..\..\source\editor\evds\fwe_evds_object_renderer.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\evds\fwe_evds_object_renderer.h"
+					RelativePath="..\..\source\editor\evds\fwe_evds_object_renderer.h"
 					>
 				</File>
 			</Filter>
+			<File
+				RelativePath="..\..\source\editor\fwe_dock_objectlist.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\editor\fwe_dock_objectlist.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\editor\fwe_dock_properties.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\editor\fwe_dock_properties.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\editor\fwe_editor.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\editor\fwe_editor.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\editor\fwe_glscene.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\editor\fwe_glscene.h"
+				>
+			</File>
 			<Filter
 				Name="schematics"
+				Filter=""
 				>
 				<File
-					RelativePath="..\..\source\editors\schematics\fwe_schematics.cpp"
+					RelativePath="..\..\source\editor\schematics\fwe_schematics.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\schematics\fwe_schematics.h"
+					RelativePath="..\..\source\editor\schematics\fwe_schematics.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\schematics\fwe_schematics_renderer.cpp"
+					RelativePath="..\..\source\editor\schematics\fwe_schematics_renderer.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\source\editors\schematics\fwe_schematics_renderer.h"
+					RelativePath="..\..\source\editor\schematics\fwe_schematics_renderer.h"
 					>
 				</File>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath="..\..\source\fwe.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_main.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_main.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\fwe_main_actions.cpp"
+			>
+		</File>
 		<Filter
 			Name="prop_sheet"
+			Filter=""
 			>
 			<File
 				RelativePath="..\..\source\prop_sheet\fwe_prop_sheet.cpp"
@@ -1737,12 +1834,15 @@
 		</Filter>
 		<Filter
 			Name="qt-solutions"
+			Filter=""
 			>
 			<Filter
 				Name="qtpropertybrowser"
+				Filter=""
 				>
 				<Filter
 					Name="src"
+					Filter=""
 					>
 					<File
 						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtAbstractEditorFactoryBase"
@@ -1766,14 +1866,6 @@
 					</File>
 					<File
 						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtButtonPropertyBrowser"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtbuttonpropertybrowser.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtbuttonpropertybrowser.h"
 						>
 					</File>
 					<File
@@ -1829,14 +1921,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qteditorfactory.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qteditorfactory.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtEnumEditorFactory"
 						>
 					</File>
@@ -1858,14 +1942,6 @@
 					</File>
 					<File
 						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtGroupBoxPropertyBrowser"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtgroupboxpropertybrowser.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtgroupboxpropertybrowser.h"
 						>
 					</File>
 					<File
@@ -1902,38 +1978,6 @@
 					</File>
 					<File
 						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtProperty"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.pri"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.qrc"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowserutils.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowserutils_p.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertymanager.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertymanager.h"
 						>
 					</File>
 					<File
@@ -1985,14 +2029,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qttreepropertybrowser.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qttreepropertybrowser.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtVariantEditorFactory"
 						>
 					</File>
@@ -2001,19 +2037,12 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtvariantproperty.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtvariantproperty.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\QtVariantPropertyManager"
 						>
 					</File>
 					<Filter
 						Name="images"
+						Filter=""
 						>
 						<File
 							RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\images\cursor-arrow.png"
@@ -2088,11 +2117,84 @@
 							>
 						</File>
 					</Filter>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtbuttonpropertybrowser.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtbuttonpropertybrowser.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qteditorfactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qteditorfactory.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtgroupboxpropertybrowser.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtgroupboxpropertybrowser.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.pri"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowser.qrc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowserutils.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertybrowserutils_p.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertymanager.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtpropertymanager.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qttreepropertybrowser.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qttreepropertybrowser.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtvariantproperty.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\external\qt-solutions\qtpropertybrowser\src\qtvariantproperty.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="qt-thumbwheel"
+			Filter=""
 			>
 			<File
 				RelativePath="..\..\external\qt-thumbwheel\qtthumbwheel.cpp"
@@ -2105,6 +2207,7 @@
 		</Filter>
 		<Filter
 			Name="qtmoc"
+			Filter=""
 			>
 			<File
 				RelativePath="..\..\qtmoc\moc_fwe.cpp"
@@ -2120,6 +2223,10 @@
 			</File>
 			<File
 				RelativePath="..\..\qtmoc\moc_fwe_dock_properties.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\qtmoc\moc_fwe_editor.cpp"
 				>
 			</File>
 			<File
@@ -2191,30 +2298,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath="..\..\source\fwe.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_main.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_main.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_main_actions.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\fwe_main_child.cpp"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

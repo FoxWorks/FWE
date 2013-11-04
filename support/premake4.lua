@@ -231,10 +231,10 @@ project "foxworks_editor"
      
      "../source",
      "../source/dialogs",
-     "../source/editors",
-     "../source/editors/evds",
-     "../source/editors/ivss",
-     "../source/editors/schematics",
+     "../source/editor",
+     "../source/editor/evds",
+     "../source/editor/ivss",
+     "../source/editor/schematics",
      "../source/prop_sheet",
      "../source/util",
    }

@@ -16,13 +16,20 @@
 /// You should have received a copy of the GNU General Public License
 /// along with this program.  If not, see http://www.gnu.org/licenses/.
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef FWE_SCHEMATICS_H
-#define FWE_SCHEMATICS_H
+#ifndef FWE_EVDS_H
+#define FWE_EVDS_H
 
 #include <QMainWindow>
-#include "fwe_evds.h"
+#include <QFileInfo>
+#include <QMap>
+#include <QList>
+#include <QSemaphore>
 
-#include "fwe_main.h"
+#include "evds.h"
+#include "evds_antenna.h"
+#include "evds_train_wheels.h"
+
+#include "fwe_editor.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -42,44 +49,58 @@ QT_END_NAMESPACE
 
 ////////////////////////////////////////////////////////////////////////////////
 class GLC_3DViewInstance;
+class FWEPropertySheet;
 namespace FWE {
 	class EditorWindow;
 }
 namespace Dock {
 	class ObjectList;
+	class Properties;
 }
 namespace EVDS {
 	class GLScene;
 	class GLView;
 	class Object;
+	class ObjectInitializer;
 	class ObjectTreeModel;
-	class SchematicsRenderingManager;
-	class SchematicsEditor : public FWE::Editor {
+	class ObjectModifiersManager;
+	class Editor : public FWE::Editor {
 		Q_OBJECT
 
 	public:
-		SchematicsEditor(FWE::EditorWindow* in_window, EVDS::Editor* in_editor);
-		~SchematicsEditor();
+		Editor(FWE::EditorWindow* in_window);
+		~Editor();
 
 		//General editor functions
-		void initializeForFile();
+		void newFile();
+		bool loadFile(const QString &fileName);
+		bool saveFile(const QString &fileName);
 		void updateInterface(bool isInFront);
-		void setEditorHidden(bool isHidden);
+		void setModified(bool informationUpdate = true);
 
+		//EVDS-editor specific
+		void updateInformation(bool ready);
 		void updateObject(Object* object);
 		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
+		void loadError(const QString& error);
 
-		//References to other objects
-		EVDS::Editor* getEVDSEditor() { return editor; }
-		Object* getCurrentSheet() { return sheet; }
-		void setCurrentSheet(Object* new_sheet) { sheet = new_sheet; }
-		Object* getRoot() { return root; }
+		//Various references to other objects
+		FWE::EditorWindow* getWindow() { return window; }
 		GLScene* getGLScene() { return glscene; }
-		SchematicsRenderingManager* getSchematicsRenderingManager() { return rendering_manager; }
+		Object* getEditRoot() { return root_obj; }
+		Object* getEditDocument() { return document; }
+		ObjectModifiersManager* getModifiersManager() { return modifiers_manager; }
 
 		//Object selection
 		Object* getSelected() { return selected; }
 		void clearSelection() { selected = NULL; }
+
+		//List of object variables, cross-section variables by object type
+		QMap<QString,QList<QMap<QString,QString> > > objectVariables;
+		QMap<QString,QList<QMap<QString,QString> > > csectionVariables;
+
+		//Counter for active working threads
+		QSemaphore activeThreads;
 
 	protected:
 		void dropEvent(QDropEvent *event);
@@ -91,41 +112,40 @@ namespace EVDS {
 		void removeObject();
 		void selectObject(const QModelIndex& index);
 		void commentsChanged();
-		/*
+		void cleanupTimer();
+		void rootInitialized();
 
 		void showProperties();
 		void showCrossSections();
 		void showHierarchy();
 		void showInformation();
 		void showCutsection();
-		void showComments();*/
+		void showComments();
 
 	private:
 		QString currentFile;
 
-		void invalidateChildren(Object* object);
 		void createMenuToolbar();
-		//void createCSectionDock();
-		//void createInformationDock();
+		void createCSectionDock();
+		void createInformationDock();
 		void createCommentsDock();
 
-		//Object types
-		//void loadObjectData();
+		//Load different object types
+		void loadObjectVariablesData();
 
-		//List of schematics elements
-		Dock::ObjectList*	elements_list;
-		Dock::ObjectList*	object_list;
-		Dock::Properties*	element_properties;
+		//Dock windows
+		Dock::ObjectList*	object_list;		//List of objects
+		Dock::Properties*	object_properties;	//Property sheets for objects
 
 		//Object cross-sections
-		/*QDockWidget*		csection_dock;
+		QDockWidget*		csection_dock;
 		QWidget*			csection;
 		QStackedLayout*		csection_layout;
 		QLabel*				csection_none;
 
 		//Rigid body information
 		QDockWidget*		bodyinfo_dock;
-		QTextEdit*			bodyinfo;*/
+		QTextEdit*			bodyinfo;
 
 		//Comments dock
 		QDockWidget*		comments_dock;
@@ -134,24 +154,27 @@ namespace EVDS {
 		//Main workspace
 		GLScene*			glscene;
 		GLView*				glview;
+		ObjectModifiersManager* modifiers_manager;
 
 		//Menus and actions
 		QList<QAction*>		actions;
-/*
 		QMenu*				cutsection_menu;
 		QAction*			cutsection_x;
 		QAction*			cutsection_y;
 		QAction*			cutsection_z;
-*/
+
+		//Parent window
+		FWE::EditorWindow*	window;
 
 		//EVDS objects (editing area)
-		EVDS::Editor* editor;
-		EVDS::Object* root;
+		EVDS_SYSTEM* system;
+		EVDS_OBJECT* root;
+		EVDS::Object* root_obj;
 		EVDS::Object* selected;
-		EVDS::Object* sheet;
-		EVDS::Object* prev_sheet;
+		EVDS::Object* document;
 
-		SchematicsRenderingManager* rendering_manager;
+		//EVDS objects (initialized/simulation area)
+		ObjectInitializer* initializer;
 	};
 }
 
