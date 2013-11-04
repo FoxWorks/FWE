@@ -50,6 +50,8 @@ namespace EVDS {
 		bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 		bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
+		Object* newObject(int row, QModelIndex index);
+
 		void updateObject(Object* object);
 		void setAcceptedMimeType(const QString& type) { acceptedMimeType = type; }
 

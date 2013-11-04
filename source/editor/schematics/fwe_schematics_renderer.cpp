@@ -85,6 +85,8 @@ void SchematicsRenderingManager::updateInstances() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsRenderingManager::updatePositions() {
+	qDebug("SchematicsRenderingManager::updatePositions()");
+
 	//Set positions of all children
 	for (int i = 0; i < schematicsInstances.count(); i++) {
 		setInstancePosition(&schematicsInstances[i]);

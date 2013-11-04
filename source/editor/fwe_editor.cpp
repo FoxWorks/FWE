@@ -325,7 +325,11 @@ void EditorWindow::updateInterface(bool isInFront) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void EditorWindow::updateObject(EVDS::Object* object) {
-	EVDSEditor->updateObject(object);
+	if (EVDSEditor->getActive()) {
+		EVDSEditor->updateObject(object);
+	} else {
+		SchematicsEditor->updateObject(object);
+	}
 }
 
 
@@ -351,6 +355,9 @@ void EditorWindow::addEditorAction(Editor* editor, QAction* action) {
 void EditorWindow::showVME() {
 	editorsLayout->setCurrentWidget(EVDSEditor);
 	SchematicsEditor->setEditorHidden(true);
+
+	EVDSEditor->setActive(true);
+	SchematicsEditor->setActive(false);
 }
 
 
@@ -360,6 +367,9 @@ void EditorWindow::showVME() {
 void EditorWindow::showSchematics() {
 	editorsLayout->setCurrentWidget(SchematicsEditor);
 	SchematicsEditor->setEditorHidden(false);
+
+	EVDSEditor->setActive(false);
+	SchematicsEditor->setActive(true);
 }
 
 

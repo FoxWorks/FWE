@@ -16,7 +16,6 @@
 /// You should have received a copy of the GNU General Public License
 /// along with this program.  If not, see http://www.gnu.org/licenses/.
 ////////////////////////////////////////////////////////////////////////////////
-//#include <QtGui>
 #include <QString>
 #include <math.h>
 
@@ -75,14 +74,12 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, FWE::EditorWindo
 	if (renderer) {
 		renderer->meshChanged();
 		renderer->positionChanged();
+	}
 
-		//Add to modifiers
-		if (window) {
-			getEVDSEditor()->getModifiersManager()->objectAdded(this);
-			if (isSchematicsElement() && (!getEVDSEditor()->getModifiersManager()->isInitializing())) {
-				getSchematicsEditor()->getSchematicsRenderingManager()->updateInstances();
-			}
-		}
+	//Add to modifiers
+	if (in_parent && window) {
+		getEVDSEditor()->getModifiersManager()->objectAdded(this);
+		getSchematicsEditor()->getSchematicsRenderingManager()->updateInstances();
 	}
 }
 
@@ -91,12 +88,12 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, FWE::EditorWindo
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 Object::~Object() {
-	/*if (editor && (!schematics_editor)) {
-		editor->getModifiersManager()->objectRemoved(this);
+	if (window) {
+		getEVDSEditor()->getModifiersManager()->objectRemoved(this);
+		if (!getEVDSEditor()->getModifiersManager()->isInitializing()) {
+			getSchematicsEditor()->getSchematicsRenderingManager()->updateInstances();
+		}
 	}
-	if (schematics_editor && (!editor->getModifiersManager()->isInitializing())) {
-		schematics_editor->getSchematicsRenderingManager()->updateInstances();
-	}*/
 	if (window && (getEVDSEditor()->getSelected() == this)) getEVDSEditor()->clearSelection();
 	for (int i = 0; i < children.count(); i++) {
 		delete children[i];
@@ -159,15 +156,6 @@ Object* Object::insertNewChild(int index) {
 	//Create object for it and add it to the children
 	Object* new_object_obj = new Object(new_object,this,window);
 	children.insert(index,new_object_obj);
-
-	//Special logic for schematics editor
-	/*if () {
-		if (this == schematics_editor->getRoot()) {
-			new_object_obj->setType("foxworks.schematics.sheet");
-		} else {
-			new_object_obj->setType("foxworks.schematics.element");
-		}
-	}*/
 	return new_object_obj;
 }
 
@@ -257,10 +245,6 @@ Object* Object::insertChild(int index, const QString &description) {
 	//Create object for it and add it to the children
 	Object* new_object_obj = new Object(new_object,this,window);
 	children.insert(index,new_object_obj);
-	//if (schematics_editor) { //FIXME: this is a temporary hack
-		//This stuff must be replaced with "SetEditors" calls for schematics and normal editor (removing them from constructors)
-		//schematics_editor->getSchematicsRenderingManager()->updateInstances();
-	//}
 	return new_object_obj;
 }
 

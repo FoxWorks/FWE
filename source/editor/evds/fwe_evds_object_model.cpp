@@ -381,3 +381,22 @@ void ObjectTreeModel::updateObject(Object* object) {
 		createIndex(idx, 0, object),
 		createIndex(idx, 1, object));
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
+Object* ObjectTreeModel::newObject(int row, QModelIndex index) {
+	Object* object;
+	if (!index.isValid()) {
+		object = root;
+	} else {
+		object = (Object*)(index.internalPointer());
+	}
+
+	beginInsertRows(index,row,row);
+		object = object->insertNewChild(row);
+	endInsertRows();
+	window->setModified();
+	return object;
+}

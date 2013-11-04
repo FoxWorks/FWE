@@ -129,15 +129,15 @@ void SchematicsEditor::commentsChanged() {
 void SchematicsEditor::setEditorHidden(bool isHidden) {
 	if (isHidden) sheet = 0;
 	rendering_manager->updateInstances(); //Clear out all modifier-created instances to avoid crashes
-	/*if (!isHidden) { //Invalidate objects tree FIXME
-		if (objectlist_model) {
+	if (!isHidden) { //Invalidate objects tree FIXME
+		/*if (objectlist_model) {
 			delete objectlist_model;
 			
 			objectlist_model = new ObjectTreeModel(editor,editor->getEditRoot(),this);
 			objectlist_model->setAcceptedMimeType("application/vnd.evds.none");
 			objectlist_tree->setModel(objectlist_model);
-		}
-	}*/
+		}*/
+	}
 }
 
 
@@ -145,8 +145,13 @@ void SchematicsEditor::setEditorHidden(bool isHidden) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsEditor::addObject() {
-	QModelIndex index = elements_list->currentIndex();
-	elements_list->getModel()->insertRow(0,index);
+	Object* object = elements_list->getModel()->newObject(0,elements_list->currentIndex());
+
+	if (object->getParent() == getSchematicsEditor()->getRoot()) {
+		object->setType("foxworks.schematics.sheet");
+	} else {
+		object->setType("foxworks.schematics.element");
+	}
 }
 
 

@@ -20,7 +20,6 @@
 #define FWE_EVDS_MODIFIERS_H
 
 #include <QThread>
-
 #include <GLC_Mesh>
 #include <GLC_3DViewInstance>
 
@@ -30,15 +29,14 @@ namespace EVDS {
 	class Editor;
 	class Object;
 	struct ObjectRendererModifierInstance {
-		GLC_3DViewInstance* instance; //Instance of the modified copy
-		GLC_3DViewInstance* base_instance; //Instance, which the modified copy is based off
-		GLC_3DViewInstance* real_base_instance; //Instace, which is the original object
-		GLC_3DViewInstance* modifier_instance; //Instance, which is the modifier
-		GLC_3DRep* base_representation; //3D representation of the original object
-		GLC_Matrix4x4 transformation; //Modifiers transformation
+		GLC_3DViewInstance* instance;			//Instance of the modified copy
+		GLC_3DViewInstance* base_instance;		//Instance, which the modified copy is based off
+		GLC_3DViewInstance* real_base_instance; //Instance, which is the original object
+		GLC_3DViewInstance* modifier_instance;	//Instance, which is the modifier
+		GLC_3DRep* base_representation;			//3D representation of the original object
+		GLC_Matrix4x4 transformation;			//Modifiers transformation
 	};
-	class ObjectModifiersManager : public QObject
-	{
+	class ObjectModifiersManager : public QObject {
 		Q_OBJECT
 
 	public:

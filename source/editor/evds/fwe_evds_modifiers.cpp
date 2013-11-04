@@ -83,24 +83,7 @@ void ObjectModifiersManager::updateModifiers() {
 void ObjectModifiersManager::doUpdateModifiers() {
 	if (!shouldUpdateModifiers) return;
 	shouldUpdateModifiers = false;
-
-	//GLScene* glview = editor->getGLScene();
-
 	qDebug("ObjectModifiersManager::updateModifiers()");
-
-	//Remove all instances from glview
-	/*QMapIterator<Object*,QList<ObjectRendererModifierInstance> > iterator(modifierInstances);
-	while (iterator.hasNext()) {
-		iterator.next();
-		for (int i = 0; i < iterator.value().count(); i++) {
-			if (glview->getCollection()->contains(iterator.value()[i].instance->id())) {
-				glview->getCollection()->remove(iterator.value()[i].instance->id());
-			}
-			delete iterator.value()[i].instance;
-		}
-		iterator.value();
-	}
-	modifierInstances.clear();*/
 
 	//Process all object starting from root
 	processUpdateModifiers(editor->getEditRoot());
@@ -304,21 +287,8 @@ void ObjectModifiersManager::createModifiedCopy(Object* modifier, Object* object
 	}
 
 	//Create copies of the modifiers children (not included in modifiers instances)
-	//if ((object->getType() == "modifier") && (object != modifier)) {
-		for (int i = 0; i < object->getChildrenCount(); i++) {
-			createModifiedCopy(modifier,object->getChild(i));
-		}
-	//}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void ObjectModifiersManager::objectPositionChanged(Object* object) {
-	if (!initializing) {
-		//updateModifiers();
-		processUpdatePosition(editor->getEditRoot());
+	for (int i = 0; i < object->getChildrenCount(); i++) {
+		createModifiedCopy(modifier,object->getChild(i));
 	}
 }
 
@@ -326,9 +296,22 @@ void ObjectModifiersManager::objectPositionChanged(Object* object) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+void ObjectModifiersManager::objectPositionChanged(Object* object) {
+	if (initializing) return;
+	qDebug("ObjectModifiersManager::objectPositionChanged()");
+
+	//updateModifiers();
+	processUpdatePosition(editor->getEditRoot());
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 void ObjectModifiersManager::modifierChanged(Object* object) {
-	//if (object->getType() == "modifier")
-	if (!initializing) updateModifiers();
+	if (initializing) return;
+	qDebug("ObjectModifiersManager::modifierChanged()");
+	updateModifiers();
 }
 
 
@@ -336,7 +319,9 @@ void ObjectModifiersManager::modifierChanged(Object* object) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectModifiersManager::objectRemoved(Object* object) {
-	if (!initializing) updateModifiers();
+	if (initializing) return;
+	qDebug("ObjectModifiersManager::objectRemoved()");
+	updateModifiers();
 }
 
 
@@ -344,5 +329,7 @@ void ObjectModifiersManager::objectRemoved(Object* object) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectModifiersManager::objectAdded(Object* object) {
-	if (!initializing) updateModifiers();
+	if (initializing) return;
+	qDebug("ObjectModifiersManager::objectAdded()");
+	updateModifiers();
 }
