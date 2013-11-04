@@ -25,6 +25,8 @@
 #include "fwe_dialog_preferences.h"
 #include "rdrs.h"
 
+using namespace FWE;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
@@ -95,7 +97,7 @@ MainWindow::MainWindow() {
 	//Create new empty file or load some file right away
 #ifdef _DEBUG
 	if (QFile::exists("bug_test_case.evds")) {
-		ChildWindow *child = createMdiChild();
+		EditorWindow *child = createMdiChild();
 		if (child->loadFile("bug_test_case.evds")) {
 			child->show();
 		} else {
@@ -338,9 +340,9 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-ChildWindow *MainWindow::activeMdiChild() {
+EditorWindow *MainWindow::activeMdiChild() {
 	if (QMdiSubWindow* activeSubWindow = mdiArea->activeSubWindow()) {
-		return qobject_cast<ChildWindow*>(activeSubWindow->widget());
+		return qobject_cast<EditorWindow*>(activeSubWindow->widget());
 	}
 	return 0;
 }
@@ -353,7 +355,7 @@ QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName) {
 	QString canonicalFilePath = fileName; //FIXME //QFileInfo(fileName).canonicalFilePath();
 
 	foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
-		ChildWindow *mdiChild = qobject_cast<ChildWindow*>(window->widget());
+		EditorWindow *mdiChild = qobject_cast<EditorWindow*>(window->widget());
 		if (!mdiChild) continue;
 
 		if (mdiChild->getCurrentFile() == canonicalFilePath) {
@@ -391,7 +393,7 @@ void MainWindow::updateInterface() {
 	//Update menu items for all windows
 	QList<QMdiSubWindow*> windows = mdiArea->subWindowList();
 	for (int i = 0; i < windows.size(); ++i) {
-		ChildWindow *child = qobject_cast<ChildWindow *>(windows.at(i)->widget());
+		EditorWindow *child = qobject_cast<EditorWindow *>(windows.at(i)->widget());
 		if (!child) continue;
 
 		child->updateInterface(child == activeMdiChild());
@@ -422,7 +424,7 @@ void MainWindow::updateWindowMenu() {
 	globalActions["window.list_separator"]->setVisible(!windows.isEmpty());
 
 	for (int i = 0; i < windows.size(); ++i) {
-		ChildWindow *child = qobject_cast<ChildWindow *>(windows.at(i)->widget());
+		EditorWindow *child = qobject_cast<EditorWindow *>(windows.at(i)->widget());
 		if (!child) continue;
 
 		QString text;
@@ -483,8 +485,8 @@ void MainWindow::addRecentFile(const QString &fileName) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-ChildWindow *MainWindow::createMdiChild() {
-	ChildWindow *child = new ChildWindow(this);
+EditorWindow *MainWindow::createMdiChild() {
+	EditorWindow *child = new EditorWindow(this);
 	mdiArea->addSubWindow(child);
 	mdiArea->setWindowIcon(QIcon(":/icon/mdi.png"));
 

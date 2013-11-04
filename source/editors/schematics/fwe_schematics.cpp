@@ -43,8 +43,7 @@ using namespace EVDS;
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-SchematicsEditor::SchematicsEditor(ChildWindow* in_window, EVDS::Editor* in_editor) : QMainWindow(in_window) {
-	window = in_window;
+SchematicsEditor::SchematicsEditor(FWE::EditorWindow* in_window, EVDS::Editor* in_editor) : FWE::Editor(in_window) {
 	editor = in_editor;
 	selected = NULL;
 	root = NULL;
@@ -121,14 +120,6 @@ void SchematicsEditor::commentsChanged() {
 	} else {
 		editor->getEditDocument()->setVariable("text",comments->toPlainText());
 	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief Callback from when object was modified
-////////////////////////////////////////////////////////////////////////////////
-void SchematicsEditor::setModified() {
-	editor->setModified();
 }
 
 

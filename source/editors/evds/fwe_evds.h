@@ -50,7 +50,9 @@ QT_END_NAMESPACE
 ////////////////////////////////////////////////////////////////////////////////
 class GLC_3DViewInstance;
 class FWEPropertySheet;
-class ChildWindow;
+namespace FWE {
+	class EditorWindow;
+}
 namespace Dock {
 	class ObjectList;
 	class Properties;
@@ -62,11 +64,11 @@ namespace EVDS {
 	class ObjectInitializer;
 	class ObjectTreeModel;
 	class ObjectModifiersManager;
-	class Editor : public FWEEditor {
+	class Editor : public FWE::Editor {
 		Q_OBJECT
 
 	public:
-		Editor(ChildWindow* in_window);
+		Editor(FWE::EditorWindow* in_window);
 		~Editor();
 
 		//General editor functions
@@ -83,7 +85,7 @@ namespace EVDS {
 		void loadError(const QString& error);
 
 		//Various references to other objects
-		ChildWindow* getWindow() { return window; }
+		FWE::EditorWindow* getWindow() { return window; }
 		GLScene* getGLScene() { return glscene; }
 		Object* getEditRoot() { return root_obj; }
 		Object* getEditDocument() { return document; }
@@ -162,7 +164,7 @@ namespace EVDS {
 		QAction*			cutsection_z;
 
 		//Parent window
-		ChildWindow*		window;
+		FWE::EditorWindow*	window;
 
 		//EVDS objects (editing area)
 		EVDS_SYSTEM* system;

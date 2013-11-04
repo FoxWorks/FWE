@@ -28,13 +28,14 @@
 #include "fwe_dialog_preferences.h"
 #include "rdrs.h"
 
+using namespace FWE;
 
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::fileNew() {
-	ChildWindow *child = createMdiChild();
+	EditorWindow *child = createMdiChild();
 	child->newFile();
 	child->showMaximized();
 }
@@ -60,7 +61,7 @@ void MainWindow::fileOpen() {
 			return;
 		}
 
-		ChildWindow *child = createMdiChild();
+		EditorWindow *child = createMdiChild();
 		if (child->loadFile(fileName)) {
 			statusBar()->showMessage(tr("File loaded"), 2000);
 			child->show();
@@ -84,7 +85,7 @@ void MainWindow::fileOpenRecent() {
 			return;
 		}
 
-		ChildWindow *child = createMdiChild();
+		EditorWindow *child = createMdiChild();
 		if (child->loadFile(action->data().toString())) {
 			statusBar()->showMessage(tr("File loaded"), 2000);
 			child->show();
@@ -162,7 +163,7 @@ void MainWindow::editPreferences() {
 void MainWindow::editShowVME() {
 	globalActions["edit.vessel_model"]->setChecked(true);
 	globalActions["edit.schematics"]->setChecked(false);
-	if (activeMdiChild()) activeMdiChild()->showEVDS();
+	if (activeMdiChild()) activeMdiChild()->showVME();
 }
 
 

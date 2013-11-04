@@ -63,7 +63,7 @@ using namespace EVDS;
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-Editor::Editor(ChildWindow* in_window) : FWEEditor(in_window), activeThreads(0) {
+Editor::Editor(FWE::EditorWindow* in_window) : FWE::Editor(in_window), activeThreads(0) {
 	window = in_window;
 	selected = NULL;
 	document = NULL;

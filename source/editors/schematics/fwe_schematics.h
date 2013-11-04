@@ -22,6 +22,8 @@
 #include <QMainWindow>
 #include "fwe_evds.h"
 
+#include "fwe_main.h"
+
 QT_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
@@ -40,7 +42,9 @@ QT_END_NAMESPACE
 
 ////////////////////////////////////////////////////////////////////////////////
 class GLC_3DViewInstance;
-class ChildWindow;
+namespace FWE {
+	class EditorWindow;
+}
 namespace Dock {
 	class ObjectList;
 }
@@ -50,18 +54,16 @@ namespace EVDS {
 	class Object;
 	class ObjectTreeModel;
 	class SchematicsRenderingManager;
-	class SchematicsEditor : public QMainWindow
-	{
+	class SchematicsEditor : public FWE::Editor {
 		Q_OBJECT
 
 	public:
-		SchematicsEditor(ChildWindow* in_window, EVDS::Editor* in_editor);
+		SchematicsEditor(FWE::EditorWindow* in_window, EVDS::Editor* in_editor);
 		~SchematicsEditor();
 
 		//General editor functions
 		void initializeForFile();
 		void updateInterface(bool isInFront);
-		void setModified();
 		void setEditorHidden(bool isHidden);
 
 		void updateObject(Object* object);
@@ -72,7 +74,6 @@ namespace EVDS {
 		Object* getCurrentSheet() { return sheet; }
 		void setCurrentSheet(Object* new_sheet) { sheet = new_sheet; }
 		Object* getRoot() { return root; }
-		ChildWindow* getWindow() { return window; }
 		GLScene* getGLScene() { return glscene; }
 		SchematicsRenderingManager* getSchematicsRenderingManager() { return rendering_manager; }
 
@@ -142,8 +143,6 @@ namespace EVDS {
 		QAction*			cutsection_y;
 		QAction*			cutsection_z;
 */
-		//Parent window
-		ChildWindow*		window;
 
 		//EVDS objects (editing area)
 		EVDS::Editor* editor;

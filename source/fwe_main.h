@@ -37,12 +37,13 @@ extern QSettings* fw_editor_settings; //See fwe.cpp
 
 #define FWE_EDITOR_MAX_RECENT_FILES	10
 
-class ChildWindow;
 class PreferencesDialog;
 namespace EVDS {
 	class Editor;
 	class SchematicsEditor;
 }
+namespace FWE {
+	class EditorWindow;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +76,7 @@ private slots:
 	void editShowVME();
 	void editShowSchematics();
 
-	ChildWindow *createMdiChild();
+	EditorWindow *createMdiChild();
 	void setActiveSubWindow(QWidget *window);
 
 	//Update interfaces or menus
@@ -90,7 +91,7 @@ private:
 	void createToolBars();
 
 	//MDI area management
-	ChildWindow *activeMdiChild();
+	EditorWindow *activeMdiChild();
 	QMdiSubWindow *findMdiChild(const QString &fileName);
 	QMdiArea *mdiArea;
 	QSignalMapper *windowMapper;
@@ -116,65 +117,77 @@ private:
 
 
 ////////////////////////////////////////////////////////////////////////////////
-class FWEEditor : public QMainWindow {
+class Editor : public QMainWindow {
 	Q_OBJECT
 
 public:
-	FWEEditor(ChildWindow* parent) : QMainWindow() { editorWindow = parent; }
+	Editor(EditorWindow* parent) : QMainWindow() { editorWindow = parent; }
 
-	ChildWindow* getEditorWindow() { return editorWindow; }
+	EditorWindow* getChildWindow() { return editorWindow; }
 	void setModified();
 
 private:
-	ChildWindow* editorWindow;
+	EditorWindow* editorWindow;
 };
 
 
 ////////////////////////////////////////////////////////////////////////////////
-class ChildWindow : public QMainWindow {
+class EditorWindow : public QMainWindow {
 	Q_OBJECT
 
 public:
-	ChildWindow(MainWindow* window);
+	EditorWindow(MainWindow* window);
 
+	//File operations
 	void newFile();
+	bool saveFile(const QString &fileName, bool autoSave = false);
 	bool loadFile(const QString &fileName);
+
+	//Shorthands for working with the current file
+	QString getCurrentFile() { return currentFile; }
 	bool save();
 	bool saveAs();
-	bool saveFile(const QString &fileName, bool autoSave = false);
 
+	//Return main window pointer
+	MainWindow* getMainWindow() { return mainWindow; }
+
+	//Update interface
 	void updateInterface(bool isInFront);
-
-	void cut();
-	void copy();
-	void paste();
-	void showEVDS();
-	void showSchematics();
-
-	void setModified() { isModified = true; updateTitle(); }
 
 protected:
 	void closeEvent(QCloseEvent *event);
 
-private:
-	bool trySave();
-	void updateTitle();
-	QString currentFile;
-	bool isModified;
-
 public slots:
+	//General operations
 	void autoSave();
+	void showVME();
+	void showSchematics();
+	void cut();
+	void copy();
+	void paste();
 
-public:
-	QString getCurrentFile() { return currentFile; }
-	MainWindow* getMainWindow() { return mainWindow; }
-protected:
-	MainWindow* mainWindow;
+	//Set global project modified flag
+	void setModified() { isModified = true; updateTitle(); }
 
-	QWidget* editorsWidget;
-	QStackedLayout* editorsLayout;
+private:
+	bool isModified;
+	bool trySave();
+	
+	//Current opened file
+	QString currentFile;
+	void updateTitle();
+	
+	//Editors
 	EVDS::Editor* EVDSEditor;
 	EVDS::SchematicsEditor* SchematicsEditor;
+
+	//List of editor widgets
+	QWidget* editorsWidget;
+	QStackedLayout* editorsLayout;
+
+	MainWindow* mainWindow;
 };
+
+}
 
 #endif

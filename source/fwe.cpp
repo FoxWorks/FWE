@@ -25,17 +25,11 @@
 #include "fwe.h"
 #include "fwe_main.h"
 
-/// Stores current FWE flags
-int fw_editor_flags = 0;
+QApplication* fw_application;		/// FoxWorks application
+FWE::MainWindow* fw_mainWindow;		/// FoxWorks main window
 
-/// FoxWorks application
-QApplication* fw_application;
-
-/// FoxWorks main window
-MainWindow* fw_mainWindow;
-
-/// FoxWorks editor settings
-QSettings* fw_editor_settings = 0;
+int fw_editor_flags = 0;			/// Current application-related flags
+QSettings* fw_editor_settings = 0;	/// FoxWorks editor settings
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +70,7 @@ void fw_editor_initialize(int flags, int argc, char *argv[]) {
 		Q_INIT_RESOURCE(resources);
 
 		fw_editor_settings = new QSettings("settings.ini",QSettings::IniFormat);
-		fw_mainWindow = new MainWindow(); //Show main window
+		fw_mainWindow = new FWE::MainWindow(); //Show main window
 		fw_mainWindow->show();
 
 		//Load default fonts
