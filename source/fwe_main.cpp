@@ -65,10 +65,9 @@ MainWindow::MainWindow() {
 	preferencesDialog = 0;
 
 	//Create everything
-	createApplicationMenus();
+	createActionsMenus();
 
 	//createToolBars();
-	createStatusBar();
 	updateInterface();
 	updateRecentFiles();
 
@@ -100,10 +99,10 @@ MainWindow::MainWindow() {
 			child->close();
 		}
 	} else {
-		newFile();
+		fileNew();
 	}
 #else
-	newFile();
+	fileNew();
 #endif
 }
 
@@ -120,179 +119,6 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 		fw_editor_settings->setValue("window.size", size());
 		event->accept();
 	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::newFile() {
-	ChildWindow *child = createMdiChild();
-	child->newFile();
-	child->showMaximized();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::open() {
-	QString fileName = QFileDialog::getOpenFileName(this,"Load vessel","",
-		//"FoxWorks Data Files (*.evds *.ivss);;"
-		//"External Vessel Dynamics Simulator (*.evds);;"
-		//"Internal Vessel Systems Simulator (*.ivss);;"
-		"External Vessel Dynamics Simulator Model (*.evds);;"
-		"All files (*.*)");
-
-	if (!fileName.isEmpty()) {
-		addRecentFile(fileName);
-
-		QMdiSubWindow *existing = findMdiChild(fileName);
-		if (existing) {
-			mdiArea->setActiveSubWindow(existing);
-			return;
-		}
-
-		ChildWindow *child = createMdiChild();
-		if (child->loadFile(fileName)) {
-			statusBar()->showMessage(tr("File loaded"), 2000);
-			child->show();
-		} else {
-			child->close();
-		}
-	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::openRecent() {
-	QAction *action = qobject_cast<QAction *>(sender());
-	if (action) {
-		QMdiSubWindow *existing = findMdiChild(action->data().toString());
-		if (existing) {
-			mdiArea->setActiveSubWindow(existing);
-			addRecentFile(action->data().toString());
-			return;
-		}
-
-		ChildWindow *child = createMdiChild();
-		if (child->loadFile(action->data().toString())) {
-			statusBar()->showMessage(tr("File loaded"), 2000);
-			child->show();
-		} else {
-			child->close();
-		}
-		addRecentFile(action->data().toString());
-	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::save() {
-	if (activeMdiChild() && activeMdiChild()->save()) {
-		addRecentFile(activeMdiChild()->getCurrentFile());
-		statusBar()->showMessage(tr("File saved"), 2000);
-	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::saveAs() {
-	if (activeMdiChild() && activeMdiChild()->saveAs()) {
-		addRecentFile(activeMdiChild()->getCurrentFile());
-		statusBar()->showMessage(tr("File saved"), 2000);
-	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::cut() {
-	if (activeMdiChild())
-		activeMdiChild()->cut();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::copy() {
-	if (activeMdiChild())
-		activeMdiChild()->copy();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::paste() {
-	if (activeMdiChild())
-		activeMdiChild()->paste();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::preferences() {
-	if (!preferencesDialog) {
-		preferencesDialog = new PreferencesDialog();
-	}
-	preferencesDialog->exec();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::showEVDS() {
-	globalActions["edit.vessel_model"]->setChecked(true);
-	globalActions["edit.schematics"]->setChecked(false);
-	if (activeMdiChild()) activeMdiChild()->showEVDS();
-}
-void MainWindow::showSchematics() {
-	globalActions["edit.vessel_model"]->setChecked(false);
-	globalActions["edit.schematics"]->setChecked(true);
-	if (activeMdiChild()) activeMdiChild()->showSchematics();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::about() {
-	QString ivss_version = "r1a";
-
-	char evds_version_str[64];
-	EVDS_Version(0,evds_version_str);
-	QString evds_version = "r" + QString(evds_version_str);
-
-	char rdrs_version_str[64];
-	RDRS_Version(0,rdrs_version_str);
-	QString rdrs_version = "r" + QString(rdrs_version_str);
-
-	QMessageBox::about(this, tr("About FoxWorks Editor"),
-			tr("<b>FoxWorks Editor (Alpha)</b> (C) 2012-2013 by Black Phoenix<br>"
-			"<br>"
-			"Contact information:<br>"
-			"<b>Black Phoenix</b> (<i>phoenix@uol.ua</i>, <i>popovych@yanedx.ru</i>)<br>"
-			"<br>"
-			"Additional software:<br>"
-			"<b>GLC_lib</b> (C) 2005-2013 by Laurent Ribon (<i>laumaya@users.sourceforge.net</i>)<br>"
-			"<b>External Vessel Dynamics Simulator (%1)</b> (C) 2012-2013 by Black Phoenix<br>"
-			//"<b>Internal Vessel Systems Simulator (%2)</b> (C) 2011-2013 by Black Phoenix<br>"
-			"<b>Realtime Digital Radio Simulator (%3)</b> (C) 2013 by Black Phoenix"
-			)
-			.arg(evds_version)
-			.arg(ivss_version)
-			.arg(rdrs_version));
 }
 
 
@@ -416,7 +242,7 @@ ChildWindow *MainWindow::createMdiChild() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::createApplicationMenus() {
+void MainWindow::createActionsMenus() {
 	QAction* action;
 
 
@@ -428,14 +254,14 @@ void MainWindow::createApplicationMenus() {
 	action = new QAction(QIcon(":/icon/new.png"), tr("&New"), this);
 	action->setShortcuts(QKeySequence::New);
 	action->setStatusTip(tr("Create a new file"));
-	connect(action, SIGNAL(triggered()), this, SLOT(newFile()));
+	connect(action, SIGNAL(triggered()), this, SLOT(fileNew()));
 	fileMenu->addAction(action);
 	globalActions["file.new"] = action;
 
 	action = new QAction(QIcon(":/icon/open.png"), tr("&Open..."), this);
 	action->setShortcuts(QKeySequence::Open);
 	action->setStatusTip(tr("Open an existing file"));
-	connect(action, SIGNAL(triggered()), this, SLOT(open()));
+	connect(action, SIGNAL(triggered()), this, SLOT(fileOpen()));
 	fileMenu->addAction(action);
 	globalActions["file.open"] = action;
 
@@ -444,7 +270,7 @@ void MainWindow::createApplicationMenus() {
 	for (int i = 0; i < FWE_EDITOR_MAX_RECENT_FILES; ++i) {
 		action = new QAction(this);
 		action->setVisible(false);
-		connect(action, SIGNAL(triggered()), this, SLOT(openRecent()));
+		connect(action, SIGNAL(triggered()), this, SLOT(fileOpenRecent()));
 
 		recentFiles.append(action);
 		recentMenu->addAction(action);
@@ -453,14 +279,14 @@ void MainWindow::createApplicationMenus() {
 	action = new QAction(QIcon(":/icon/save.png"), tr("&Save"), this);
 	action->setShortcuts(QKeySequence::Save);
 	action->setStatusTip(tr("Save the document to disk"));
-	connect(action, SIGNAL(triggered()), this, SLOT(save()));
+	connect(action, SIGNAL(triggered()), this, SLOT(fileSave()));
 	fileMenu->addAction(action);
 	globalActions["file.save"] = action;
 
 	action = new QAction(QIcon(":/icon/save_as.png"), tr("Save &As..."), this);
 	action->setShortcuts(QKeySequence::SaveAs);
 	action->setStatusTip(tr("Save the document under a new name"));
-	connect(action, SIGNAL(triggered()), this, SLOT(saveAs()));
+	connect(action, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
 	fileMenu->addAction(action);
 	globalActions["file.saveAs"] = action;
 
@@ -496,21 +322,21 @@ void MainWindow::createApplicationMenus() {
 	action = new QAction(QIcon(":/icon/cut.png"), tr("Cu&t"), this);
 	action->setShortcuts(QKeySequence::Cut);
 	action->setStatusTip(tr("Cut the current selection's contents to the clipboard"));
-	connect(action, SIGNAL(triggered()), this, SLOT(cut()));
+	connect(action, SIGNAL(triggered()), this, SLOT(editCut()));
 	editMenu->addAction(action);
 	globalActions["edit.cut"] = action;
 
 	action = new QAction(QIcon(":/icon/copy.png"), tr("&Copy"), this);
 	action->setShortcuts(QKeySequence::Copy);
 	action->setStatusTip(tr("Copy the current selection's contents to the clipboard"));
-	connect(action, SIGNAL(triggered()), this, SLOT(copy()));
+	connect(action, SIGNAL(triggered()), this, SLOT(editCopy()));
 	editMenu->addAction(action);
 	globalActions["edit.copy"] = action;
 
 	action = new QAction(QIcon(":/icon/paste.png"), tr("&Paste"), this);
 	action->setShortcuts(QKeySequence::Paste);
 	action->setStatusTip(tr("Paste the clipboard's contents into the current selection"));
-	connect(action, SIGNAL(triggered()), this, SLOT(paste()));
+	connect(action, SIGNAL(triggered()), this, SLOT(editPaste()));
 	editMenu->addAction(action);
 	globalActions["edit.paste"] = action;
 
@@ -519,24 +345,24 @@ void MainWindow::createApplicationMenus() {
 	action = new QAction(tr("Vessel Model"), this);
 	action->setStatusTip(tr("Show vessel model editor"));
 	action->setCheckable(true);
-	connect(action, SIGNAL(triggered()), this, SLOT(showEVDS()));
+	connect(action, SIGNAL(triggered()), this, SLOT(editShowVME()));
 	editMenu->addAction(action);
 	globalActions["edit.vessel_model"] = action;
 
 	action = new QAction(tr("Schematics"), this);
 	action->setStatusTip(tr("Show schematics editor"));
 	action->setCheckable(true);
-	connect(action, SIGNAL(triggered()), this, SLOT(showSchematics()));
+	connect(action, SIGNAL(triggered()), this, SLOT(editShowSchematics()));
 	editMenu->addAction(action);
 	globalActions["edit.schematics"] = action;
 
-	showEVDS(); //FIXME
+	editShowVME(); //FIXME
 
 	editMenu->addSeparator(); //------------------------------------------------
 
 	action = new QAction(QIcon(":/icon/preferences.png"), tr("&Preferences..."), this);
 	action->setStatusTip(tr("Edit FoxWorks Editor preferences and configuration"));
-	connect(action, SIGNAL(triggered()), this, SLOT(preferences()));
+	connect(action, SIGNAL(triggered()), this, SLOT(editPreferences()));
 	editMenu->addAction(action);
 	globalActions["edit.preferences"] = action;
 
@@ -586,7 +412,7 @@ void MainWindow::createApplicationMenus() {
 
 	action = new QAction(QIcon(":/icon/about.png"), tr("&About"), this);
 	action->setStatusTip(tr("Show the About box"));
-	connect(action, SIGNAL(triggered()), this, SLOT(about()));
+	connect(action, SIGNAL(triggered()), this, SLOT(helpAbout()));
 	helpMenu->addAction(action);
 	globalActions["help.about"] = action;
 
@@ -612,14 +438,6 @@ void MainWindow::createToolBars() {
 	editToolBar->addAction(globalActions["file.cut"]);
 	editToolBar->addAction(globalActions["file.copy"]);
 	editToolBar->addAction(globalActions["file.paste"]);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::createStatusBar() {
-	statusBar()->showMessage(tr("Ready"));
 }
 
 

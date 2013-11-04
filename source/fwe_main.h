@@ -50,20 +50,21 @@ protected:
 	void closeEvent(QCloseEvent *event);
 
 private slots:
-	void newFile();
-	void open();
-	void openRecent();
-	void save();
-	void saveAs();
-	void cut();
-	void copy();
-	void paste();
-	void preferences();
-	void about();
+	void fileNew();
+	void fileOpen();
+	void fileOpenRecent();
+	void fileSave();
+	void fileSaveAs();
+	void editCut();
+	void editCopy();
+	void editPaste();
+	void editPreferences();
+	void helpAbout();
+	void editShowVME();
+	void editShowSchematics();
+
 	void updateInterface();
 	void updateWindowMenu();
-	void showEVDS();
-	void showSchematics();
 	ChildWindow *createMdiChild();
 	void setActiveSubWindow(QWidget *window);
 
@@ -74,12 +75,13 @@ public:
 	QMenu* getHelpMenu() { return helpMenu; }
 
 private:
-	void createApplicationMenus();
-
+	void createActionsMenus();
 	void createToolBars();
-	void createStatusBar();
 	void updateRecentFiles();
+
 	void addRecentFile(const QString &fileName);
+
+	//MDI area management
 	ChildWindow *activeMdiChild();
 	QMdiSubWindow *findMdiChild(const QString &fileName);
 
