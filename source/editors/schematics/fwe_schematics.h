@@ -58,24 +58,27 @@ namespace EVDS {
 		SchematicsEditor(ChildWindow* in_window, EVDS::Editor* in_editor);
 		~SchematicsEditor();
 
+		//General editor functions
 		void initializeForFile();
 		void updateInterface(bool isInFront);
 		void setModified();
 		void setEditorHidden(bool isHidden);
 
+		void updateObject(Object* object);
+		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
+
+		//References to other objects
 		EVDS::Editor* getEVDSEditor() { return editor; }
 		Object* getCurrentSheet() { return sheet; }
 		void setCurrentSheet(Object* new_sheet) { sheet = new_sheet; }
 		Object* getRoot() { return root; }
 		ChildWindow* getWindow() { return window; }
 		GLScene* getGLScene() { return glscene; }
-		Object* getSelected() { return selected; }
-		void clearSelection() { selected = NULL; }
 		SchematicsRenderingManager* getSchematicsRenderingManager() { return rendering_manager; }
 
-		void updateObject(Object* object);
-		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
-		//void loadError(const QString& error);
+		//Object selection
+		Object* getSelected() { return selected; }
+		void clearSelection() { selected = NULL; }
 
 	protected:
 		void dropEvent(QDropEvent *event);

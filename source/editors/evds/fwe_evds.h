@@ -70,24 +70,29 @@ namespace EVDS {
 		Editor(ChildWindow* in_window);
 		~Editor();
 
+		//General editor functions
 		void newFile();
 		bool loadFile(const QString &fileName);
 		bool saveFile(const QString &fileName);
 		void updateInterface(bool isInFront);
 		void setModified(bool informationUpdate = true);
 
-		ChildWindow* getWindow() { return window; }
-		GLScene* getGLScene() { return glscene; }
-		Object* getEditRoot() { return root_obj; }
-		Object* getEditDocument() { return document; }
-		Object* getSelected() { return selected; }
-		void clearSelection() { selected = NULL; }
-		ObjectModifiersManager* getModifiersManager() { return modifiers_manager; }
-
+		//EVDS-editor specific
 		void updateInformation(bool ready);
 		void updateObject(Object* object);
 		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
 		void loadError(const QString& error);
+
+		//Various references to other objects
+		ChildWindow* getWindow() { return window; }
+		GLScene* getGLScene() { return glscene; }
+		Object* getEditRoot() { return root_obj; }
+		Object* getEditDocument() { return document; }
+		ObjectModifiersManager* getModifiersManager() { return modifiers_manager; }
+
+		//Object selection
+		Object* getSelected() { return selected; }
+		void clearSelection() { selected = NULL; }
 
 		//List of object variables, cross-section variables by object type
 		QMap<QString,QList<QMap<QString,QString> > > objectVariables;
@@ -124,12 +129,12 @@ namespace EVDS {
 		void createInformationDock();
 		void createCommentsDock();
 
-		//Object types
+		//Load different object types
 		void loadObjectVariablesData();
 
-		//List of objects
-		Dock::ObjectList*	object_list;
-		Dock::Properties*	object_properties;
+		//Dock windows
+		Dock::ObjectList*	object_list;		//List of objects
+		Dock::Properties*	object_properties;	//Property sheets for objects
 
 		//Object cross-sections
 		QDockWidget*		csection_dock;

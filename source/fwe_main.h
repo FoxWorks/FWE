@@ -20,6 +20,7 @@
 #define FWE_MAIN_H
 
 #include <QMainWindow>
+#include <QHash>
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -39,8 +40,7 @@ extern QSettings* fw_editor_settings; //See fwe.cpp
 #define FWE_EDITOR_MAX_RECENT_FILES	10
 class ChildWindow;
 class PreferencesDialog;
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
 	Q_OBJECT
 
 public:
@@ -74,8 +74,8 @@ public:
 	QMenu* getHelpMenu() { return helpMenu; }
 
 private:
-	void createActions();
-	void createMenus();
+	void createApplicationMenus();
+
 	void createToolBars();
 	void createStatusBar();
 	void updateRecentFiles();
@@ -86,8 +86,10 @@ private:
 	QMdiArea *mdiArea;
 	QSignalMapper *windowMapper;
 
+	//Global dialogs
 	PreferencesDialog* preferencesDialog;
 
+	//Main menu bars
 	QMenu *fileMenu;
 	QMenu *recentMenu;
 	QMenu *editMenu;
@@ -97,29 +99,10 @@ private:
 	QToolBar *fileToolBar;
 	QToolBar *editToolBar;
 
-	QAction *newAct;
-	QAction *openAct;
-	QAction *saveAct;
-	QAction *saveAsAct;
-	QAction *exitAct;
-	QAction *cutAct;
-	QAction *copyAct;
-	QAction *pasteAct;
-	QAction *preferencesAct;
-	QAction *closeAct;
-	QAction *closeAllAct;
-	QAction *tileAct;
-	QAction *cascadeAct;
-	QAction *nextAct;
-	QAction *previousAct;
-	QAction *windowSeparatorAct;
-	QAction *fileSeparatorAct;
-	QAction *aboutAct;
-
-	QAction *evdsAct;
-	QAction *schematicsAct;
-
-	QAction *recentFiles[FWE_EDITOR_MAX_RECENT_FILES];
+	//Actions
+	QHash<QString,QAction*> globalActions;	//List of global actions
+	QHash<QString,QAction*> childActions;	//List of actions specific to children
+	QList<QAction*> recentFiles;			//List of actions for recent files
 };
 
 

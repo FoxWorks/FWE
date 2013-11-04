@@ -65,8 +65,8 @@ MainWindow::MainWindow() {
 	preferencesDialog = 0;
 
 	//Create everything
-	createActions();
-	createMenus();
+	createApplicationMenus();
+
 	//createToolBars();
 	createStatusBar();
 	updateInterface();
@@ -253,13 +253,13 @@ void MainWindow::preferences() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::showEVDS() {
-	evdsAct->setChecked(true);
-	schematicsAct->setChecked(false);
+	globalActions["edit.vessel_model"]->setChecked(true);
+	globalActions["edit.schematics"]->setChecked(false);
 	if (activeMdiChild()) activeMdiChild()->showEVDS();
 }
 void MainWindow::showSchematics() {
-	evdsAct->setChecked(false);
-	schematicsAct->setChecked(true);
+	globalActions["edit.vessel_model"]->setChecked(false);
+	globalActions["edit.schematics"]->setChecked(true);
 	if (activeMdiChild()) activeMdiChild()->showSchematics();
 }
 
@@ -301,18 +301,12 @@ void MainWindow::about() {
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::updateInterface() {
 	bool hasMdiChild = (activeMdiChild() != 0);
-	saveAct->setEnabled(hasMdiChild);
-	saveAsAct->setEnabled(hasMdiChild);
-	pasteAct->setEnabled(false);//hasMdiChild);
-	copyAct->setEnabled(false);//hasMdiChild);
-	cutAct->setEnabled(false);//hasMdiChild);
-	closeAct->setEnabled(hasMdiChild);
-	closeAllAct->setEnabled(hasMdiChild);
-	tileAct->setEnabled(hasMdiChild);
-	cascadeAct->setEnabled(hasMdiChild);
-	nextAct->setEnabled(hasMdiChild);
-	previousAct->setEnabled(hasMdiChild);
-	windowSeparatorAct->setVisible(hasMdiChild);
+
+	//Enable or disable all child actions
+	QHash<QString, QAction*>::iterator i;
+	for (i = childActions.begin(); i != childActions.end(); ++i) {
+		i.value()->setEnabled(hasMdiChild);
+	}
 
 	//Update menu items for all windows
 	QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
@@ -337,15 +331,15 @@ void MainWindow::updateInterface() {
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::updateWindowMenu() {
 	windowMenu->clear();
-	windowMenu->addAction(tileAct);
-	windowMenu->addAction(cascadeAct);
+	windowMenu->addAction(globalActions["window.tile"]);
+	windowMenu->addAction(globalActions["window.cascade"]);
 	windowMenu->addSeparator();
-	windowMenu->addAction(nextAct);
-	windowMenu->addAction(previousAct);
-	windowMenu->addAction(windowSeparatorAct);
+	windowMenu->addAction(globalActions["window.next"]);
+	windowMenu->addAction(globalActions["window.previous"]);
+	windowMenu->addAction(globalActions["window.list_separator"]);
 
-	QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
-	windowSeparatorAct->setVisible(!windows.isEmpty());
+	QList<QMdiSubWindow*> windows = mdiArea->subWindowList();
+	globalActions["window.list_separator"]->setVisible(!windows.isEmpty());
 
 	for (int i = 0; i < windows.size(); ++i) {
 		ChildWindow *child = qobject_cast<ChildWindow *>(windows.at(i)->widget());
@@ -353,11 +347,9 @@ void MainWindow::updateWindowMenu() {
 
 		QString text;
 		if (i < 9) {
-			text = tr("&%1 %2").arg(i + 1)
-							   .arg(child->windowTitle());
+			text = tr("&%1 %2").arg(i + 1).arg(child->windowTitle());
 		} else {
-			text = tr("%1 %2").arg(i + 1)
-							  .arg(child->windowTitle());
+			text = tr("%1 %2").arg(i + 1).arg(child->windowTitle());
 		}
 		QAction *action  = windowMenu->addAction(text);
 		action->setCheckable(true);
@@ -387,7 +379,6 @@ void MainWindow::updateRecentFiles() {
 		recentFiles[j]->setVisible(false);
 	}
 
-	fileSeparatorAct->setVisible(hasRecentFiles);
 	recentMenu->setEnabled(hasRecentFiles);
 }
 
@@ -425,155 +416,186 @@ ChildWindow *MainWindow::createMdiChild() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void MainWindow::createActions() {
-	newAct = new QAction(QIcon(":/icon/new.png"), tr("&New"), this);
-	newAct->setShortcuts(QKeySequence::New);
-	newAct->setStatusTip(tr("Create a new file"));
-	connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
-
-	openAct = new QAction(QIcon(":/icon/open.png"), tr("&Open..."), this);
-	openAct->setShortcuts(QKeySequence::Open);
-	openAct->setStatusTip(tr("Open an existing file"));
-	connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
-
-	saveAct = new QAction(QIcon(":/icon/save.png"), tr("&Save"), this);
-	saveAct->setShortcuts(QKeySequence::Save);
-	saveAct->setStatusTip(tr("Save the document to disk"));
-	connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
-
-	saveAsAct = new QAction(QIcon(":/icon/save_as.png"), tr("Save &As..."), this);
-	saveAsAct->setShortcuts(QKeySequence::SaveAs);
-	saveAsAct->setStatusTip(tr("Save the document under a new name"));
-	connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
-
-	exitAct = new QAction(QIcon(":/icon/exit.png"), tr("E&xit"), this);
-	exitAct->setShortcuts(QKeySequence::Quit);
-	exitAct->setStatusTip(tr("Exit the application"));
-	connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
-
-	fileSeparatorAct = new QAction(this);
-	fileSeparatorAct->setSeparator(true);
-
-	for (int i = 0; i < FWE_EDITOR_MAX_RECENT_FILES; ++i) {
-		recentFiles[i] = new QAction(this);
-		recentFiles[i]->setVisible(false);
-		connect(recentFiles[i], SIGNAL(triggered()), this, SLOT(openRecent()));
-	}
-
-	cutAct = new QAction(QIcon(":/icon/cut.png"), tr("Cu&t"), this);
-	cutAct->setShortcuts(QKeySequence::Cut);
-	cutAct->setStatusTip(tr("Cut the current selection's contents to the "
-							"clipboard"));
-	connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()));
-
-	copyAct = new QAction(QIcon(":/icon/copy.png"), tr("&Copy"), this);
-	copyAct->setShortcuts(QKeySequence::Copy);
-	copyAct->setStatusTip(tr("Copy the current selection's contents to the "
-							 "clipboard"));
-	connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
-
-	pasteAct = new QAction(QIcon(":/icon/paste.png"), tr("&Paste"), this);
-	pasteAct->setShortcuts(QKeySequence::Paste);
-	pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
-							  "selection"));
-	connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
-
-	preferencesAct = new QAction(QIcon(":/icon/preferences.png"), tr("&Preferences..."), this);
-	preferencesAct->setStatusTip(tr("Edit FoxWorks Editor preferences and configuration"));
-	connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
-
-	closeAct = new QAction(QIcon(":/icon/close.png"), tr("Cl&ose"), this);
-	closeAct->setStatusTip(tr("Close the active window"));
-	connect(closeAct, SIGNAL(triggered()),
-			mdiArea, SLOT(closeActiveSubWindow()));
-
-	closeAllAct = new QAction(tr("Close &All"), this);
-	closeAllAct->setStatusTip(tr("Close all the windows"));
-	connect(closeAllAct, SIGNAL(triggered()),
-			mdiArea, SLOT(closeAllSubWindows()));
-
-	tileAct = new QAction(tr("&Tile"), this);
-	tileAct->setStatusTip(tr("Tile the windows"));
-	connect(tileAct, SIGNAL(triggered()), mdiArea, SLOT(tileSubWindows()));
-
-	cascadeAct = new QAction(tr("&Cascade"), this);
-	cascadeAct->setStatusTip(tr("Cascade the windows"));
-	connect(cascadeAct, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
-
-	nextAct = new QAction(QIcon(":/icon/next.png"), tr("Ne&xt"), this);
-	nextAct->setShortcuts(QKeySequence::NextChild);
-	nextAct->setStatusTip(tr("Move the focus to the next window"));
-	connect(nextAct, SIGNAL(triggered()),
-			mdiArea, SLOT(activateNextSubWindow()));
-
-	previousAct = new QAction(QIcon(":/icon/previous.png"), tr("Pre&vious"), this);
-	previousAct->setShortcuts(QKeySequence::PreviousChild);
-	previousAct->setStatusTip(tr("Move the focus to the previous window"));
-	connect(previousAct, SIGNAL(triggered()),
-			mdiArea, SLOT(activatePreviousSubWindow()));
-
-	windowSeparatorAct = new QAction(this);
-	windowSeparatorAct->setSeparator(true);
-
-	aboutAct = new QAction(QIcon(":/icon/about.png"), tr("&About"), this);
-	aboutAct->setStatusTip(tr("Show the About box"));
-	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+void MainWindow::createApplicationMenus() {
+	QAction* action;
 
 
-	evdsAct = new QAction(tr("Vessel Model"), this);
-	evdsAct->setStatusTip(tr("Show vessel model editor"));
-	evdsAct->setCheckable(true);
-	connect(evdsAct, SIGNAL(triggered()), this, SLOT(showEVDS()));
-
-	schematicsAct = new QAction(tr("Schematics"), this);
-	schematicsAct->setStatusTip(tr("Show schematics editor"));
-	schematicsAct->setCheckable(true);
-	connect(schematicsAct, SIGNAL(triggered()), this, SLOT(showSchematics()));
-
-	showEVDS();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void MainWindow::createMenus() {
+	//--------------------------------------------------------------------------
+	// File menu
+	//--------------------------------------------------------------------------
 	fileMenu = menuBar()->addMenu(tr("&File"));
-	fileMenu->addAction(newAct);
-	fileMenu->addAction(openAct);
+
+	action = new QAction(QIcon(":/icon/new.png"), tr("&New"), this);
+	action->setShortcuts(QKeySequence::New);
+	action->setStatusTip(tr("Create a new file"));
+	connect(action, SIGNAL(triggered()), this, SLOT(newFile()));
+	fileMenu->addAction(action);
+	globalActions["file.new"] = action;
+
+	action = new QAction(QIcon(":/icon/open.png"), tr("&Open..."), this);
+	action->setShortcuts(QKeySequence::Open);
+	action->setStatusTip(tr("Open an existing file"));
+	connect(action, SIGNAL(triggered()), this, SLOT(open()));
+	fileMenu->addAction(action);
+	globalActions["file.open"] = action;
+
+	//Recent menu and menu items
 	recentMenu = fileMenu->addMenu(tr("&Open Recent"));
 	for (int i = 0; i < FWE_EDITOR_MAX_RECENT_FILES; ++i) {
-		recentMenu->addAction(recentFiles[i]);
+		action = new QAction(this);
+		action->setVisible(false);
+		connect(action, SIGNAL(triggered()), this, SLOT(openRecent()));
+
+		recentFiles.append(action);
+		recentMenu->addAction(action);
 	}
-	//fileMenu->addSeparator();
-	fileMenu->addAction(saveAct);
-	fileMenu->addAction(saveAsAct);
-	fileMenu->addSeparator();
-	fileMenu->addAction(closeAct);
-	fileMenu->addAction(closeAllAct);
-	fileMenu->addSeparator();
-	fileMenu->addAction(exitAct);
 
+	action = new QAction(QIcon(":/icon/save.png"), tr("&Save"), this);
+	action->setShortcuts(QKeySequence::Save);
+	action->setStatusTip(tr("Save the document to disk"));
+	connect(action, SIGNAL(triggered()), this, SLOT(save()));
+	fileMenu->addAction(action);
+	globalActions["file.save"] = action;
+
+	action = new QAction(QIcon(":/icon/save_as.png"), tr("Save &As..."), this);
+	action->setShortcuts(QKeySequence::SaveAs);
+	action->setStatusTip(tr("Save the document under a new name"));
+	connect(action, SIGNAL(triggered()), this, SLOT(saveAs()));
+	fileMenu->addAction(action);
+	globalActions["file.saveAs"] = action;
+
+	fileMenu->addSeparator(); //------------------------------------------------
+
+	action = new QAction(QIcon(":/icon/close.png"), tr("Cl&ose"), this);
+	action->setStatusTip(tr("Close the active window"));
+	connect(action, SIGNAL(triggered()), mdiArea, SLOT(closeActiveSubWindow()));
+	fileMenu->addAction(action);
+	globalActions["file.close"] = action;
+
+	action = new QAction(tr("Close &All"), this);
+	action->setStatusTip(tr("Close all the windows"));
+	connect(action, SIGNAL(triggered()), mdiArea, SLOT(closeAllSubWindows()));
+	fileMenu->addAction(action);
+	globalActions["file.closeall"] = action;
+	
+	fileMenu->addSeparator(); //------------------------------------------------
+
+	action = new QAction(QIcon(":/icon/exit.png"), tr("E&xit"), this);
+	action->setShortcuts(QKeySequence::Quit);
+	action->setStatusTip(tr("Exit the application"));
+	connect(action, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
+	fileMenu->addAction(action);
+	globalActions["file.exit"] = action;
+
+
+	//--------------------------------------------------------------------------
+	// Edit menu
+	//--------------------------------------------------------------------------
 	editMenu = menuBar()->addMenu(tr("&Edit"));
-	editMenu->addAction(cutAct);
-	editMenu->addAction(copyAct);
-	editMenu->addAction(pasteAct);
-	editMenu->addSeparator();
-	editMenu->addAction(evdsAct);
-	editMenu->addAction(schematicsAct);
-	editMenu->addSeparator();
-	editMenu->addAction(preferencesAct);
 
+	action = new QAction(QIcon(":/icon/cut.png"), tr("Cu&t"), this);
+	action->setShortcuts(QKeySequence::Cut);
+	action->setStatusTip(tr("Cut the current selection's contents to the clipboard"));
+	connect(action, SIGNAL(triggered()), this, SLOT(cut()));
+	editMenu->addAction(action);
+	globalActions["edit.cut"] = action;
+
+	action = new QAction(QIcon(":/icon/copy.png"), tr("&Copy"), this);
+	action->setShortcuts(QKeySequence::Copy);
+	action->setStatusTip(tr("Copy the current selection's contents to the clipboard"));
+	connect(action, SIGNAL(triggered()), this, SLOT(copy()));
+	editMenu->addAction(action);
+	globalActions["edit.copy"] = action;
+
+	action = new QAction(QIcon(":/icon/paste.png"), tr("&Paste"), this);
+	action->setShortcuts(QKeySequence::Paste);
+	action->setStatusTip(tr("Paste the clipboard's contents into the current selection"));
+	connect(action, SIGNAL(triggered()), this, SLOT(paste()));
+	editMenu->addAction(action);
+	globalActions["edit.paste"] = action;
+
+	editMenu->addSeparator(); //------------------------------------------------
+
+	action = new QAction(tr("Vessel Model"), this);
+	action->setStatusTip(tr("Show vessel model editor"));
+	action->setCheckable(true);
+	connect(action, SIGNAL(triggered()), this, SLOT(showEVDS()));
+	editMenu->addAction(action);
+	globalActions["edit.vessel_model"] = action;
+
+	action = new QAction(tr("Schematics"), this);
+	action->setStatusTip(tr("Show schematics editor"));
+	action->setCheckable(true);
+	connect(action, SIGNAL(triggered()), this, SLOT(showSchematics()));
+	editMenu->addAction(action);
+	globalActions["edit.schematics"] = action;
+
+	showEVDS(); //FIXME
+
+	editMenu->addSeparator(); //------------------------------------------------
+
+	action = new QAction(QIcon(":/icon/preferences.png"), tr("&Preferences..."), this);
+	action->setStatusTip(tr("Edit FoxWorks Editor preferences and configuration"));
+	connect(action, SIGNAL(triggered()), this, SLOT(preferences()));
+	editMenu->addAction(action);
+	globalActions["edit.preferences"] = action;
+
+
+	//--------------------------------------------------------------------------
+	// View menu
+	//--------------------------------------------------------------------------
 	viewMenu = menuBar()->addMenu(tr("&View"));
 
+
+	//--------------------------------------------------------------------------
+	// Window menu
+	//--------------------------------------------------------------------------
 	windowMenu = menuBar()->addMenu(tr("&Window"));
+
+	action = new QAction(tr("&Tile"), this);
+	action->setStatusTip(tr("Tile the windows"));
+	connect(action, SIGNAL(triggered()), mdiArea, SLOT(tileSubWindows()));
+	globalActions["window.tile"] = action;
+
+	action = new QAction(tr("&Cascade"), this);
+	action->setStatusTip(tr("Cascade the windows"));
+	connect(action, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
+	globalActions["window.cascade"] = action;
+
+	action = new QAction(QIcon(":/icon/next.png"), tr("Ne&xt"), this);
+	action->setShortcuts(QKeySequence::NextChild);
+	action->setStatusTip(tr("Move the focus to the next window"));
+	connect(action, SIGNAL(triggered()), mdiArea, SLOT(activateNextSubWindow()));
+	globalActions["window.next"] = action;
+
+	action = new QAction(QIcon(":/icon/previous.png"), tr("Pre&vious"), this);
+	action->setShortcuts(QKeySequence::PreviousChild);
+	action->setStatusTip(tr("Move the focus to the previous window"));
+	connect(action, SIGNAL(triggered()), mdiArea, SLOT(activatePreviousSubWindow()));
+	globalActions["window.previous"] = action;
+
+	action = new QAction(this);
+	action->setSeparator(true);
+	globalActions["window.list_separator"] = action;
+
+
+	//--------------------------------------------------------------------------
+	// Help menu
+	//--------------------------------------------------------------------------
+	helpMenu = menuBar()->addMenu(tr("&Window"));
+
+	action = new QAction(QIcon(":/icon/about.png"), tr("&About"), this);
+	action->setStatusTip(tr("Show the About box"));
+	connect(action, SIGNAL(triggered()), this, SLOT(about()));
+	helpMenu->addAction(action);
+	globalActions["help.about"] = action;
+
+
+	///....
 	updateWindowMenu();
 	connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
 
 	menuBar()->addSeparator();
-
-	helpMenu = menuBar()->addMenu(tr("&Help"));
-	helpMenu->addAction(aboutAct);
 }
 
 
@@ -582,14 +604,14 @@ void MainWindow::createMenus() {
 ////////////////////////////////////////////////////////////////////////////////
 void MainWindow::createToolBars() {
 	fileToolBar = addToolBar(tr("File"));
-	fileToolBar->addAction(newAct);
-	fileToolBar->addAction(openAct);
-	fileToolBar->addAction(saveAct);
+	fileToolBar->addAction(globalActions["file.new"]);
+	fileToolBar->addAction(globalActions["file.open"]);
+	fileToolBar->addAction(globalActions["file.save"]);
 
 	editToolBar = addToolBar(tr("Edit"));
-	editToolBar->addAction(cutAct);
-	editToolBar->addAction(copyAct);
-	editToolBar->addAction(pasteAct);
+	editToolBar->addAction(globalActions["file.cut"]);
+	editToolBar->addAction(globalActions["file.copy"]);
+	editToolBar->addAction(globalActions["file.paste"]);
 }
 
 
