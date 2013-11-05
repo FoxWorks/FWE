@@ -301,8 +301,8 @@ void GLScene::saveSheets() {
 
 	Object* old_sheet = schematics_editor->getCurrentSheet();
 	int sheet_no = 1;
-	for (int i = 0; i < schematics_editor->getRoot()->getChildrenCount(); i++) {
-		Object* sheet = schematics_editor->getRoot()->getChild(i);
+	for (int i = 0; i < schematics_editor->getMetadataRoot()->getChildrenCount(); i++) {
+		Object* sheet = schematics_editor->getMetadataRoot()->getChild(i);
 		if (sheet->getType() == "foxworks.schematics.sheet") {
 			schematics_editor->setCurrentSheet(sheet);
 			schematics_editor->getSchematicsRenderingManager()->updateInstances();

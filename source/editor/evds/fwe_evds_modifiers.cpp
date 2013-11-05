@@ -81,6 +81,7 @@ void ObjectModifiersManager::updateModifiers() {
 }
 
 void ObjectModifiersManager::doUpdateModifiers() {
+	if (!editor->getActive()) return;
 	if (!shouldUpdateModifiers) return;
 	shouldUpdateModifiers = false;
 	qDebug("ObjectModifiersManager::updateModifiers()");
@@ -298,6 +299,7 @@ void ObjectModifiersManager::createModifiedCopy(Object* modifier, Object* object
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectModifiersManager::objectPositionChanged(Object* object) {
 	if (initializing) return;
+	if (!object->getEVDSEditor()->getActive()) return;
 	qDebug("ObjectModifiersManager::objectPositionChanged()");
 
 	//updateModifiers();
@@ -310,7 +312,9 @@ void ObjectModifiersManager::objectPositionChanged(Object* object) {
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectModifiersManager::modifierChanged(Object* object) {
 	if (initializing) return;
+	if (!object->getEVDSEditor()->getActive()) return;
 	qDebug("ObjectModifiersManager::modifierChanged()");
+
 	updateModifiers();
 }
 
@@ -320,7 +324,9 @@ void ObjectModifiersManager::modifierChanged(Object* object) {
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectModifiersManager::objectRemoved(Object* object) {
 	if (initializing) return;
+	if (!object->getEVDSEditor()->getActive()) return;
 	qDebug("ObjectModifiersManager::objectRemoved()");
+
 	updateModifiers();
 }
 
@@ -331,5 +337,7 @@ void ObjectModifiersManager::objectRemoved(Object* object) {
 void ObjectModifiersManager::objectAdded(Object* object) {
 	if (initializing) return;
 	qDebug("ObjectModifiersManager::objectAdded()");
+	if (!object->getEVDSEditor()->getActive()) return;
+
 	updateModifiers();
 }

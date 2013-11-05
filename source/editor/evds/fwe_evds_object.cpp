@@ -466,7 +466,7 @@ void Object::setVariable(const QString &name, const QString &value) {
 				QWidget* prev_sheet = property_sheet;
 				property_sheet = 0;
 				if (isSchematicsElement()) {
-					getSchematicsEditor()->propertySheetUpdated(prev_sheet,getPropertySheet());
+					getSchematicsEditor()->elementPropertySheetUpdated(prev_sheet,getPropertySheet());
 				} else {
 					getEVDSEditor()->objectPropertySheetUpdated(prev_sheet,getPropertySheet());
 				}

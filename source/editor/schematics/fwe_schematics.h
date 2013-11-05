@@ -58,23 +58,21 @@ namespace EVDS {
 		Q_OBJECT
 
 	public:
-		SchematicsEditor(FWE::EditorWindow* in_window, EVDS::Editor* in_editor);
+		SchematicsEditor(FWE::EditorWindow* in_window);
 		~SchematicsEditor();
 
 		//General editor functions
 		void finishInitializing();
-		void updateInterface(bool isInFront);
-		void setEditorHidden(bool isHidden);
+		void setActive(bool active);
 
 		void updateObject(Object* object);
-		void propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
+		void elementPropertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet);
 
 		//References to other objects
-		EVDS::Editor* getEVDSEditor() { return editor; }
-		Object* getCurrentSheet() { return sheet; }
-		void setCurrentSheet(Object* new_sheet) { sheet = new_sheet; }
-		Object* getRoot() { return root; }
-		GLScene* getGLScene() { return glscene; }
+		Object*			getCurrentSheet() { return sheet; }
+		void			setCurrentSheet(Object* new_sheet) { sheet = new_sheet; }
+		Object*			getMetadataRoot() { return root; }
+		GLScene*		getGLScene() { return glscene; }
 		SchematicsRenderingManager* getSchematicsRenderingManager() { return rendering_manager; }
 
 		//Object selection
@@ -101,29 +99,17 @@ namespace EVDS {
 		void showComments();*/
 
 	private:
-		QString currentFile;
-
-		void invalidateChildren(Object* object);
 		void createMenuToolbar();
-		//void createCSectionDock();
 		//void createInformationDock();
 		void createCommentsDock();
 
-		//Object types
-		//void loadObjectData();
 
 		//List of schematics elements
 		Dock::ObjectList*	elements_list;
 		Dock::ObjectList*	object_list;
 		Dock::Properties*	element_properties;
 
-		//Object cross-sections
-		/*QDockWidget*		csection_dock;
-		QWidget*			csection;
-		QStackedLayout*		csection_layout;
-		QLabel*				csection_none;
-
-		//Rigid body information
+		/*//Rigid body information
 		QDockWidget*		bodyinfo_dock;
 		QTextEdit*			bodyinfo;*/
 
@@ -135,21 +121,11 @@ namespace EVDS {
 		GLScene*			glscene;
 		GLView*				glview;
 
-		//Menus and actions
-		QList<QAction*>		actions;
-/*
-		QMenu*				cutsection_menu;
-		QAction*			cutsection_x;
-		QAction*			cutsection_y;
-		QAction*			cutsection_z;
-*/
-
 		//EVDS objects (editing area)
-		EVDS::Editor* editor;
-		EVDS::Object* root;
-		EVDS::Object* selected;
-		EVDS::Object* sheet;
-		EVDS::Object* prev_sheet;
+		EVDS::Object*		root;
+		EVDS::Object*		selected;
+		EVDS::Object*		sheet;
+		EVDS::Object*		prev_sheet;
 
 		SchematicsRenderingManager* rendering_manager;
 	};

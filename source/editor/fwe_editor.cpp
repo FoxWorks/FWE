@@ -61,7 +61,7 @@ EditorWindow::EditorWindow(MainWindow* window) : activeThreads(0) {
 	EVDSEditor->setActive(true);
 
 	//Create schematics editor
-	SchematicsEditor = new EVDS::SchematicsEditor(this,EVDSEditor);
+	SchematicsEditor = new EVDS::SchematicsEditor(this);
 	editorsLayout->addWidget(SchematicsEditor);
 	SchematicsEditor->setActive(false);
 
@@ -265,7 +265,6 @@ bool EditorWindow::loadFile(const QString &fileName) {
 
 	//Initialize the root object
 	root_object->invalidateChildren();
-	printf("ROOT %d",root_object->getChildrenCount());
 
 	//Find the "document" object, or create it
 	document = 0;
@@ -354,7 +353,6 @@ void EditorWindow::addEditorAction(Editor* editor, QAction* action) {
 ////////////////////////////////////////////////////////////////////////////////
 void EditorWindow::showVME() {
 	editorsLayout->setCurrentWidget(EVDSEditor);
-	SchematicsEditor->setEditorHidden(true);
 
 	EVDSEditor->setActive(true);
 	SchematicsEditor->setActive(false);
@@ -366,7 +364,6 @@ void EditorWindow::showVME() {
 ////////////////////////////////////////////////////////////////////////////////
 void EditorWindow::showSchematics() {
 	editorsLayout->setCurrentWidget(SchematicsEditor);
-	SchematicsEditor->setEditorHidden(false);
 
 	EVDSEditor->setActive(false);
 	SchematicsEditor->setActive(true);

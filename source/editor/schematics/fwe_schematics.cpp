@@ -31,9 +31,6 @@
 #include "fwe_prop_sheet.h"
 #include "fwe_evds_object.h"
 #include "fwe_evds_object_model.h"
-/*#include "fwe_evds.h"
-#include "fwe_evds_object_renderer.h"
-#include "fwe_evds_modifiers.h"*/
 #include "fwe_dock_objectlist.h"
 #include "fwe_dock_properties.h"
 
@@ -43,8 +40,7 @@ using namespace EVDS;
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-SchematicsEditor::SchematicsEditor(FWE::EditorWindow* in_window, EVDS::Editor* in_editor) : FWE::Editor(in_window) {
-	editor = in_editor;
+SchematicsEditor::SchematicsEditor(FWE::EditorWindow* in_window) : FWE::Editor(in_window) {
 	selected = NULL;
 	root = NULL;
 	sheet = NULL;
@@ -55,7 +51,7 @@ SchematicsEditor::SchematicsEditor(FWE::EditorWindow* in_window, EVDS::Editor* i
 
 	//Create working area/main 3D widget
 	glview = new GLView(this);
-	glscene = new GLScene(0,editor,this,this);
+	glscene = new GLScene(0,getEVDSEditor(),this,this);
 	glview->setScene(glscene);
 	setCentralWidget(glview);
 
@@ -75,11 +71,7 @@ SchematicsEditor::SchematicsEditor(FWE::EditorWindow* in_window, EVDS::Editor* i
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 SchematicsEditor::~SchematicsEditor() {
-	for (int i = 0; i < actions.count(); i++) {
-		actions[i]->deleteLater();
-	}
 
-	//delete glview;
 }
 
 
@@ -118,7 +110,7 @@ void SchematicsEditor::commentsChanged() {
 	if (selected) {
 		selected->setVariable("text",comments->toPlainText());
 	} else {
-		editor->getEditDocument()->setVariable("text",comments->toPlainText());
+		getEditDocument()->setVariable("text",comments->toPlainText());
 	}
 }
 
@@ -126,19 +118,28 @@ void SchematicsEditor::commentsChanged() {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Callback from when object was modified
 ////////////////////////////////////////////////////////////////////////////////
+void SchematicsEditor::setActive(bool active) {
+	isActive = active;
+
+	//Clear out or re-initialize all modifier-created instances to avoid crashes
+	if (active) {
+		rendering_manager->updateInstances(); 
+	}
+}
+/*
 void SchematicsEditor::setEditorHidden(bool isHidden) {
 	if (isHidden) sheet = 0;
-	rendering_manager->updateInstances(); //Clear out all modifier-created instances to avoid crashes
+	
 	if (!isHidden) { //Invalidate objects tree FIXME
-		/*if (objectlist_model) {
+		if (objectlist_model) {
 			delete objectlist_model;
 			
 			objectlist_model = new ObjectTreeModel(editor,editor->getEditRoot(),this);
 			objectlist_model->setAcceptedMimeType("application/vnd.evds.none");
 			objectlist_tree->setModel(objectlist_model);
-		}*/
+		}
 	}
-}
+}*/
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +148,7 @@ void SchematicsEditor::setEditorHidden(bool isHidden) {
 void SchematicsEditor::addObject() {
 	Object* object = elements_list->getModel()->newObject(0,elements_list->currentIndex());
 
-	if (object->getParent() == getSchematicsEditor()->getRoot()) {
+	if (object->getParent() == getSchematicsEditor()->getMetadataRoot()) {
 		object->setType("foxworks.schematics.sheet");
 	} else {
 		object->setType("foxworks.schematics.element");
@@ -170,7 +171,7 @@ void SchematicsEditor::removeObject() {
 void SchematicsEditor::selectObject(const QModelIndex& index) {
 	//Should selection be cleared
 	if (!index.isValid()) {
-		element_properties->setPropertySheet(editor->getEditDocument()->getPropertySheet());
+		element_properties->setPropertySheet(getEditDocument()->getPropertySheet());
 		selected = NULL;
 
 		//Update information
@@ -178,7 +179,7 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 
 		//Update comments
 		disconnect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
-		comments->setText(editor->getEditDocument()->getString("text"));
+		comments->setText(getEditDocument()->getString("text"));
 		connect(comments, SIGNAL(textChanged()), this, SLOT(commentsChanged()));
 		return;
 	}
@@ -221,7 +222,6 @@ void SchematicsEditor::selectObject(const QModelIndex& index) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsEditor::updateObject(Object* object) {
-	invalidateChildren(root);
 	if (object) {
 		elements_list->getModel()->updateObject(object);
 	}
@@ -233,7 +233,7 @@ void SchematicsEditor::updateObject(Object* object) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void SchematicsEditor::propertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet) {
+void SchematicsEditor::elementPropertySheetUpdated(QWidget* old_sheet, QWidget* new_sheet) {
 	element_properties->removePropertySheet(old_sheet);
 	element_properties->setPropertySheet(new_sheet);
 }
@@ -242,16 +242,9 @@ void SchematicsEditor::propertySheetUpdated(QWidget* old_sheet, QWidget* new_she
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
-void SchematicsEditor::invalidateChildren(Object* object) {
-	//object->setSchematicsEditor(this);
-	for (int i = 0; i < object->getChildrenCount(); i++) {
-		invalidateChildren(object->getChild(i));
-	}
-}
-
 void SchematicsEditor::finishInitializing() {
 	//Read schematics
-	Object* document = editor->getEditDocument();
+	Object* document = getEditDocument();
 	root = NULL;
 	for (int i = 0; i < document->getChildrenCount(); i++) {
 		if (document->getChild(i)->getType() == "foxworks.schematics") {
@@ -266,7 +259,6 @@ void SchematicsEditor::finishInitializing() {
 		root->setType("foxworks.schematics");
 		root->setName("");
 	}
-	invalidateChildren(root);
 
 	//Create schematics editor itself
 	//createObjectListDock();
@@ -274,7 +266,7 @@ void SchematicsEditor::finishInitializing() {
 	//createPropertiesDock();
 
 	//Object list
-	object_list = new Dock::ObjectList(editor->getEditRoot(),this);
+	object_list = new Dock::ObjectList(getEditRoot(),this);
 	addDockWidget(Qt::LeftDockWidgetArea, object_list);
 
 	//Make sure the object list does not accept any mime types
@@ -326,17 +318,6 @@ void SchematicsEditor::dragMoveEvent(QDragMoveEvent *event) {
 
 void SchematicsEditor::dragEnterEvent(QDragEnterEvent *event) {
 	//event->acceptProposedAction();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// @brief
-////////////////////////////////////////////////////////////////////////////////
-void SchematicsEditor::updateInterface(bool isInFront) {
-	for (int i = 0; i < actions.count(); i++) {
-		actions[i]->setVisible(isInFront);
-	}
-	//cutsection_menu->menuAction()->setVisible(isInFront);
 }
 
 

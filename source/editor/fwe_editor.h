@@ -63,8 +63,10 @@ namespace FWE {
 		bool getActive() { return isActive; }
 		void setActive(bool active) { isActive = active; }
 
-	private:
+	protected:
 		bool isActive;
+
+	private:
 		EditorWindow* editorWindow;
 	};
 

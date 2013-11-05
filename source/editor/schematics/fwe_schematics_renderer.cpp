@@ -55,9 +55,10 @@ SchematicsRenderingManager::~SchematicsRenderingManager() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsRenderingManager::updateInstances() {
-	GLScene* glview = schematics_editor->getGLScene();
-
+	if (!schematics_editor->getActive()) return;
 	qDebug("SchematicsRenderingManager::updateInstances()");
+
+	GLScene* glview = schematics_editor->getGLScene();
 
 	//Remove all instances from glview
 	for (int i = 0; i < schematicsInstances.count(); i++) {
@@ -85,6 +86,7 @@ void SchematicsRenderingManager::updateInstances() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void SchematicsRenderingManager::updatePositions() {
+	if (!schematics_editor->getActive()) return;
 	qDebug("SchematicsRenderingManager::updatePositions()");
 
 	//Set positions of all children

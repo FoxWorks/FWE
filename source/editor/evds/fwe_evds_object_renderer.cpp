@@ -73,6 +73,9 @@ ObjectRenderer::~ObjectRenderer() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectRenderer::positionChanged() {
+	if (!object->getEVDSEditor()->getActive()) return;
+	qDebug("ObjectRenderer::positionChanged()");
+
 	GLScene* glview = object->getEVDSEditor()->getGLScene();
 
 	//Offset GLC instance relative to objects parent
@@ -277,6 +280,10 @@ void ObjectLODGeneratorResult::clear() {
 	indicesLists.clear();
 	lodList.clear();
 }
+
+
+
+
 
 
 
