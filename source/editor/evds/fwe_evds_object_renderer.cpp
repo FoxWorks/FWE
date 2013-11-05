@@ -67,6 +67,8 @@ ObjectRenderer::~ObjectRenderer() {
 	}
 
 	delete glcInstance;
+	delete glcMeshRep;
+	delete glcMesh;
 	lodMeshGenerator->stopWork();
 	lodMeshGenerator->deleteLater();
 }
