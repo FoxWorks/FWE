@@ -59,13 +59,16 @@ ObjectRenderer::~ObjectRenderer() {
 	//removeFromModifiers(object);
 
 	//Remove instances from glview
-	GLScene* glview = object->getEVDSEditor()->getGLScene();
-	if (glview->getCollection()->contains(glcInstance->id())) {
-		glview->getCollection()->remove(glcInstance->id());
+	if (object->getEVDSEditor()) {
+		GLScene* glview = object->getEVDSEditor()->getGLScene();
+		if (glview->getCollection()->contains(glcInstance->id())) {
+			glview->getCollection()->remove(glcInstance->id());
+		}
 	}
 
 	delete glcInstance;
 	lodMeshGenerator->stopWork();
+	lodMeshGenerator->deleteLater();
 }
 
 
@@ -355,7 +358,8 @@ void ObjectLODGenerator::stopWork() {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 void ObjectLODGenerator::run() {
-	editor->getEditorWindow()->activeThreads.release(1);
+	editor->getEditorWindow()->threadStarted();
+
 	//msleep(1000 + (qrand() % 5000)); //Give enough time for the rest of application to initialize
 	while (!doStopWork) {
 		readingLock.lock();
@@ -410,7 +414,7 @@ void ObjectLODGenerator::run() {
 
 	//Finish thread work and destroy HQ mesh
 	//qDebug("ObjectLODGenerator::run: stopped");
-	editor->getEditorWindow()->activeThreads.acquire(1);
+	editor->getEditorWindow()->threadEnded();
 }
 
 QSemaphore ObjectLODGenerator::threadsSemaphore(QThread::idealThreadCount());

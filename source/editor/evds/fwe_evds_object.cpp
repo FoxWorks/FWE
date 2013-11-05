@@ -88,13 +88,15 @@ Object::Object(EVDS_OBJECT* in_object, EVDS::Object* in_parent, FWE::EditorWindo
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 Object::~Object() {
-	if (window) {
-		getEVDSEditor()->getModifiersManager()->objectRemoved(this);
-		if (!getEVDSEditor()->getModifiersManager()->isInitializing()) {
-			getSchematicsEditor()->getSchematicsRenderingManager()->updateInstances();
-		}
+	//Only use this logic when EVDS editor still exists
+	if (window && getEVDSEditor()) {
+		getEVDSEditor()->getModifiersManager()->objectRemoved(this); //Signal object removal
+		getSchematicsEditor()->getSchematicsRenderingManager()->updateInstances();
+
+		if (getEVDSEditor()->getSelected() == this) getEVDSEditor()->clearSelection();
 	}
-	if (window && (getEVDSEditor()->getSelected() == this)) getEVDSEditor()->clearSelection();
+
+	//Delete children and hidden children
 	for (int i = 0; i < children.count(); i++) {
 		delete children[i];
 	}
@@ -102,6 +104,7 @@ Object::~Object() {
 		delete hidden_children[i];
 	}
 	if (renderer) delete renderer;
+
 	//These will get deleted when corresponding widgets are deleted
 	//if (property_sheet) property_sheet->deleteLater();
 	//if (csection_editor) csection_editor->deleteLater();
@@ -843,6 +846,10 @@ void FWE_ObjectInitializer_FixUIDs(EVDS_OBJECT* object) {
 	}
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 void ObjectInitializer::stopWork() {
 	doStopWork = true;
 	while (isRunning()) {
@@ -851,7 +858,13 @@ void ObjectInitializer::stopWork() {
 	}
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 void ObjectInitializer::run() {
+	object->getEditorWindow()->threadStarted();
+
 	msleep(2000); //Give enough time for the rest of application to initialize
 	while (!object_copy && (!doStopWork)) msleep(100); //Wait until there's an object to initialize
 	while (!doStopWork) {
@@ -883,4 +896,5 @@ void ObjectInitializer::run() {
 	//Remove object
 	//qDebug("ObjectInitializer::run: stopped");
 	//if (object_copy) EVDS_Object_Destroy(object_copy);
+	object->getEditorWindow()->threadEnded();
 }

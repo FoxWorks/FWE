@@ -76,6 +76,7 @@ namespace FWE {
 
 	public:
 		EditorWindow(MainWindow* window);
+		~EditorWindow();
 
 		//File operations
 		void newFile();
@@ -104,9 +105,6 @@ namespace FWE {
 		QMap<QString,QList<QMap<QString,QString> > > objectVariables;
 		QMap<QString,QList<QMap<QString,QString> > > csectionVariables;
 
-		//Counter for active working threads
-		QSemaphore activeThreads;
-
 	protected:
 		void closeEvent(QCloseEvent *event);
 
@@ -122,10 +120,15 @@ namespace FWE {
 		//Set global project modified flag
 		void setModified() { isModified = true; updateTitle(); }
 
+		//Keep-tracker for the number of active threads
+		void threadStarted() { activeThreads.release(1); }
+		void threadEnded() { activeThreads.acquire(1); }
+
 	private slots:
 		void cleanupTimer();
 
 	private:
+		QSemaphore activeThreads;
 		MainWindow* mainWindow;
 		bool isModified;
 		bool trySave();

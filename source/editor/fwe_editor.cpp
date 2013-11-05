@@ -84,6 +84,27 @@ EditorWindow::EditorWindow(MainWindow* window) : activeThreads(0) {
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
+EditorWindow::~EditorWindow() {
+	qDebug("EditorWindow::~EditorWindow: destroying editors");
+	delete EVDSEditor;
+	delete SchematicsEditor;
+	EVDSEditor = 0;
+	SchematicsEditor = 0;
+
+	qDebug("EditorWindow::~EditorWindow: waiting for remaining threads");
+	while (activeThreads.available() > 0) ;
+
+	qDebug("EditorWindow::~EditorWindow: cleaning up EVDS objects");
+	delete root_object;
+
+	qDebug("EditorWindow::~EditorWindow: destroying system");
+	EVDS_System_Destroy(system);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief
+////////////////////////////////////////////////////////////////////////////////
 void EditorWindow::loadObjectVariablesData() {
 	//Create special mapping from materials databases
 	QMap<QString,QString> special_mapping;

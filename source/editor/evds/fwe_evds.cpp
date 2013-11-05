@@ -119,21 +119,16 @@ Editor::Editor(FWE::EditorWindow* in_window) : FWE::Editor(in_window) {
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 Editor::~Editor() {
-	/*modifiers_manager->setInitializing(true); //Prevent updates of modifiers list
+	qDebug("Editor::~Editor: destroy modifiers manager");
+	delete modifiers_manager;
+	modifiers_manager = 0;
 
+	qDebug("Editor::~Editor: stop initializer");
 	initializer->stopWork();
-	delete initializer;
+	initializer->deleteLater();
+	initializer = 0;
 
-	qDebug("Editor::~Editor: cleaning up EVDS objects");
-	delete root_obj;
-	qDebug("Editor::~Editor: waiting for remaining threads");
-	while (activeThreads.available()) ;
-
-	//Destroy EVDS system
-	qDebug("Editor::~Editor: destroying system");
-	EVDS_System_Destroy(system);
-
-	cutsection_menu->deleteLater();*/
+	//cutsection_menu->deleteLater();
 }
 
 
