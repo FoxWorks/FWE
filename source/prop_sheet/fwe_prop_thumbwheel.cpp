@@ -147,6 +147,7 @@ ThumbWheelFactory::ThumbWheelFactory(QObject *parent)
 
 ThumbWheelFactory::~ThumbWheelFactory()
 {
+	delete originalFactory;
 }
 
 void ThumbWheelFactory::connectPropertyManager(ThumbWheelPropertyManager *manager) {

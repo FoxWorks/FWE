@@ -75,6 +75,7 @@ StringEnumFactory::StringEnumFactory(QObject *parent)
 
 StringEnumFactory::~StringEnumFactory()
 {
+	delete originalFactory;
 }
 
 void StringEnumFactory::connectPropertyManager(StringEnumPropertyManager *manager)

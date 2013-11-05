@@ -68,7 +68,17 @@ FWEPropertySheet::FWEPropertySheet(QWidget* parent) : QtTreePropertyBrowser(pare
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 FWEPropertySheet::~FWEPropertySheet() {
-	// ...
+	delete groupManager;
+	delete doubleManager;
+	delete doubleFactory;
+	delete enumManager;
+	delete enumFactory;
+	delete booleanManager;
+	delete booleanFactory;
+	delete stringManager;
+	delete stringFactory;
+	delete datetimeManager;
+	delete datetimeFactory;
 }
 
 

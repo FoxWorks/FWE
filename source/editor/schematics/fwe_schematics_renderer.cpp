@@ -42,12 +42,12 @@ SchematicsRenderingManager::~SchematicsRenderingManager() {
 	GLScene* glview = schematics_editor->getGLScene();
 
 	//Remove all instances from glview
-	/*for (int i = 0; i < modifierInstances.count(); i++) {
-		if (glview->getCollection()->contains(modifierInstances[i].instance->id())) {
-			glview->getCollection()->remove(modifierInstances[i].instance->id());
+	for (int i = 0; i < schematicsInstances.count(); i++) {
+		if (glview->getCollection()->contains(schematicsInstances[i].instance->id())) {
+			glview->getCollection()->remove(schematicsInstances[i].instance->id());
 		}
-		delete modifierInstances[i].instance;
-	}*/
+		delete schematicsInstances[i].instance;
+	}
 }
 
 

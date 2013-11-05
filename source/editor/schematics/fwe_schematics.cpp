@@ -71,7 +71,7 @@ SchematicsEditor::SchematicsEditor(FWE::EditorWindow* in_window) : FWE::Editor(i
 /// @brief
 ////////////////////////////////////////////////////////////////////////////////
 SchematicsEditor::~SchematicsEditor() {
-
+	delete rendering_manager;
 }
 
 

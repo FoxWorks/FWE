@@ -47,12 +47,17 @@ ObjectModifiersManager::~ObjectModifiersManager() {
 	GLScene* glview = editor->getGLScene();
 
 	//Remove all instances from glview
-	/*for (int i = 0; i < modifierInstances.count(); i++) {
-		if (glview->getCollection()->contains(modifierInstances[i].instance->id())) {
-			glview->getCollection()->remove(modifierInstances[i].instance->id());
+	QMapIterator<Object*,QList<ObjectRendererModifierInstance> > iterator(modifierInstances);
+	while (iterator.hasNext()) {
+		iterator.next();
+		for (int i = 0; i < iterator.value().count(); i++) {
+			if (glview->getCollection()->contains(iterator.value()[i].instance->id())) {
+				glview->getCollection()->remove(iterator.value()[i].instance->id());
+			}
+			delete iterator.value()[i].instance;
 		}
-		delete modifierInstances[i].instance;
-	}*/
+		iterator.value();
+	}
 }
 
 
