@@ -56,6 +56,7 @@ GLScene::GLScene(GLScene* in_parent_scene, Editor* in_editor, SchematicsEditor* 
 	parent_scene = in_parent_scene; //FIXME: support for this
 	editor = in_editor;
 	schematics_editor = in_schematics_editor;
+	progressDialog = 0;
 
 	//Have everything be initialized later
 	sceneInitialized = false;
@@ -298,6 +299,8 @@ void GLScene::saveScreenshot() {
 void GLScene::saveSheets() {
 	QString baseFilename = editor->getEditorWindow()->getCurrentFile();
 	QFileInfo baseInfo = QFileInfo(baseFilename);
+	progressDialog = new QProgressDialog("Exporting schematics sheets...","Abort",0,1);
+	progressDialog->show();
 
 	Object* old_sheet = schematics_editor->getCurrentSheet();
 	int sheet_no = 1;
@@ -312,17 +315,20 @@ void GLScene::saveSheets() {
 			if (code == "") code = baseInfo.baseName();
 			if (sheet->getVariable("sheet.number") > 0.0) sheet_no = (int)sheet->getVariable("sheet.number");
 
+			editor->getEditorWindow()->getMainWindow()->statusBar()->showMessage(tr("Exporting sheet #%1..").arg(sheet_no),2000);
 			saveCurrentSheet(tr("%1 (sheet %2).jpg")
 				.arg(code)
 				.arg(sheet_no));
 
-			editor->getEditorWindow()->getMainWindow()->statusBar()->showMessage(tr("Exported sheet %1..").arg(sheet_no),2000);
 			sheet_no++;
 		}
 	}
 	schematics_editor->setCurrentSheet(old_sheet);
 	schematics_editor->getSchematicsRenderingManager()->updateInstances();
 	editor->getEditorWindow()->getMainWindow()->statusBar()->showMessage("Finished exporting sheets!",3000);
+
+	delete progressDialog;
+	progressDialog = 0;
 }
 void GLScene::setIsoView() {
 	viewport->cameraHandle()->setIsoView();
@@ -375,12 +381,19 @@ void GLScene::saveCurrentSheet(const QString& baseFilename) {
 	int x = 0;
 	int y = 0;
 
+	//Update progress dialog
+	if (progressDialog && (progressDialog->maximum() == 1)) {
+		progressDialog->setMaximum((width / fbo_width + 1)*(height / fbo_height + 1)*schematics_editor->getMetadataRoot()->getChildrenCount());
+	}
+
 	//Save camera
 	GLC_Camera old_camera = GLC_Camera(*viewport->cameraHandle());
 	
 	while (x < width) {
 		y = 0;
 		while (y < height) {
+			progressDialog->setValue(progressDialog->value()+1);
+
 			//Create FBO and draw into it
 			QGLFramebufferObject renderFbo(fbo_width,fbo_height);
 			QPainter fboPainter(&renderFbo);

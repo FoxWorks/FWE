@@ -19,6 +19,7 @@
 #ifndef FWE_EVDS_GLSCENE_H
 #define FWE_EVDS_GLSCENE_H
 
+#include <QProgressDialog>
 #include <QGLWidget>
 #include <QGLShader>
 #include <QGLFramebufferObject>
@@ -93,6 +94,8 @@ namespace EVDS {
 		GLScene* parent_scene;
 		Editor* editor;
 		SchematicsEditor* schematics_editor;
+
+		QProgressDialog* progressDialog;
 
 		//UI elements
 		QWidget* panel_control;
